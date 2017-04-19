@@ -6,7 +6,6 @@ package boffoIO;
  */
 import events.BoffoEvent;
 import events.BoffoFireObject;
-import events.BoffoListenerInterface;
 import java.util.Scanner;
 import product.ProductObject;
 

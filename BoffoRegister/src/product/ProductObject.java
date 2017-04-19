@@ -12,7 +12,7 @@ public class ProductObject extends BoffoDbObject implements TicketElement{
         protected int UPC = 0;
         protected String SKU = "";
         protected Rating rat = null;
-        protected String tableName = "Product";
+        protected static String tableName = "product";
         protected String uuid = "";
         protected HashMap map = null;
         protected String description = "";
@@ -128,34 +128,35 @@ public class ProductObject extends BoffoDbObject implements TicketElement{
         return str;
     }
 
+
     //ProductObject.load() is a BoffoDbObject so still cast as ProductObject
     public static ProductObject loadBySKU(String _sku) {
-        return (ProductObject)ProductObject.load("sku", _sku, "product");
+        return (ProductObject)ProductObject.load("sku", _sku, ProductObject.tableName);
     }
 
 
     public static ProductObject loadByUPC(String _upc) {
-        return (ProductObject)ProductObject.load("upc", _upc, "product");
+        return (ProductObject)ProductObject.load("upc", _upc, ProductObject.tableName);
     }
 
 
     public static ProductObject loadByName(String _name) {
-       return (ProductObject)ProductObject.load("name", _name, "product");
+       return (ProductObject)ProductObject.load("name", _name, ProductObject.tableName);
     }
     
     
     public static ProductObject loadByQuantity(String _quant) {
-       return (ProductObject)ProductObject.load("quantity", _quant, "product");
+       return (ProductObject)ProductObject.load("quantity", _quant, ProductObject.tableName);
     }
 
 
     public static ProductObject loadByRating(String _rat) {
-        return (ProductObject)ProductObject.load("rating", _rat, "product");
+        return (ProductObject)ProductObject.load("rating", _rat, ProductObject.tableName);
     }
 
 
     public static ProductObject loadByPrice(String _price) {
-        return (ProductObject)ProductObject.load("price", _price, "product");
+        return (ProductObject)ProductObject.load("price", _price, ProductObject.tableName);
     } 
 
 

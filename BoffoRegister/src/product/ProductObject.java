@@ -115,32 +115,32 @@ public class ProductObject extends BoffoDbObject implements TicketElement{
     
     
     public static ProductObject loadBySKU(String _sku) {
-        return (ProductObject)BoffoDbObject.load(BoffoDbObject.create(), "sku", _sku);
+        return (ProductObject)BoffoDbObject.load(waitForLoadToRepair, "sku", _sku);
     }
     
     
     public static ProductObject loadByUPC( String _upc) {
-        return (ProductObject)BoffoDbObject.load(BoffoDbObject.create(), "field", _upc);
+        return (ProductObject)BoffoDbObject.load(waitForLoadToRepair, "field", _upc);
     }
     
     
     public static ProductObject loadByName(String _name) {
-       return (ProductObject)BoffoDbObject.load(BoffoDbObject.create(), "name", _name);
+       return (ProductObject)BoffoDbObject.load(waitForLoadToRepair, "name", _name);
     }
     
     
     public static ProductObject loadByQuantity(String _quant) {
-       return (ProductObject)BoffoDbObject.load(BoffoDbObject.create(), "quantity", _quant);
+       return (ProductObject)BoffoDbObject.load(waitForLoadToRepair, "quantity", _quant);
     }
     
     
     public static ProductObject loadByRating(String _rat) {
-        return (ProductObject)BoffoDbObject.load(BoffoDbObject.create(), "rating", _rat);
+        return (ProductObject)BoffoDbObject.load(waitForLoadToRepair, "rating", _rat);
     }
     
     
     public static ProductObject loadByPrice(String _price) {
-        return (ProductObject)BoffoDbObject.load(BoffoDbObject.create(), "price", _price);
+        return (ProductObject)BoffoDbObject.load(BoffoDbObject.waitForLoadToRepair, "price", _price);
         //where loadByPrice(field, value) is a load looking up from a table
         //cast as Product
     } 

@@ -15,6 +15,9 @@ public class ProductObject extends BoffoDbObject implements TicketElement{
         protected HashMap map = null;
         protected String description = "";
         
+    public ProductObject(){
+        BoffoDbObject.create();
+    }
     public ProductObject(String _name, int _quant, double _price, int _UPC, String _sk, Rating _rat, String _upc, String _tableName, String _description) {
        this.name = _name;
        this.quantity = _quant;
@@ -115,34 +118,32 @@ public class ProductObject extends BoffoDbObject implements TicketElement{
     
     
     public static ProductObject loadBySKU(String _sku) {
-        return (ProductObject)BoffoDbObject.load(waitForLoadToRepair, "sku", _sku);
+        return (ProductObject)BoffoDbObject.load("sku", _sku, "product");
     }
     
     
     public static ProductObject loadByUPC( String _upc) {
-        return (ProductObject)BoffoDbObject.load(waitForLoadToRepair, "field", _upc);
+        return (ProductObject)BoffoDbObject.load("upc", _upc, "product");
     }
     
     
     public static ProductObject loadByName(String _name) {
-       return (ProductObject)BoffoDbObject.load(waitForLoadToRepair, "name", _name);
+       return (ProductObject)BoffoDbObject.load("name", _name, "product");
     }
     
     
     public static ProductObject loadByQuantity(String _quant) {
-       return (ProductObject)BoffoDbObject.load(waitForLoadToRepair, "quantity", _quant);
+       return (ProductObject)BoffoDbObject.load("quantity", _quant, "product");
     }
     
     
     public static ProductObject loadByRating(String _rat) {
-        return (ProductObject)BoffoDbObject.load(waitForLoadToRepair, "rating", _rat);
+        return (ProductObject)BoffoDbObject.load("rating", _rat, "product");
     }
     
     
     public static ProductObject loadByPrice(String _price) {
-        return (ProductObject)BoffoDbObject.load(BoffoDbObject.waitForLoadToRepair, "price", _price);
-        //where loadByPrice(field, value) is a load looking up from a table
-        //cast as Product
+        return (ProductObject)BoffoDbObject.load("price", _price, "product");
     } 
     
     

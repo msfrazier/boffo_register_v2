@@ -1,4 +1,5 @@
 package product;
+import bundles.TicketElement;
 import java.util.HashMap;
 import database.BoffoDbObject;
 
@@ -30,12 +31,18 @@ public class ProductObject extends BoffoDbObject implements TicketElement{
        this.description = description;
     }
     
+    @Override
+    public TicketElement clone(){
+        return null;
+    }
+    
     
     public void setDescription(String _description) {
         this.description = _description;
     }
     
     
+    @Override
     public String getDescription() {
         return this.description;
     }
@@ -46,6 +53,7 @@ public class ProductObject extends BoffoDbObject implements TicketElement{
     }
     
     
+    @Override
     public String getName() {
         return this.name;
     }
@@ -56,6 +64,7 @@ public class ProductObject extends BoffoDbObject implements TicketElement{
     }
     
     
+    @Override
     public double getPrice() {
         return this.price;
     }
@@ -83,6 +92,8 @@ public class ProductObject extends BoffoDbObject implements TicketElement{
     public Rating getRating() {
         return this.rat;
     }
+    
+    
     public void setUPC(int _upc) {
         this.UPC = _upc;
     }
@@ -97,8 +108,8 @@ public class ProductObject extends BoffoDbObject implements TicketElement{
         this.SKU = _sku;
     }
     
-    
-    public String getSKU() {
+    @Override
+    public String getSku() {
         return this.SKU;
     }
     

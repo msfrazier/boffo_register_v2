@@ -19,6 +19,7 @@ public class ProductObject extends BoffoDbObject implements TicketElement{
     public ProductObject(){
         BoffoDbObject.create();
     }
+    
     public ProductObject(String _name, int _quant, double _price, int _UPC, String _sk, Rating _rat, String _upc, String _tableName, String _description) {
        this.name = _name;
        this.quantity = _quant;
@@ -120,7 +121,7 @@ public class ProductObject extends BoffoDbObject implements TicketElement{
                      "Quantity: " + this.getQuantity() + "\n" + 
                      "Price: $" + this.getPrice() + "\n" + 
                      "UPC: " + this.getUPC() + "\n" + 
-                     "SKU: " + this.getSKU() + "\n" + 
+                     "SKU: " + this.getSku() + "\n" + 
                      "Rating: " + this.getRating() + "\n" + 
                      "UUID: " + this.uuid + "\n" + 
                      "Description: " + this.description + "\n";
@@ -133,7 +134,7 @@ public class ProductObject extends BoffoDbObject implements TicketElement{
     }
     
     
-    public static ProductObject loadByUPC( String _upc) {
+    public static ProductObject loadByUPC(String _upc) {
         return (ProductObject)ProductObject.load("upc", _upc, "product");
     }
     

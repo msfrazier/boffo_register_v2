@@ -1,5 +1,6 @@
 package product;
-import bundles.TicketElement;
+
+import bundles.*;
 import java.util.HashMap;
 import database.BoffoDbObject;
 
@@ -29,7 +30,7 @@ public class ProductObject extends BoffoDbObject implements TicketElement{
        this.rat = _rat;
        this.uuid = _upc;
        this.tableName = _tableName;
-       this.description = description;
+       this.description = _description;
     }
     
     @Override

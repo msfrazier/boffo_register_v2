@@ -209,7 +209,7 @@ public class Bundle implements TicketElement {
     }
 
 
-    // <editor-fold desc="updateBundles() helper methods">
+    // <editor-fold desc="Helper Methods of updateBundles().">
     /**
      * Gets the list of bundles that apply to a list of products from a list of
      * bundles. The list of bundles will have the maximum number of each bundle

@@ -32,6 +32,7 @@ public class Group<T extends TicketElement> {
     private final T element;
     private final List<T> contents;
 
+
     /**
      * Constructor initializes the head element and populates the contents list
      * using clones.
@@ -131,7 +132,7 @@ public class Group<T extends TicketElement> {
      */
     public T decrement() {
         List<T> subtracted = subtract(1);
-        if(subtracted.isEmpty()){
+        if (subtracted.isEmpty()) {
             return null;
         }
         return subtracted.get(0);
@@ -163,16 +164,6 @@ public class Group<T extends TicketElement> {
 
 
     /**
-     * Returns the size of the contents list.
-     *
-     * @return The size of the contents list.
-     */
-    public int size() {
-        return this.contents.size();
-    }
-
-
-    /**
      * Returns the price of the group based on the sum of the elements.
      *
      * @return The sum of all contained prices.
@@ -196,9 +187,13 @@ public class Group<T extends TicketElement> {
     }
 
 
-    @Override
-    public String toString() {
-        return "(" + this.element + ", " + size() + ')';
+    /**
+     * Returns the size of the contents list.
+     *
+     * @return The size of the contents list.
+     */
+    public int size() {
+        return this.contents.size();
     }
 
 
@@ -221,6 +216,11 @@ public class Group<T extends TicketElement> {
     }
 
 
+    @Override
+    public String toString() {
+        return "(" + this.element + ", " + size() + ')';
+    }
+
     // A private subclass that contains Group-based comparators.
     private static class Comparators {
 
@@ -232,7 +232,6 @@ public class Group<T extends TicketElement> {
                 return TicketElement.BYNAME.compare(_p1.getElement(), _p2.getElement());
             }
 
-
         }
 
         //  Compares TicketElements based on the non case-sensitive skus of groups.
@@ -243,7 +242,6 @@ public class Group<T extends TicketElement> {
                 return TicketElement.BYSKU.compare(_p1.getElement(), _p2.getElement());
             }
 
-
         }
 
         // Compares TicketElements based on prices of the groups.
@@ -253,7 +251,6 @@ public class Group<T extends TicketElement> {
             public int compare(Group<TicketElement> _p1, Group<TicketElement> _p2) {
                 return Double.compare(_p1.getPrice(), _p2.getPrice());
             }
-
 
         }
     }

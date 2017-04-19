@@ -7,9 +7,9 @@ import java.util.List;
  * Bundle class for storing and using bundles and discounts, contains methods
  * for processing products into lists including discounts.
  *
- * @lastEdited: 4/18/2017
  * @author Michael Resnik
  * @author Travis Cox
+ * @lastEdited: 4/18/2017
  */
 public class Bundle implements TicketElement {
 
@@ -374,4 +374,5 @@ public class Bundle implements TicketElement {
         return -1;
     }
     //</editor-fold>
+
 }

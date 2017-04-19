@@ -25,6 +25,7 @@ public class GroupList<T extends TicketElement> implements Iterable {
     private List<Group<T>> listOfGroups;
     private Comparator<T> comparator;
 
+
     /**
      * A Constructor that creates an empty GroupList that will arrange values
      * based on the passed TicketElement Comparator.
@@ -496,7 +497,6 @@ public class GroupList<T extends TicketElement> implements Iterable {
         return retString + "}";
     }
 
-
     // Other classes shouldn't be allowed to create GroupList comparators.
     private static class Comparators {
 
@@ -506,7 +506,6 @@ public class GroupList<T extends TicketElement> implements Iterable {
             public int compare(GroupList<TicketElement> _pl1, GroupList<TicketElement> _pl2) {
                 return Double.compare(_pl1.getTotal(), _pl2.getTotal());
             }
-
 
         }
     }

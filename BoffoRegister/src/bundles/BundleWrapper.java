@@ -5,9 +5,9 @@ package bundles;
  * objects that it contains (rather than the general products that are used to
  * represent the bundle itself)
  *
- * @lastEdited: 4/18/2017
  * @author Michael Resnik
  * @author Travis Cox
+ * @lastEdited: 4/18/2017
  */
 public class BundleWrapper implements TicketElement {
 
@@ -42,24 +42,12 @@ public class BundleWrapper implements TicketElement {
 
 
     /**
-     * Get the SKU.
+     * Get the bundle contained in the wrapper.
      *
-     * @return The SKU.
+     * @return The bundle object.
      */
-    @Override
-    public String getSku() {
-        return this.bundle.getSku();
-    }
-
-
-    /**
-     * Get the name.
-     *
-     * @return The name.
-     */
-    @Override
-    public String getName() {
-        return bundle.getName();
+    public Bundle getBundle() {
+        return this.bundle;
     }
 
 
@@ -75,6 +63,17 @@ public class BundleWrapper implements TicketElement {
 
 
     /**
+     * Get the name.
+     *
+     * @return The name.
+     */
+    @Override
+    public String getName() {
+        return bundle.getName();
+    }
+
+
+    /**
      * Get the price.
      *
      * @return The price.
@@ -86,16 +85,6 @@ public class BundleWrapper implements TicketElement {
 
 
     /**
-     * Get the bundle contained in the wrapper.
-     *
-     * @return The bundle object.
-     */
-    public Bundle getBundle() {
-        return this.bundle;
-    }
-
-
-    /**
      * Get the GroupList that contains the specific products in the bundle
      * wrapper.
      *
@@ -103,6 +92,17 @@ public class BundleWrapper implements TicketElement {
      */
     public GroupList<Product_Test> getProducts() {
         return this.products.clone();
+    }
+
+
+    /**
+     * Get the SKU.
+     *
+     * @return The SKU.
+     */
+    @Override
+    public String getSku() {
+        return this.bundle.getSku();
     }
 
 

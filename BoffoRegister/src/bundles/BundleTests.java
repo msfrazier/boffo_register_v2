@@ -3,7 +3,7 @@ package bundles;
 import static bundles.TicketElement.*;
 import java.util.Comparator;
 
-public class Main {
+public class BundleTests {
 
     public static void main(String[] args) {
         long base = System.currentTimeMillis();
@@ -13,6 +13,7 @@ public class Main {
         // testTicket();
         // testSort();
     }
+
 
     private static void printElements(GroupList<TicketElement> _elements) {
         System.out.println("Optimized Elements");
@@ -31,6 +32,7 @@ public class Main {
         System.out.println(_elements.comparator());
 
     }
+
 
     public static void testRecursive(Comparator<Group<TicketElement>> _sortBy) {
 
@@ -117,6 +119,7 @@ public class Main {
         printElements(elements);
     }
 
+
     private static void testSort() {
         GroupList<TicketElement> elements = new GroupList(BYPRICE);
         Product_Test p1 = Product_Test.generate("p1", "", 3.75, "P1");
@@ -135,6 +138,7 @@ public class Main {
         }
 
     }
+
 
     private static void testTicket() {
         Ticket_Test ticket = new Ticket_Test();

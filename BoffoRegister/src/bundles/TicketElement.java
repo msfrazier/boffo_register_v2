@@ -27,6 +27,7 @@ public interface TicketElement {
      */
     public static final PriceComparator BYPRICE = new PriceComparator();
 
+
     /**
      * Returns the description of the TicketElement.
      *
@@ -66,7 +67,6 @@ public interface TicketElement {
      */
     public TicketElement clone();
 
-
     /**
      * Compares two TicketElements by their Name attribute in a non
      * case-sensitive, alphabetic manner.
@@ -77,7 +77,6 @@ public interface TicketElement {
         public int compare(TicketElement _te1, TicketElement _te2) {
             return _te1.getName().compareToIgnoreCase(_te2.getName());
         }
-
 
     }
 
@@ -92,7 +91,6 @@ public interface TicketElement {
             return _te1.getSku().compareToIgnoreCase(_te2.getSku());
         }
 
-
     }
 
     /**
@@ -104,7 +102,6 @@ public interface TicketElement {
         public int compare(TicketElement _te1, TicketElement _te2) {
             return Double.compare(_te1.getPrice(), _te2.getPrice());
         }
-
 
     }
 

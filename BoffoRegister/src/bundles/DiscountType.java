@@ -1,19 +1,26 @@
 package bundles;
 
 /**
- * Enumeration for representing the types of discount.
+ * Enumeration for representing the different types of discounts that can be
+ * applied to a bundle.
  *
- * @lastEdited: 4/18/2017
  * @author Michael Resnik
  * @author Travis Cox
+ * @lastEdited: 4/18/2017
  */
 public enum DiscountType {
-    // Discount an item (or bundle) by a specific percentage.
+    /**
+     * Discount an item (or bundle) by a specific percentage.
+     */
     PERCENT,
-    // Discount an item (or bundle) by a specific dollar amount.
+    /**
+     * Discount an item (or bundle) by a specific dollar amount.
+     */
     DOLLAR,
-    // Discount an item (or bundle) as buy one get a percentage off the
-    // second; a discount of 100% is buy one get one free.
+    /**
+     * Discount an item (or bundle) as buy one get a percentage off the second;
+     * a discount of 100% is buy one get one free.
+     */
     BOGO;
 
 

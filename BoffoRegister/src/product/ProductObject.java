@@ -116,34 +116,34 @@ public class ProductObject extends BoffoDbObject implements TicketElement{
         return str;
     }
     
-    
+    //ProductObject.load() is a BoffoDbObject so still cast as ProductObject
     public static ProductObject loadBySKU(String _sku) {
-        return (ProductObject)BoffoDbObject.load("sku", _sku, "product");
+        return (ProductObject)ProductObject.load("sku", _sku, "product");
     }
     
     
     public static ProductObject loadByUPC( String _upc) {
-        return (ProductObject)BoffoDbObject.load("upc", _upc, "product");
+        return (ProductObject)ProductObject.load("upc", _upc, "product");
     }
     
     
     public static ProductObject loadByName(String _name) {
-       return (ProductObject)BoffoDbObject.load("name", _name, "product");
+       return (ProductObject)ProductObject.load("name", _name, "product");
     }
     
     
     public static ProductObject loadByQuantity(String _quant) {
-       return (ProductObject)BoffoDbObject.load("quantity", _quant, "product");
+       return (ProductObject)ProductObject.load("quantity", _quant, "product");
     }
     
     
     public static ProductObject loadByRating(String _rat) {
-        return (ProductObject)BoffoDbObject.load("rating", _rat, "product");
+        return (ProductObject)ProductObject.load("rating", _rat, "product");
     }
     
     
     public static ProductObject loadByPrice(String _price) {
-        return (ProductObject)BoffoDbObject.load("price", _price, "product");
+        return (ProductObject)ProductObject.load("price", _price, "product");
     } 
     
     

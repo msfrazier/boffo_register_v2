@@ -35,7 +35,7 @@ public class ProductObject extends BoffoDbObject implements TicketElement{
     
     @Override
     public TicketElement clone(){
-        return null;
+        return TicketElement.class.cast(this);
     }
     
     

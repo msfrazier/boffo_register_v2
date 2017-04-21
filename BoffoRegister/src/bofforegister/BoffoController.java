@@ -26,9 +26,9 @@ import transaction.Transaction;
 import user.User;
 
 public class BoffoController extends BoffoFireObject implements BoffoListenerInterface {
-    
+
     public static User CURRENT_USER = null;
-    
+
     protected Transaction transaction = null;
     protected Inventory inventory = null;
     protected Administration admin = null;
@@ -74,13 +74,13 @@ public class BoffoController extends BoffoFireObject implements BoffoListenerInt
             case 2:
                 // log out the current user and change to the login panel.
                 this.gui.loadLoginPanel();
-                
+
                 break;
 
             case 3:
                 // Change to the main GUI panel.
                 this.gui.loadMainPanel();
-                
+
                 break;
 
             case 4:
@@ -90,7 +90,7 @@ public class BoffoController extends BoffoFireObject implements BoffoListenerInt
                 }
                 // Change to the admin GUI panel.
                 this.gui.loadAdminPanel();
-                
+
                 break;
 
             case 5:
@@ -104,7 +104,7 @@ public class BoffoController extends BoffoFireObject implements BoffoListenerInt
                 }
                 // Change to the Inventory GUI panel.
                 this.gui.loadInventoryPanel();
-                
+
                 break;
 
             case 7:
@@ -114,7 +114,7 @@ public class BoffoController extends BoffoFireObject implements BoffoListenerInt
                 }
                 // Change to the Transaction GUI panel.
                 this.gui.loadTransactionPanel();
-                
+
                 break;
 
             default:

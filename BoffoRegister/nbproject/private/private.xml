@@ -15,7 +15,13 @@
             <file>file:/C:/Users/Mike/Desktop/old_desktop/School/CSC%20340/boffo_register_v2/BoffoRegister/src/bundles/GroupList.java</file>
         </group>
         <group>
+<<<<<<< HEAD
             <file>file:/C:/ClassRepo/boffo_register_v2/BoffoRegister/src/bofforegister/BoffoController.java</file>
+=======
+            <file>file:/C:/Users/msf10_000/Documents/NetBeansProjects/boffo_register_v2/BoffoRegister/src/events/BoffoListenerInterface.java</file>
+            <file>file:/C:/Users/msf10_000/Documents/NetBeansProjects/boffo_register_v2/BoffoRegister/src/events/BoffoFireObject.java</file>
+            <file>file:/C:/Users/msf10_000/Documents/NetBeansProjects/boffo_register_v2/BoffoRegister/src/events/BoffoEvent.java</file>
+>>>>>>> refs/remotes/origin/master
         </group>
     </open-files>
 </project-private>

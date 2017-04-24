@@ -1,3 +1,4 @@
 /BoffoRegister/build/
 BoffoRegister/src/inventory/InventoryRecord.java
 *.java
+!/BoffoRegister/src/events/BoffoEventData.java

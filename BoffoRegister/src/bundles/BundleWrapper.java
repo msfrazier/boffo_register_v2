@@ -58,7 +58,7 @@ public class BundleWrapper implements TicketElement {
      */
     @Override
     public String getDescription() {
-        return bundle.getDescription();
+        return this.bundle.getDescription();
     }
 
 
@@ -69,7 +69,7 @@ public class BundleWrapper implements TicketElement {
      */
     @Override
     public String getName() {
-        return bundle.getName();
+        return this.bundle.getName();
     }
 
 
@@ -80,7 +80,7 @@ public class BundleWrapper implements TicketElement {
      */
     @Override
     public double getPrice() {
-        return bundle.getPrice();
+        return this.bundle.getPrice();
     }
 
 
@@ -113,7 +113,7 @@ public class BundleWrapper implements TicketElement {
      */
     @Override
     public String toString() {
-        return bundle.toString();
+        return this.bundle.toString();
     }
 
 }

@@ -77,7 +77,8 @@ public class Bundle implements TicketElement {
      */
     @Override
     public Bundle clone() {
-        return new Bundle(this.name, this.description, this.products.clone(), this.discountType, this.discountAmount, this.maxAllowed, this.sku);
+        return new Bundle(this.name, this.description, this.products.clone(),
+                this.discountType, this.discountAmount, this.maxAllowed, this.sku);
     }
 
 
@@ -96,8 +97,11 @@ public class Bundle implements TicketElement {
      * @param _sku The bundle SKU
      * @return The generated Bundle.
      */
-    public static Bundle generator(String _name, String _description, GroupList<Product_Test> _products, DiscountType _discountType, double _discountAmount, int _maxAllowed, String _sku) {
-        Bundle b = new Bundle(_name, _description, _products, _discountType, _discountAmount, _maxAllowed, _sku);
+    public static Bundle generator(String _name, String _description,
+            GroupList<Product_Test> _products, DiscountType _discountType,
+            double _discountAmount, int _maxAllowed, String _sku) {
+        Bundle b = new Bundle(_name, _description, _products, _discountType,
+                _discountAmount, _maxAllowed, _sku);
         add(b);
         return b.clone();
     }
@@ -145,14 +149,14 @@ public class Bundle implements TicketElement {
     public double getPrice() {
         switch (discountType) {
             case PERCENT:
-                return products.getTotal() * (100 - discountAmount) / 100;
+                return this.products.getTotal() * (100 - this.discountAmount) / 100;
             case DOLLAR:
-                return products.getTotal() - discountAmount;
+                return this.products.getTotal() - this.discountAmount;
             case BOGO:
-                double elementPrice = products.getTotal() / 2;
-                return (elementPrice + elementPrice * (100 - discountAmount) / 100);
+                double elementPrice = this.products.getTotal() / 2;
+                return (elementPrice + elementPrice * (100 - this.discountAmount) / 100);
             default:
-                return products.getTotal();
+                return this.products.getTotal();
         }
     }
 
@@ -185,7 +189,8 @@ public class Bundle implements TicketElement {
 
     @Override
     public String toString() {
-        return "Bundle:" + "[" + this.name + this.description + "]" + " " + this.discountType.formatString(this.discountAmount);
+        return "Bundle:" + "[" + this.name + this.description + "]" + " "
+                + this.discountType.formatString(this.discountAmount);
     }
 
 
@@ -219,7 +224,8 @@ public class Bundle implements TicketElement {
      * @param _fromBundles The list of Bundles to add from.
      * @return A GroupList of Bundles containing all applicable Bundles.
      */
-    private static GroupList<Bundle> getApplicable(GroupList<Product_Test> _allProducts, List<Bundle> _fromBundles) {
+    private static GroupList<Bundle> getApplicable(GroupList<Product_Test> _allProducts,
+            List<Bundle> _fromBundles) {
         GroupList<Bundle> applicable = new GroupList(BYSKU);
         // Iterate over all the bundles and see if there are matching products.
         for (Bundle bundle : _fromBundles) {
@@ -302,7 +308,8 @@ public class Bundle implements TicketElement {
      * @return A GroupList of Bundles that no longer includes invalidated
      * bundles
      */
-    private static GroupList<TicketElement> recursiveMethod(GroupList<Product_Test> _products, GroupList<Bundle> _bundles,
+    private static GroupList<TicketElement> recursiveMethod(GroupList<Product_Test> _products,
+            GroupList<Bundle> _bundles,
             GroupList<TicketElement> _elements) {
         // If the bundle list being referenced is empty, add remaining products
         // to elements and return elements.
@@ -319,7 +326,8 @@ public class Bundle implements TicketElement {
         Group<Bundle> bundleGroup = _bundles.get(0);
         _bundles.remove(bundleGroup.getElement(), 1);
         // Perform right recursion with copies of current info (bundle not used).
-        GroupList<TicketElement> rightElements = recursiveMethod(_products.clone(), _bundles.clone(), _elements.clone());
+        GroupList<TicketElement> rightElements = recursiveMethod(_products.clone(),
+                _bundles.clone(), _elements.clone());
 
         // Remove products from _products and add them to a GroupList to create
         // a BundleWrapper containing the bundle and products it contains.

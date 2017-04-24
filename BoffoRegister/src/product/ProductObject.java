@@ -120,7 +120,7 @@ public class ProductObject extends BoffoDbObject implements TicketElement{
     public String toString() {
         String str = "Name: " + this.getName() + "\n" + 
                      "Quantity: " + this.getQuantity() + "\n" + 
-                     "Price: " + this.getPrice() + "\n" + 
+                     "Price: " + Utility.formatPrice(this.getPrice()) + "\n" + 
                      "UPC: " + this.getUPC() + "\n" + 
                      "SKU: " + this.getSku() + "\n" + 
                      "Rating: " + this.getRating() + "\n" + 

@@ -14,9 +14,9 @@ import events.BoffoListenerInterface;
 public class Administration extends BoffoFireObject implements BoffoListenerInterface {
 //Create variables required for Administration class.
 
-    protected String userName = "74Dn6Xzf";
-    protected String passWord = "57FB5x8BG7Njs3NH";
-    protected String keys = "Simon";
+    protected String loginID = "";
+    protected String transactionKey = "";
+    protected String secretKey = "";
     protected double store_hours = 0.0;
     protected double tax_rate = 0.0;
     protected int store_id = 0;
@@ -30,12 +30,12 @@ public class Administration extends BoffoFireObject implements BoffoListenerInte
 
 //Sets variable values to themselves.
     public Administration(String store_name, String receipt_msg, double store_hours,
-            int phone_num, float tax_rate, String passWord, String userName,
-            String keys) {
+            int phone_num, float tax_rate, String transactionKey, String loginID,
+            String secretKey) {
 
-        this.userName = userName;
-        this.passWord = passWord;
-        this.keys = keys;
+        this.loginID = loginID;
+        this.transactionKey = transactionKey;
+        this.secretKey = secretKey;
         this.store_name = store_name;
         this.receipt_msg = receipt_msg;
         this.store_hours = store_hours;
@@ -49,13 +49,13 @@ public class Administration extends BoffoFireObject implements BoffoListenerInte
     }
 
     //Return key value.
-    public String getKeys() {
-        return this.keys;
+    public String getSecretKey() {
+        return "Simon";
     }
 
     //Return pass word.
-    public String getPassWord() {
-        return this.passWord;
+    public String getTransactionKey() {
+        return "57FB5x8BG7Njs3NH";
     }
 
     //Return phone number.
@@ -84,17 +84,17 @@ public class Administration extends BoffoFireObject implements BoffoListenerInte
     }
 
     //Return user name.
-    public String getUserName() {
-        return this.userName;
+    public String getLoginID() {
+        return "74Dn6Xzf";
     }
 
     //Command to set key value.
-    public void setKeys(String _k) {
-        this.keys = _k;
+    public void setSecretKey(String _k) {
+        this.secretKey = _k;
     }
 
-    public void setPassWord(String _p) {
-        this.passWord = _p;
+    public void setTransactionKey(String _p) {
+        this.transactionKey = _p;
     }
 
     //Command to set phone number.
@@ -123,16 +123,14 @@ public class Administration extends BoffoFireObject implements BoffoListenerInte
     }
 
     //Command to set user name.
-    public void setUserName(String _uN) {
-        this.userName = _uN;
+    public void setLoginID(String _uN) {
+        this.loginID = _uN;
     }
 
-    @Override
     public void addBRegisterListener(BoffoListenerInterface _event) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
-    @Override
     public void removeBRegisterListener(BoffoListenerInterface _event) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }

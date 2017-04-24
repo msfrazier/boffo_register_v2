@@ -49,22 +49,25 @@ public class Query {
     /*
     * For use by dbAPI class allowing for select statements to be easily executed.
     */
-    public String selectFromTable(String tField, String tName, String tFilterField, String operator, String tFilter) throws SQLException{
+    public ArrayList<String> selectFromTable(String tField, String tName, String tFilterField, String operator, String tFilter) throws SQLException{
         //System.out.println("Executing: SELECT " + tField + " FROM " + tName + " WHERE " + tFilterField + " " + operator + " '" + tFilter + "'");
 
         ResultSet rs;
         ResultSetMetaData rsmd;
 
         String retString = "";
+        ArrayList<String> retArray = new ArrayList<String>();
 
         if(tFilterField != null || operator != null || tFilter != null){
-            rs = this.executeQuery("SELECT " + tField + " FROM " + tName + " WHERE " + tFilterField+ " " + operator + " '" + tFilter + "'");
+            rs = this.executeQuery("SELECT " + tField + " FROM " + tName + " WHERE '" + tFilterField+ "' " + operator + " '" + tFilter + "'");
             rsmd = this.getMetaData(rs);
 
             while(rs.next()){
                 for(int i = 1; i <= rsmd.getColumnCount(); i++){
                     retString += rs.getString(i) + " ";
                 }
+                retArray.add(retString);
+                //System.out.println(retString);
             }
 
         } else {
@@ -75,10 +78,12 @@ public class Query {
                 for(int i = 1; i <= rsmd.getColumnCount(); i++){
                     retString += rs.getString(i) + " ";
                 }
+                retArray.add(retString);
+                //System.out.println(retString);
             }
         }
 
-        return retString;
+        return retArray;
     }
 
     public boolean insertIntoTable(String tName, String[] tValues) throws SQLException{

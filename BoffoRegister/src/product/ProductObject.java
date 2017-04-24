@@ -135,7 +135,7 @@ public class ProductObject extends BoffoDbObject implements TicketElement{
     }
 
 
-    public static ProductObject loadByUPC(String _upc) {
+    public static ProductObject loadByUpc(String _upc) {
         return (ProductObject)ProductObject.load("upc", _upc, ProductObject.tableName);
     }
 
@@ -143,8 +143,8 @@ public class ProductObject extends BoffoDbObject implements TicketElement{
     public static ProductObject loadByName(String _name) {
        return (ProductObject)ProductObject.load("name", _name, ProductObject.tableName);
     }
-    
-    
+
+
     public static ProductObject loadByQuantity(String _quant) {
        return (ProductObject)ProductObject.load("quantity", _quant, ProductObject.tableName);
     }

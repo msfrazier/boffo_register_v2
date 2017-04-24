@@ -31,7 +31,7 @@ public class BoffoIO extends BoffoFireObject implements BoffoListenerInterface{
         if(product.ProductObject.loadByQuantity(String.valueOf(tempInt)) != null){
 //            fireEvent(new BoffoEvent(this,message));
         }
-        else if(product.ProductObject.loadByUPC(String.valueOf(tempInt)) != null){
+        else if(product.ProductObject.loadByUpc(String.valueOf(tempInt)) != null){
 //            fireEvent(new BoffoEvent(this,message));
         }
     }

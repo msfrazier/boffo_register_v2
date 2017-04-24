@@ -7,7 +7,10 @@ package utility;
 
 public class Utility {
 
+    /*Formats and returns a double as a String.
+    *Format for String is ($#.##)
+    */
     public String formatPrice(double price){
-        return "";
+        return String.format("$%.2f", price);
     }
 }

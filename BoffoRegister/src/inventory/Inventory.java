@@ -69,7 +69,7 @@ public class Inventory extends BoffoDbObject implements AuthorizationInterface, 
         }
     
     }
-    public void addInventoryRecord(String _uuid,String _sku,String _upc,int _quantity, StateOfInvetory _state,String _location, String _productName,int _price,String _vender){
+    public void addInventoryRecord(String _uuid,String _sku,String _upc,int _quantity, StateOfInvetory _state,String _location, String _productName,double _price,String _vender){
         //if already on list based on sku,update quantity of inventory 
          if(this.list.iterator().next().getSku()==_sku){
          this.list.iterator().next().setQuantity(this.list.iterator().next().getQuantity()+_quantity);
@@ -136,7 +136,10 @@ public class Inventory extends BoffoDbObject implements AuthorizationInterface, 
         }
          return l;
         } 
-      
+     //return size of inventory list 
+      public int GetListSize(){
+     return this.list.size();
+      }
      
     public void messageReceived(BoffoEvent event){
         

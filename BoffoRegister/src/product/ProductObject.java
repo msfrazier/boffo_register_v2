@@ -158,9 +158,4 @@ public class ProductObject extends BoffoDbObject implements TicketElement{
     public static ProductObject loadByPrice(String _price) {
         return (ProductObject)ProductObject.load("price", _price, ProductObject.tableName);
     } 
-
-
-    public static void main(String[] args) {
-
-    }
 } 

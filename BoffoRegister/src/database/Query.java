@@ -5,7 +5,7 @@ import java.sql.Statement;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
-
+import java.util.ArrayList;
 
 public class Query {
 
@@ -26,35 +26,48 @@ public class Query {
         return rs.getMetaData();
     }
 
+    public ArrayList<String> getTableColumns(String tName){
+        ArrayList<String> retList = new ArrayList<String>();
+
+        try {
+            ResultSetMetaData rsmd = getMetaData(executeQuery("SELECT * FROM " + tName));
+
+            for (int i = 1; i <= rsmd.getColumnCount(); i++) {
+                retList.add(rsmd.getColumnName(i));
+            }
+        } catch (SQLException ex) {
+            System.out.println(ex);
+        }
+
+        return retList;
+    }
+
     public void executeUpdate(String query) throws SQLException{
         statement.executeUpdate(query);
     }
 
     /*
-    * Overload that passes only a table name and field to the select from table below.
-    */
-    public String selectFromTable(String tName, String tField) throws SQLException{
-        return this.selectFromTable(tName, tField, null, null, null);
-    }
-
-    /*
     * For use by dbAPI class allowing for select statements to be easily executed.
     */
-    public String selectFromTable(String tName, String tField, String tFilterField, String operator, String tFilter) throws SQLException{
-        System.out.println("Executing: SELECT " + tField + " FROM " + tName + " WHERE " + tFilterField + " " + operator + " '" + tFilter + "'");
+    public ArrayList<String> selectFromTable(String tField, String tName, String tFilterField, String operator, String tFilter) throws SQLException{
+        //System.out.println("Executing: SELECT " + tField + " FROM " + tName + " WHERE " + tFilterField + " " + operator + " '" + tFilter + "'");
 
         ResultSet rs;
         ResultSetMetaData rsmd;
 
+        String retString = "";
+        ArrayList<String> retArray = new ArrayList<String>();
+
         if(tFilterField != null || operator != null || tFilter != null){
-            rs = this.executeQuery("SELECT " + tField + " FROM " + tName + " WHERE " + tFilterField+ " " + operator + " '" + tFilter + "'");
+            rs = this.executeQuery("SELECT " + tField + " FROM " + tName + " WHERE '" + tFilterField+ "' " + operator + " '" + tFilter + "'");
             rsmd = this.getMetaData(rs);
 
             while(rs.next()){
                 for(int i = 1; i <= rsmd.getColumnCount(); i++){
-                    System.out.print(rs.getString(i) + " ");
+                    retString += rs.getString(i) + " ";
                 }
-                System.out.println("");
+                retArray.add(retString);
+                //System.out.println(retString);
             }
 
         } else {
@@ -63,13 +76,14 @@ public class Query {
 
             while(rs.next()){
                 for(int i = 1; i <= rsmd.getColumnCount(); i++){
-                    System.out.print(rs.getString(i) + " ");
+                    retString += rs.getString(i) + " ";
                 }
-                System.out.println("");
+                retArray.add(retString);
+                //System.out.println(retString);
             }
         }
 
-        return null;
+        return retArray;
     }
 
     public boolean insertIntoTable(String tName, String[] tValues) throws SQLException{
@@ -99,17 +113,24 @@ public class Query {
         //System.out.println(values);
         //System.out.println("INSERT INTO " + tName + "(" + columns + ") VALUES(" + values + ")");
 
-        this.executeUpdate("INSERT INTO " + tName + "(" + columns + ") VALUES(" + values + ")");
+        this.executeUpdate("INSERT INTO " + tName + " VALUES(" + values + ")");
         return true;
     }
 
-    public boolean updateTable(String tName, String tField, String value, String tFilterField, String operator, String tFilter) throws SQLException{
-        this.executeUpdate("UPDATE " + tName + " SET " + tField + " = '" + value + "' WHERE " + tFilterField + " " + operator + " '" + tFilter + "'");
-        return true;
-    }
+    public boolean updateTable(String tName, String[] tFields, String tFilterField, String operator, String tFilter) throws SQLException{
+        String setString = "";
+        ArrayList<String> columns = this.getTableColumns(tName);
 
-    public boolean deleteEntry(String tName, String tFilterField, String operator, String tFilter) throws SQLException{
-        this.executeUpdate("DELETE FROM " + tName + " WHERE " + tFilterField + " " + operator + " '" + tFilter + "'");
+        for (int i = 0; i < columns.size(); i++) {
+            if(i != columns.size() - 1){
+                setString += " " + columns.get(i) + " = '" + tFields[i] + "',";
+            } else {
+                setString += " " + columns.get(i) + " = '" + tFields[i] + "'";
+            }
+        }
+
+        //System.out.println("UPDATE " + tName + " SET " + setString + " WHERE " + tFilterField + " " + operator + " '" + tFilter + "'");
+        this.executeUpdate("UPDATE " + tName + " SET " + setString + " WHERE " + tFilterField + " " + operator + " '" + tFilter + "'");
         return true;
     }
 
@@ -117,7 +138,7 @@ public class Query {
     * This will print the table name, column names, and all rows in the table.
     */
     public void printTable(String tName) throws SQLException{
-        System.out.println("Executing SELECT * FROM " + tName);
+        //System.out.println("Executing SELECT * FROM " + tName);
 
         ResultSet rs = statement.executeQuery("SELECT * FROM " + tName);
         ResultSetMetaData rsmd = this.getMetaData(rs);

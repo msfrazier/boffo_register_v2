@@ -9,12 +9,13 @@ package bundles;
  * @lastEdited 04/18/2017
  */
 import java.util.Comparator;
+import java.util.List;
 
 public interface TicketElement {
 
     /**
      * Compares TicketElements based on non case-sensitive, and on alphabetical
-     * order of sku.
+     * order of SKU.
      */
     public static final SkuComparator BYSKU = new SkuComparator();
     /**
@@ -34,6 +35,14 @@ public interface TicketElement {
      * @return A String object which describes the TicketElement.
      */
     public String getDescription();
+
+
+    /**
+     * Returns the list of Products that are included in this TicketElement.
+     *
+     * @return List of products.
+     */
+    public List<Product_Test> getIndividualProducts();
 
 
     /**

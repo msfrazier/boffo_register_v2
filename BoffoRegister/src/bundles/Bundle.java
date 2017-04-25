@@ -7,6 +7,9 @@ import java.util.List;
  * Bundle class for storing and using bundles and discounts, contains methods
  * for processing products into lists including discounts.
  *
+ * @TODO Use utility format price for toString().
+ * @TODO Add updateBundles to receive and return a ArrayList of TicketElements
+ *
  * @author Michael Resnik
  * @author Travis Cox
  * @lastEdited: 4/18/2017
@@ -119,6 +122,19 @@ public class Bundle implements TicketElement {
 
 
     /**
+     * Get all the specific products that are part of this bundle. In the Bundle
+     * class, this returns an empty list since the actual products are part of
+     * the bundle wrapper.
+     *
+     * @return Empty product list.
+     */
+    @Override
+    public List<Product_Test> getIndividualProducts() {
+        return new ArrayList<Product_Test>();
+    }
+
+
+    /**
      * Get the Bundle name.
      *
      * @return The Bundle name.
@@ -191,6 +207,28 @@ public class Bundle implements TicketElement {
     public String toString() {
         return "Bundle:" + "[" + this.name + this.description + "]" + " "
                 + this.discountType.formatString(this.discountAmount);
+    }
+
+
+    /**
+     * Returns a List of TicketElements (products and bundles). Takes a list of
+     * products that represent all the items on a transaction. The returned list
+     * will contain the products passed in as well as bundles. The bundles will
+     * represent the best possible discount, including changing the bundles that
+     * were in the original list.
+     *
+     * @param _products A List of Products.
+     * @return A List of TicketElements containing Bundles and Products.
+     */
+    public static List<TicketElement> updateBundles(List<TicketElement> _products) {
+        GroupList<Product_Test> products = new GroupList(BYSKU);
+        for (TicketElement element : _products) {
+            for (Product_Test product : element.getIndividualProducts()) {
+                products.add(product);
+            }
+        }
+
+        return updateBundles(products).toAbsoluteList();
     }
 
 

@@ -1,5 +1,8 @@
 package bundles;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * A wrapper class for representing bundles along with the specific product
  * objects that it contains (rather than the general products that are used to
@@ -59,6 +62,24 @@ public class BundleWrapper implements TicketElement {
     @Override
     public String getDescription() {
         return this.bundle.getDescription();
+    }
+
+
+    /**
+     * Get all the specific products that are part of this BundleWrapper. The
+     * returned products are the specific products used to make the bundle.
+     *
+     * @return List of products.
+     */
+    @Override
+    public List<Product_Test> getIndividualProducts() {
+        ArrayList<Product_Test> products = new ArrayList<>();
+        for (Group<Product_Test> group : this.products.toList()) {
+            for (Product_Test product : group.getContents()) {
+                products.add(product);
+            }
+        }
+        return products;
     }
 
 

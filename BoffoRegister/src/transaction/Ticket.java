@@ -7,6 +7,10 @@ import java.util.List;
 import product.ProductObject;
 
 public class Ticket extends Transaction {
+    //Declare the variables.
+    protected double total;
+    protected int upc;
+    protected String name, sku;
 
     private List<ProductObject> products;
 
@@ -15,6 +19,11 @@ public class Ticket extends Transaction {
     }
 
     public Ticket() {
+        //Initiate the variables.
+        this.name = "";
+        this.sku = "";
+        this.total= 0.00;
+        this.upc = 0;
 
     }
 

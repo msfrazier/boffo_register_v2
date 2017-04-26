@@ -12,6 +12,8 @@ public class BoffoEventData<T> {
 
     T eventData;
     BoffoDbObject eventObj;
+    public enum EventType{};
+    EventType eventType;
     
    public BoffoEventData() {
         

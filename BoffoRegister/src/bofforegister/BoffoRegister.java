@@ -6,5 +6,6 @@ public class BoffoRegister {
 
     BoffoRegister(Stage primaryStage) {
         BoffoController boffo = new BoffoController(primaryStage);
+        boffo.initilize();
     }
 }

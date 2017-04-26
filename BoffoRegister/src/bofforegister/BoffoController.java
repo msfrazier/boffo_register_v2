@@ -38,7 +38,7 @@ public class BoffoController extends BoffoFireObject implements BoffoListenerInt
     BoffoController(Stage _primaryStage) {
         this.gui = new BoffoRegisterGUI(_primaryStage);
     }
-    
+
     public void initilize() {
         this.gui.addListener(this);
         this.addListener(gui);
@@ -55,12 +55,13 @@ public class BoffoController extends BoffoFireObject implements BoffoListenerInt
 
         /**
          * We need a login event?
+
          */	 
         if(_event.getMessage().getCode() instanceof BoffoNavigateEventData) {
             changePanel(_event);
             return;
         }
-        
+
         fireEvent(_event);
     }
 
@@ -88,6 +89,49 @@ public class BoffoController extends BoffoFireObject implements BoffoListenerInt
                 // If we have reached this point then something has gone wrong...
                 break;
         }
+    }
+
+    private void toLogin(){
+        // log out the current user and change to the login panel.
+        CURRENT_USER = null;
+        this.removeAllListeners();
+        // Remove all our modules.
+        this.gui.loadLoginPanel();
+    }
+
+    private void toMainMenu() {
+        // Change to the main GUI panel.
+        this.gui.loadMainPanel();
+        this.removeListener(admin);
+        this.removeListener(inventory);
+        this.removeListener(transaction);
+    }
+
+    private void toAdmin() {
+        // Change to the admin GUI panel.
+        this.gui.loadAdminPanel();
+        this.addListener(admin);
+        this.admin.addListener(this);
+        this.removeListener(inventory);
+        this.removeListener(transaction);
+    }
+
+    private void toTransaction() {
+        // Change to the Inventory GUI panel.
+        this.gui.loadTransactionPanel();
+        this.addListener(transaction);
+        this.transaction.addListener(this);
+        this.removeListener(inventory);
+        this.removeListener(admin);
+    }
+
+    private void toInventory() {
+        // Change to the Transaction GUI panel.
+        this.gui.loadInventoryPanel();
+        this.addListener(inventory);
+        this.inventory.addListener(this);
+        this.removeListener(inventory);
+        this.removeListener(admin);
     }
     
     private void toLogin(){

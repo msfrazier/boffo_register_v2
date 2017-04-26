@@ -53,7 +53,7 @@ CREATE TABLE IF NOT EXISTS boffo_register_schema.transaction_tbl (
   ticket_id INT UNSIGNED NOT NULL,
 	FOREIGN KEY fk_ticket_id(ticket_id)
     REFERENCES ticket_tbl(ticket_id),
-  bundle_id INT NULL,
+  bundle_id INT UNSIGNED NOT NULL,
 	FOREIGN KEY fk_bundle_id(bundle_id)
     REFERENCES bundle_tbl(bundle_id),
   price DOUBLE NULL,

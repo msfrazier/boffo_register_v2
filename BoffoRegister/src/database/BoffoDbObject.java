@@ -5,7 +5,9 @@ package database;
  * have basic CRUD functions that tailor to the given object that calls the methods
  * inside this class.
  *
- * @author Thien Le and Thomas Cole
+ * @author Thien Le
+ * @author Thomas Cole
+ * @lastEdited: 4/25/2017
  */
 import java.lang.reflect.Constructor;
 import java.util.UUID;
@@ -28,9 +30,11 @@ public class BoffoDbObject {
 
     static Query query = BoffoDatabaseAPI.getInstance().getQuery();
 
+
     public BoffoDbObject() {
         uuid = UUID.randomUUID().toString();
     }
+
 
     /**
      * A generic load method
@@ -40,10 +44,11 @@ public class BoffoDbObject {
      * @param _tableName
      * @return a BoffoDbObject that tailor to callerClass's object.
      */
-    public static BoffoDbObject load(String _loadByField, String _fieldValue, String _tableName) {
+    public static BoffoDbObject load(String _loadByField, String _fieldValue, BoffoDbObject _obj) {
 
         //get the field for the table
-        List<String> tableColumns = query.getTableColumns(_tableName);
+        String tableName = getTableName(_obj);
+        List<String> tableColumns = query.getTableColumns(tableName);
         String fieldName = "";
         for (String s : tableColumns) {
             if (s.matches(".*" + _loadByField + ".*")) {
@@ -52,12 +57,14 @@ public class BoffoDbObject {
             }
         }
         try {
-            ArrayList<String> entry = query.selectFromTable("*", _tableName, fieldName, "=", _fieldValue);
+            ArrayList<String> entry = query.selectFromTable("*", tableName, fieldName, "=", _fieldValue);
+            return BoffoDbObject.invokeConstructor(_obj, entry);
         } catch (SQLException e) {
             System.out.println("Could not load entry: " + e);
         }
         return null;
     }
+
 
     /**
      * Load the entry from the database with a given name.
@@ -85,6 +92,7 @@ public class BoffoDbObject {
 
         return null;
     }
+
 
     /**
      * Load the entry from the database with a given uuid.
@@ -114,23 +122,24 @@ public class BoffoDbObject {
         return null;
     }
 
+
     /**
      * Saves a BoffoDbObject to the database
-     * @param obj
+     * @param _obj
      * @return True if save successful false otherwise.
      */
-    public boolean save(BoffoDbObject obj) {
+    public boolean save(BoffoDbObject _obj) {
 
         try {
-            ArrayList<String> entry = query.selectFromTable("*", obj.getTableName(), "UUID", "=", obj.getUuid());
-            String[] tValues = getMatchedValues(obj);
+            ArrayList<String> entry = query.selectFromTable("*", _obj.getTableName(_obj), "UUID", "=", _obj.getUuid());
+            String[] tValues = getMatchedValues(_obj);
 
             if (entry.size() == 0) {
                 //System.out.println("Product not found!");
-                query.insertIntoTable(obj.getTableName(), tValues);
+                query.insertIntoTable(_obj.getTableName(_obj), tValues);
             } else {
                 //System.out.println("Product found.");
-                query.updateTable(obj.getTableName(), tValues, "UUID", "=", obj.uuid);
+                query.updateTable(_obj.getTableName(_obj), tValues, "UUID", "=", _obj.uuid);
             }
         } catch (SQLException ex) {
             return false;
@@ -138,14 +147,15 @@ public class BoffoDbObject {
         return true;
     }
 
+
     /**
      * Deletes a BoffoDbObject from the database.
-     * @param obj
+     * @param _obj
      * @return True if delete successful false otherwise.
      */
-    public boolean delete(BoffoDbObject obj) {
+    public boolean delete(BoffoDbObject _obj) {
         try {
-            query.executeUpdate("DELETE FROM " + obj.getTableName() + " WHERE UUID = '" + obj.getUuid() + "'");
+            query.executeUpdate("DELETE FROM " + _obj.getTableName(_obj) + " WHERE UUID = '" + _obj.getUuid() + "'");
         } catch (SQLException e) {
             System.out.println(e);
             return false;
@@ -153,9 +163,15 @@ public class BoffoDbObject {
         return true;
     }
 
+
+    /**
+     * A static method that create new BoffoDbObject() with the UUID.
+     * @return a new dataBaseObject with a unique UUID.
+     */
     public static BoffoDbObject create() {
         return new BoffoDbObject();
     }
+
 
     /**
      * @return the uuid
@@ -164,13 +180,14 @@ public class BoffoDbObject {
         return uuid;
     }
 
+
     /**
      * Determine the table to act on from the class that calls the method.
      * Improve an the running time.
      * @return a string of that tableName value.
      */
-    private String getTableName() {
-        String callerClassName = getCallerClassName(this);
+    private static String getTableName(BoffoDbObject _obj) {
+        String callerClassName = _obj.getClass().getName();
 
         try {
             String tableName = "tableName";
@@ -191,40 +208,22 @@ public class BoffoDbObject {
         return null;
     }
 
-    /**
-     * A function that iterate through all the fields of the given class
-     * using reflection.
-     * @return an Array of all the fields on the object class.
-     */
-    private ArrayList<Field> getAllFields() {
-        List<Field> privateFields = new ArrayList<>();
-        Field[] allFields;
-        ArrayList<Field> listArray = new ArrayList<Field>();
-        try {
-            allFields = Class.forName(getCallerClassName(this)).getDeclaredFields();
-            listArray.addAll(Arrays.asList(allFields));
-            return listArray;
-        } catch (ClassNotFoundException | IllegalArgumentException ex) {
-            Logger.getLogger(BoffoDbObject.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        return null;
-    }
 
     /**
      * A method similar to grabValue but gets the method name instead of the value.
-     * @param someObject
+     * @param _someObject
      * @return ArrayList<String>
      */
-    private ArrayList<String> getMethods(BoffoDbObject someObject) {
+    private ArrayList<String> getMethods(BoffoDbObject _someObject) {
         ArrayList<String> retList = new ArrayList<String>();
 
-        for (Method method : someObject.getClass().getDeclaredMethods()) {
+        for (Method method : _someObject.getClass().getDeclaredMethods()) {
             if (Modifier.isPublic(method.getModifiers())
                     && method.getParameterTypes().length == 0
                     && method.getReturnType() != void.class
                     && (method.getName().startsWith("get") || method.getName().startsWith("is"))) {
                 try {
-                    Object value = method.invoke(someObject);
+                    Object value = method.invoke(_someObject);
                     if (value != null) {
                         //System.out.println(method.getName());
                         retList.add(method.getName());
@@ -238,21 +237,22 @@ public class BoffoDbObject {
         return retList;
     }
 
+
     /**
      * A method that take the value all the getter methods with the given class
      * using reflection Method();
      * @return ArrayList<String>.
      */
-    private ArrayList<String> grabValue(BoffoDbObject someObject) {
+    private ArrayList<String> grabValue(BoffoDbObject _someObject) {
         ArrayList<String> retList = new ArrayList<String>();
 
-        for (Method method : someObject.getClass().getDeclaredMethods()) {
+        for (Method method : _someObject.getClass().getDeclaredMethods()) {
             if (Modifier.isPublic(method.getModifiers())
                     && method.getParameterTypes().length == 0
                     && method.getReturnType() != void.class
                     && (method.getName().startsWith("get") || method.getName().startsWith("is"))) {
                 try {
-                    Object value = method.invoke(someObject);
+                    Object value = method.invoke(_someObject);
                     if (value != null) {
                         //System.out.println(method.getName() + "=" + value);
                         retList.add(value.toString());
@@ -263,22 +263,23 @@ public class BoffoDbObject {
                 }
             }
         }
-        retList.add(someObject.uuid);
+        retList.add(_someObject.uuid);
         return retList;
     }
+
 
     /**
      * A method to preform some black magic voo-doo to match(MOSTLY) a class property to
      * the coresponding sql field
-     * @param obj
+     * @param _obj
      * @return String[] of values matched to its sql entry.
      */
-    private String[] getMatchedValues(BoffoDbObject obj) {
-        List<String> fields = query.getTableColumns(obj.getTableName());
-        List<String> values = grabValue(obj);
+    private String[] getMatchedValues(BoffoDbObject _obj) {
+        List<String> fields = query.getTableColumns(_obj.getTableName(_obj));
+        List<String> values = grabValue(_obj);
         String[] tValues = new String[values.size()];
 
-        List<String> methodNames = getMethods(obj);
+        List<String> methodNames = getMethods(_obj);
 
         try {
             //Get ready to see some shit.
@@ -306,72 +307,145 @@ public class BoffoDbObject {
         return tValues;
     }
 
-    private BoffoDbObject invokeConstructor(ArrayList<String> arr) {
+
+    /**
+     * A method that invoke the Constructor with the largest parameters size of the CallerClass.
+     * Cast the values to the proper Object according to the Caller Constructor.
+     * Lastly, it will create new instance of that constructor and pass in all the values accordingly.
+     * @param _obj of the CallerClass.
+     * @param _arr from the resultSet.
+     * @return a BoffoDbObject that tailor to the CallerClass constructor.
+     */
+    private static BoffoDbObject invokeConstructor(BoffoDbObject _obj, ArrayList<String> _arr) {
         try {
-            Constructor[] constructorsArray = Class.forName(getCallerClassName(this)).getConstructors();
-
-            Constructor largestCons = null;
-            String longestString = " ";
-            for (Constructor conIndex : constructorsArray) {
-                String truString = conIndex.toString().replace("java.lang.", "");
-                if (truString.length() > longestString.length()) {
-                    longestString = truString;
-                    largestCons = conIndex;
-                }
-            }
-
-            //System.out.println("ConstructorsArray" + Arrays.asList(constructorsArray));
-
+            Constructor largestCons = findLargestConstructor(_obj);
             Class[] constructorParams = largestCons.getParameterTypes();
-            Object argList[] = new Object[constructorParams.length];
+            Object argList[] = findArgObjects(largestCons, _arr);
 
-            //select entry from the table
-            ArrayList<String> myArray = arr;
-
-            for(String s: myArray){
-
-                String[] tmp = s.split(" ");
-                for (int i = 0; i < myArray.size(); i++) {
-                    switch(constructorParams[i].getTypeName().replace("java.lang.", "")){
-                        case "String":
-                            argList[i] = (String)tmp[i];
-                            break;
-                        case "int":
-                            argList[i] = Integer.parseInt(tmp[i]);
-                            break;
-                        case "double":
-                            argList[i] = Double.parseDouble(tmp[i]);
-                            break;
-                        default:
-                        System.out.println("NO MATCHING CLASS!!");
-                }
-                //System.out.println(argList[i]);
-                }
-            }
-
-            try {
-                //Invoke the constructor with the given parameters
-                Object object = Class.forName(getCallerClassName(this))
-                        .getConstructor(constructorParams).newInstance(argList);
-//                System.out.println("ArgList" + Arrays.asList(argList));
-                return (BoffoDbObject) object;
-            } catch (NoSuchMethodException | SecurityException | ClassNotFoundException
-                    | InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException ex) {
-                Logger.getLogger(BoffoDbObject.class.getName()).log(Level.SEVERE, null, ex);
-            }
-        } catch (ClassNotFoundException ex) {
+            //Invoke the constructor with the given parameters
+            Object object = _obj.getClass().getConstructor(constructorParams).newInstance(argList);
+            return (BoffoDbObject) object;
+        } catch (ClassNotFoundException | NoSuchMethodException | InstantiationException
+                | IllegalAccessException | IllegalArgumentException | InvocationTargetException ex) {
             Logger.getLogger(BoffoDbObject.class.getName()).log(Level.SEVERE, null, ex);
         }
         return null;
-
     }
+
+
+    /**
+     * A method that iterate through all the constructors and find the constructor
+     * with the most parameters.
+     * @param _obj
+     * @return a Constructor object.
+     */
+    private static Constructor findLargestConstructor(BoffoDbObject _obj) {
+        Constructor[] constructorsArray = _obj.getClass().getConstructors();
+
+        //Find the constructor with the largest parameters sizes.
+        Constructor largestCons = null;
+        String longestString = " ";
+        for (Constructor conIndex : constructorsArray) {
+            String truString = conIndex.toString().replace("java.lang.", "");
+            if (truString.length() > longestString.length()) {
+                longestString = truString;
+                largestCons = conIndex;
+            }
+        }
+        return largestCons;
+    }
+
+
+    /**
+     * A method that match the arrayList to the constructor parameters. Then cast the
+     * value to the proper type of object.
+     * @param _largestCons - the largest constructor get from findLargestConstructor.
+     * @param _arr - an ArrayList<String> from the ResultSet.
+     * @return arglist - an Object[].
+     */
+    private static Object[] findArgObjects(Constructor _largestCons, ArrayList<String> _arr)
+            throws ClassNotFoundException, NoSuchMethodException, InstantiationException,
+            IllegalAccessException, IllegalArgumentException, InvocationTargetException {
+        Class[] constructorParams = _largestCons.getParameterTypes();
+        Object argList[] = new Object[constructorParams.length];
+
+        //select entry from the table
+        ArrayList<String> myArray = _arr;
+        for (int i = 0; i < myArray.size(); i++) {
+            for (int j = 0; j < myArray.size(); j++) {
+                switch (constructorParams[j].getTypeName().replace("java.lang.", "")) {
+                    case "String":
+                        argList[j] = (String) myArray.get(i);
+                        i++;
+                        break;
+                    case "int":
+                        argList[j] = Integer.parseInt(myArray.get(i));
+                        i++;
+                        break;
+                    case "double":
+                        argList[j] = Double.parseDouble(myArray.get(i));
+                        i++;
+                        break;
+                    default: {
+                        Object object = Class.forName(constructorParams[j].getTypeName())
+                                .getConstructor().newInstance();
+                        Method setterMethod = object.getClass().getMethod("setName", String.class);
+                        setterMethod.setAccessible(true);
+                        setterMethod.invoke(object, myArray.get(i));
+                        argList[i] = object;
+                        i++;
+                    }
+                }
+            }
+        }
+        return argList;
+    }
+
+
+    /**
+     * A method that track the process of returning the Object back to the Caller
+     * in a proper manner.
+     * @param _obj of the caller.
+     * @return a new instance of BoffoObject with all the proper value attached to it.
+     */
+    public static BoffoDbObject testMethod(BoffoDbObject _obj) {
+        ArrayList<String> arr = new ArrayList<>();
+        arr.add("Thien");
+        arr.add("5");
+        arr.add("5.5");
+        arr.add("3");
+        arr.add("Rating");
+        arr.add("String Value");
+        return BoffoDbObject.invokeConstructor(_obj, arr);
+    }
+
+
+    /**
+     * A function that iterate through all the fields of the given class
+     * using reflection.
+     * @return an Array of all the fields on the object class.
+     */
+    private ArrayList<Field> getAllFields() {
+        List<Field> privateFields = new ArrayList<>();
+        Field[] allFields;
+        ArrayList<Field> listArray = new ArrayList<>();
+        try {
+            allFields = Class.forName(getCallerClassName(this)).getDeclaredFields();
+            listArray.addAll(Arrays.asList(allFields));
+            return listArray;
+        } catch (ClassNotFoundException | IllegalArgumentException ex) {
+            Logger.getLogger(BoffoDbObject.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return null;
+    }
+
 
     /**
      * A method that locate the directory of the given object.
      * @return String of the location of the object that being called.
      */
-    public static String getCallerClassName(BoffoDbObject obj) {
-        return obj.getClass().getName();
+    public static String getCallerClassName(BoffoDbObject _obj) {
+        return _obj.getClass().getName();
     }
 
 }

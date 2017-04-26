@@ -40,15 +40,6 @@ public class Product_Test implements TicketElement {
     }
 
 
-
-    @Override
-    public List<Product_Test> getIndividualProducts() {
-        ArrayList<Product_Test> prods = new ArrayList<>();
-        prods.add(this.clone());
-        return prods;
-    }
-    
-    
     @Override
     public double getPrice() {
         return this.price;

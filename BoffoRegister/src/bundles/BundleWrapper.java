@@ -66,24 +66,6 @@ public class BundleWrapper implements TicketElement {
 
 
     /**
-     * Get all the specific products that are part of this BundleWrapper. The
-     * returned products are the specific products used to make the bundle.
-     *
-     * @return List of products.
-     */
-    @Override
-    public List<Product_Test> getIndividualProducts() {
-        ArrayList<Product_Test> products = new ArrayList<>();
-        for (Group<Product_Test> group : this.products.toList()) {
-            for (Product_Test product : group.getContents()) {
-                products.add(product);
-            }
-        }
-        return products;
-    }
-
-
-    /**
      * Get the name.
      *
      * @return The name.

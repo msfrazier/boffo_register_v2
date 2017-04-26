@@ -38,14 +38,6 @@ public interface TicketElement {
 
 
     /**
-     * Returns the list of Products that are included in this TicketElement.
-     *
-     * @return List of products.
-     */
-    public List<Product_Test> getIndividualProducts();
-
-
-    /**
      * Returns a name identifier of the TicketElement.
      *
      * @return A String object which is a name identifier of TicketElement.

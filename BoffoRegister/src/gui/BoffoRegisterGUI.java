@@ -12,7 +12,6 @@ package gui;
  * @author Logan Stanfield and Kevin Keomalaythong
  * @updated 2017-04-26
  */
-
 import events.*;
 import inventory.Inventory;
 import java.io.FileInputStream;
@@ -55,7 +54,7 @@ import javafx.scene.text.Text;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 
-public final class BoffoRegisterGUI extends BoffoFireObject implements BoffoListenerInterface {
+public final class BoffoRegisterGUI extends BoffoFireObject {
 
     // Temporary class used for storing item attributes.
     // Needed in order to add items to the TableView.
@@ -948,8 +947,7 @@ public final class BoffoRegisterGUI extends BoffoFireObject implements BoffoList
         btnRemoveItem.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent _e) {
-                Item selectedItem = (Item) 
-                        ticketTbl.getSelectionModel().getSelectedItem();
+                Item selectedItem = (Item) ticketTbl.getSelectionModel().getSelectedItem();
                 ticketTbl.getItems().remove(selectedItem);
             }
         });
@@ -1076,10 +1074,5 @@ public final class BoffoRegisterGUI extends BoffoFireObject implements BoffoList
         } else {
             alert.close();
         }
-    }
-    
-    @Override
-    public void messageReceived(BoffoEvent event) {
-        
     }
 }

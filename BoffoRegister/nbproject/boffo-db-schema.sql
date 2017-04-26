@@ -107,6 +107,8 @@ CREATE TABLE IF NOT EXISTS boffo_register_schema.bundle_tbl (
   discount_amount DOUBLE NULL,
   max_allowed INT NULL,
   sku INT NULL,
+  start_date VARCHAR(45) NULL,
+  end_date VARCHAR(45) NULL,
   PRIMARY KEY (bundle_id),
   UNIQUE INDEX bundle_id_UNIQUE (bundle_id ASC))
 ENGINE = InnoDB;

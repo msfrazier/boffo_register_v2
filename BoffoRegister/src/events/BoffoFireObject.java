@@ -21,11 +21,13 @@ public class BoffoFireObject extends BoffoDbObject {
     }
     //Generic add and remove
     public synchronized void addListener(BoffoListenerInterface listener) {
-        listeners.add(listener);
+        if (!this.listeners.contains(listener))
+            listeners.add(listener);
     }
 
     public synchronized void removeListener(BoffoListenerInterface listener) {
-        listeners.remove(listener);
+        if (this.listeners.contains(listener))
+            listeners.remove(listener);
     }
 
     protected synchronized void fireEvent(BoffoEvent event) {

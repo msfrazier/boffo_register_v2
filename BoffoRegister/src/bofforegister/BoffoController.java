@@ -29,16 +29,15 @@ public class BoffoController extends BoffoFireObject implements BoffoListenerInt
 
     public static User CURRENT_USER = null;
 
-    protected Transaction transaction = null;
-    protected Inventory inventory = null;
-    protected Administration admin = null;
-    protected Printer printer = null;
+    protected Transaction transaction = new Transaction();
+    protected Inventory inventory = new Inventory();
+    protected Administration admin = new Administration();
+    protected Printer printer = new Printer();
     protected BoffoRegisterGUI gui = null;
+    protected BoffoListenerInterface currentModule = null;
 
     BoffoController(Stage _primaryStage) {
         this.gui = new BoffoRegisterGUI(_primaryStage);
-        //this.addListener(gui);
-        // create user object
     }
 
     /**
@@ -55,64 +54,90 @@ public class BoffoController extends BoffoFireObject implements BoffoListenerInt
          * given range. Using literal ints until the event system is nailed
          * down.
          */
-        if (_event.getMessage().getCode()) {
-            // Create new user object with data from login panel.
-        } else if (_event.getMessage().getCode() == 1) {
-            printReceipt();
-        } else {
-            //
-            this.changePanel(_event);
-        }
+        switch(_event.getMessage().getCode().getEventType()) {
+            case EventType.LOGIN_REQUEST:
+                //if(User.loginUser(_event)) {
+                CURRENT_USER = new User(/*
+                        _event.getMessage.getCode().getEventData(),
+                _event.getMessageValue(MessageCodes.USER_PASS)*/);
+                this.gui.loadMainPanel();
+                this.gui.addListener(this);
+                //}
+                break;
         // If the messageString does not fall within range, ignore it.
+            case EventType.LOGOUT_REQUEST:
+                // TODO Call a static logout class?
+                this.fireEvent(_event);
+                this.removeAllListeners();
+                // TODO Null out all modules? Somehow wait for them to finish tasks before-hand?
+                CURRENT_USER = null;
+                this.gui.loadLoginPanel();
+                break;
+            case EventType.FIND_UPC:
+                //If currentModule is a Transaction class remove inventory from listeners
+                // else remove transaction from listeners because both don't need
+                // to edit look for UPC at the same time.
+                if (this.currentModule.getClass().equals(transaction.getClass()))
+                    this.removeListener(inventory);
+                else
+                    this.removeListener(transaction);
+                this.fireEvent(_event);
+                this.addListener(currentModule);
+                break;
+            case EventType.NEW_UPC:
+                //This should only run by inventory when they add a new item.
+                this.removeListener(transaction);
+                this.fireEvent(_event);
+                break;
+            case EventType.PRINT_RECEIPT:
+                printReceipt();
+                break;
+            default:
+                this.changePanel(_event);
+                break;
+        }
     }
 
     private void changePanel(BoffoEvent _event) {
         //Think I want to change the parameter to changePanel(BoffoBaseModule module)
-        switch (_event.getMessage().getCode()) {
+        switch (_event.getMessage().getCode().getEventType()) {
 
-            case 2:
+            case EventType.LOGIN_PANEL:
                 // log out the current user and change to the login panel.
                 this.gui.loadLoginPanel();
 
                 break;
 
-            case 3:
+            case EventType.MAIN_PANEL:
                 // Change to the main GUI panel.
                 this.gui.loadMainPanel();
+                this.gui.addListener(this);
 
                 break;
 
-            case 4:
+            case EventType.ADMIN_PANEL:
                 // If there is no Administration object, create it.
-                if (admin == null) {
-                    admin = new Administration();
-                }
                 // Change to the admin GUI panel.
                 this.gui.loadAdminPanel();
+                this.currentModule = admin;
+                this.addListener(admin);
 
                 break;
 
-            case 5:
-                // Change to the User GUI panel.
-                break;
-
-            case 6:
+            case EventType.INVENTORY_PANEL:
                 // If there is no Inventory object, create one.
-                if (inventory == null) {
-                    inventory = new Inventory();
-                }
                 // Change to the Inventory GUI panel.
                 this.gui.loadInventoryPanel();
+                this.addListener(inventory);
+                this.inventory.addListener(this);
 
                 break;
 
-            case 7:
-                // Change to the Transaction GUI panel.
-                if (transaction == null) {
-                    transaction = new Transaction();
-                }
+            case EventType.TRANSACTION_PANEL:
                 // Change to the Transaction GUI panel.
                 this.gui.loadTransactionPanel();
+                this.addListener(transaction);
+                this.transaction.addListener(this);
 
                 break;
 

@@ -9,7 +9,6 @@ package database;
  * @author Thomas Cole
  * @lastEdited: 4/25/2017
  */
-
 import java.lang.reflect.Constructor;
 import java.util.UUID;
 import java.lang.reflect.Field;
@@ -31,9 +30,11 @@ public class BoffoDbObject {
 
     static Query query = BoffoDatabaseAPI.getInstance().getQuery();
 
+
     public BoffoDbObject() {
         uuid = UUID.randomUUID().toString();
     }
+
 
     /**
      * A generic load method
@@ -43,10 +44,11 @@ public class BoffoDbObject {
      * @param _tableName
      * @return a BoffoDbObject that tailor to callerClass's object.
      */
-    public static BoffoDbObject load(String _loadByField, String _fieldValue, String _tableName) {
+    public static BoffoDbObject load(String _loadByField, String _fieldValue, BoffoDbObject _obj) {
 
         //get the field for the table
-        List<String> tableColumns = query.getTableColumns(_tableName);
+        String tableName = getTableName(_obj);
+        List<String> tableColumns = query.getTableColumns(tableName);
         String fieldName = "";
         for (String s : tableColumns) {
             if (s.matches(".*" + _loadByField + ".*")) {
@@ -55,7 +57,8 @@ public class BoffoDbObject {
             }
         }
         try {
-            ArrayList<String> entry = query.selectFromTable("*", _tableName, fieldName, "=", _fieldValue);
+            ArrayList<String> entry = query.selectFromTable("*", tableName, fieldName, "=", _fieldValue);
+            return BoffoDbObject.invokeConstructor(_obj, entry);
         } catch (SQLException e) {
             System.out.println("Could not load entry: " + e);
         }
@@ -119,6 +122,7 @@ public class BoffoDbObject {
         return null;
     }
 
+
     /**
      * Saves a BoffoDbObject to the database
      * @param _obj
@@ -127,21 +131,22 @@ public class BoffoDbObject {
     public boolean save(BoffoDbObject _obj) {
 
         try {
-            ArrayList<String> entry = query.selectFromTable("*", _obj.getTableName(), "UUID", "=", _obj.getUuid());
+            ArrayList<String> entry = query.selectFromTable("*", _obj.getTableName(_obj), "UUID", "=", _obj.getUuid());
             String[] tValues = getMatchedValues(_obj);
 
             if (entry.size() == 0) {
                 //System.out.println("Product not found!");
-                query.insertIntoTable(_obj.getTableName(), tValues);
+                query.insertIntoTable(_obj.getTableName(_obj), tValues);
             } else {
                 //System.out.println("Product found.");
-                query.updateTable(_obj.getTableName(), tValues, "UUID", "=", _obj.uuid);
+                query.updateTable(_obj.getTableName(_obj), tValues, "UUID", "=", _obj.uuid);
             }
         } catch (SQLException ex) {
             return false;
         }
         return true;
     }
+
 
     /**
      * Deletes a BoffoDbObject from the database.
@@ -150,7 +155,7 @@ public class BoffoDbObject {
      */
     public boolean delete(BoffoDbObject _obj) {
         try {
-            query.executeUpdate("DELETE FROM " + _obj.getTableName() + " WHERE UUID = '" + _obj.getUuid() + "'");
+            query.executeUpdate("DELETE FROM " + _obj.getTableName(_obj) + " WHERE UUID = '" + _obj.getUuid() + "'");
         } catch (SQLException e) {
             System.out.println(e);
             return false;
@@ -181,8 +186,8 @@ public class BoffoDbObject {
      * Improve an the running time.
      * @return a string of that tableName value.
      */
-    private String getTableName() {
-        String callerClassName = getCallerClassName(this);
+    private static String getTableName(BoffoDbObject _obj) {
+        String callerClassName = _obj.getClass().getName();
 
         try {
             String tableName = "tableName";
@@ -198,26 +203,6 @@ public class BoffoDbObject {
             return tableString;
         } catch (ClassNotFoundException | NoSuchFieldException | SecurityException e) {
         } catch (IllegalArgumentException | InstantiationException | IllegalAccessException ex) {
-            Logger.getLogger(BoffoDbObject.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        return null;
-    }
-
-
-    /**
-     * A function that iterate through all the fields of the given class
-     * using reflection.
-     * @return an Array of all the fields on the object class.
-     */
-    private ArrayList<Field> getAllFields() {
-        List<Field> privateFields = new ArrayList<>();
-        Field[] allFields;
-        ArrayList<Field> listArray = new ArrayList<>();
-        try {
-            allFields = Class.forName(getCallerClassName(this)).getDeclaredFields();
-            listArray.addAll(Arrays.asList(allFields));
-            return listArray;
-        } catch (ClassNotFoundException | IllegalArgumentException ex) {
             Logger.getLogger(BoffoDbObject.class.getName()).log(Level.SEVERE, null, ex);
         }
         return null;
@@ -290,7 +275,7 @@ public class BoffoDbObject {
      * @return String[] of values matched to its sql entry.
      */
     private String[] getMatchedValues(BoffoDbObject _obj) {
-        List<String> fields = query.getTableColumns(_obj.getTableName());
+        List<String> fields = query.getTableColumns(_obj.getTableName(_obj));
         List<String> values = grabValue(_obj);
         String[] tValues = new String[values.size()];
 
@@ -320,24 +305,6 @@ public class BoffoDbObject {
         }
 
         return tValues;
-    }
-
-
-    /**
-     * A method that track the process of returning the Object back to the Caller
-     * in a proper manner.
-     * @param _obj of the caller.
-     * @return a new instance of BoffoObject with all the proper value attached to it.
-     */
-    public static BoffoDbObject testMethod(BoffoDbObject _obj) {
-        ArrayList<String> arr = new ArrayList<>();
-        arr.add("Thien");
-        arr.add("5");
-        arr.add("5.5");
-        arr.add("3");
-        arr.add("Rating");
-        arr.add("String Value");
-        return BoffoDbObject.invokeConstructor(_obj, arr);
     }
 
 
@@ -432,6 +399,44 @@ public class BoffoDbObject {
             }
         }
         return argList;
+    }
+
+
+    /**
+     * A method that track the process of returning the Object back to the Caller
+     * in a proper manner.
+     * @param _obj of the caller.
+     * @return a new instance of BoffoObject with all the proper value attached to it.
+     */
+    public static BoffoDbObject testMethod(BoffoDbObject _obj) {
+        ArrayList<String> arr = new ArrayList<>();
+        arr.add("Thien");
+        arr.add("5");
+        arr.add("5.5");
+        arr.add("3");
+        arr.add("Rating");
+        arr.add("String Value");
+        return BoffoDbObject.invokeConstructor(_obj, arr);
+    }
+
+
+    /**
+     * A function that iterate through all the fields of the given class
+     * using reflection.
+     * @return an Array of all the fields on the object class.
+     */
+    private ArrayList<Field> getAllFields() {
+        List<Field> privateFields = new ArrayList<>();
+        Field[] allFields;
+        ArrayList<Field> listArray = new ArrayList<>();
+        try {
+            allFields = Class.forName(getCallerClassName(this)).getDeclaredFields();
+            listArray.addAll(Arrays.asList(allFields));
+            return listArray;
+        } catch (ClassNotFoundException | IllegalArgumentException ex) {
+            Logger.getLogger(BoffoDbObject.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return null;
     }
 
 

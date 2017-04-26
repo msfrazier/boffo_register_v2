@@ -1,6 +1,13 @@
 package events;
 
-//Maclean Frazier
+/*
+Last edited: 4/23
+
+This object is used to fire events and will be inherited by any module thagt needs
+to fire events
+
+@author Maclean Frazier
+ */
 
 import database.BoffoDbObject;
 import java.util.ArrayList;

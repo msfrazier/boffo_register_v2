@@ -1,5 +1,8 @@
 package bundles;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * A wrapper class for representing bundles along with the specific product
  * objects that it contains (rather than the general products that are used to
@@ -58,7 +61,7 @@ public class BundleWrapper implements TicketElement {
      */
     @Override
     public String getDescription() {
-        return bundle.getDescription();
+        return this.bundle.getDescription();
     }
 
 
@@ -69,7 +72,7 @@ public class BundleWrapper implements TicketElement {
      */
     @Override
     public String getName() {
-        return bundle.getName();
+        return this.bundle.getName();
     }
 
 
@@ -80,7 +83,7 @@ public class BundleWrapper implements TicketElement {
      */
     @Override
     public double getPrice() {
-        return bundle.getPrice();
+        return this.bundle.getPrice();
     }
 
 
@@ -113,7 +116,7 @@ public class BundleWrapper implements TicketElement {
      */
     @Override
     public String toString() {
-        return bundle.toString();
+        return this.bundle.toString();
     }
 
 }

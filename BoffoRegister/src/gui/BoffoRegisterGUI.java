@@ -3,36 +3,97 @@ package gui;
 /**
  * Boffo Register GUI
  *
- * @author Logan Stanfield and Kevin Keomalaythong Updated 2017-04-19
+ * @purpose This class contains the Graphical User Interface (GUI) for the
+ * BoffoRegister application.
+ *
+ * @status The GUI does not yet support event handling since the event module is
+ * awaiting full implementation.
+ *
+ * @author Logan Stanfield and Kevin Keomalaythong
+ * @updated 2017-04-23
  */
 import events.*;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.util.Optional;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-import javafx.scene.control.PasswordField;
-import javafx.scene.control.TextField;
-import javafx.scene.control.Label;
-import javafx.scene.layout.GridPane;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.VBox;
-import javafx.scene.text.Font;
-import javafx.scene.text.FontWeight;
-import javafx.scene.text.Text;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
-import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
-import javafx.scene.control.ListView;
+import javafx.scene.control.Label;
+import javafx.scene.control.PasswordField;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.SplitPane;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
+import javafx.scene.control.TextField;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.layout.GridPane;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.StackPane;
+import javafx.scene.layout.VBox;
+import javafx.scene.Scene;
+import javafx.scene.text.Font;
+import javafx.scene.text.FontWeight;
+import javafx.scene.text.Text;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 
 public final class BoffoRegisterGUI extends BoffoFireObject {
+
+    // Temporary class used for storing item attributes.
+    // Needed in order to add items to the TableView.
+    public static class Item {
+
+        private SimpleStringProperty itemName;
+        private SimpleStringProperty SKU;
+        private double price;
+
+        private Item(String _itemName, String _SKU, double _price) {
+            this.itemName = new SimpleStringProperty(_itemName);
+            this.SKU = new SimpleStringProperty(_SKU);
+            this.price = _price;
+        }
+
+        public String getItemName() {
+            return this.itemName.get();
+        }
+
+        public void setItemName(String _itemName) {
+            this.itemName.set(_itemName);
+        }
+
+        public String getSKU() {
+            return this.SKU.get();
+        }
+
+        public void setSKU(String _SKU) {
+            this.SKU.set(_SKU);
+        }
+
+        public double getPrice() {
+            return this.price;
+        }
+
+        public void setPrice(double _price) {
+            this.price = _price;
+        }
+    }
+
+    // List of items added in the table.
+    ObservableList<Item> itemList = FXCollections.observableArrayList();
 
     private final Stage BoffoStage;
 
@@ -137,11 +198,13 @@ public final class BoffoRegisterGUI extends BoffoFireObject {
     //Login screen with username & password text fields, plus a sign-in button.
     //TODO: Add event-firing code to the Sign In button.
     public Scene buildLoginScene() {
+        StackPane root = new StackPane();
+
         GridPane grid = new GridPane();
         grid.setAlignment(Pos.CENTER);
         grid.setHgap(10);
         grid.setVgap(10);
-        grid.setPadding(new Insets(25, 25, 25, 25));
+        grid.setPadding(new Insets(5, 5, 5, 5));
 
         //Add a title with specified font and text to the scene.
         Text sceneTitle = new Text("Welcome to BoffoRegister");
@@ -169,6 +232,20 @@ public final class BoffoRegisterGUI extends BoffoFireObject {
         final Text actiontarget = new Text();
         grid.add(actiontarget, 1, 6);
 
+        //Image view properties.
+        FileInputStream input = null;
+        try {
+            input = new FileInputStream("res/boffo_logo.png");
+        } catch (FileNotFoundException ex) {
+            Logger.getLogger(BoffoRegisterGUI.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        ImageView imageView = new ImageView(new Image(input));
+        HBox hbox = new HBox(imageView);
+        hbox.setPadding(new Insets(15, 15, 15, 15));
+        hbox.setAlignment(Pos.BOTTOM_RIGHT);
+
+        root.getChildren().addAll(hbox, grid);
+
         //Fire an event upon pressing the Sign In button.
         signInBtn.setOnAction(new EventHandler<ActionEvent>() {
 
@@ -183,8 +260,8 @@ public final class BoffoRegisterGUI extends BoffoFireObject {
         signInBtn.setOnKeyPressed(new EventHandler<KeyEvent>() {
 
             @Override
-            public void handle(KeyEvent event) {
-                if (event.getCode().equals(KeyCode.ENTER)) {
+            public void handle(KeyEvent _event) {
+                if (_event.getCode().equals(KeyCode.ENTER)) {
                     loadMainPanel();
                     //Check credentials here.
                 }
@@ -193,8 +270,8 @@ public final class BoffoRegisterGUI extends BoffoFireObject {
 
         pwBox.setOnKeyPressed(new EventHandler<KeyEvent>() {
             @Override
-            public void handle(KeyEvent event) {
-                if (event.getCode().equals(KeyCode.ENTER)) {
+            public void handle(KeyEvent _event) {
+                if (_event.getCode().equals(KeyCode.ENTER)) {
                     loadMainPanel();
                     //
                 }
@@ -204,16 +281,16 @@ public final class BoffoRegisterGUI extends BoffoFireObject {
         userTextField.setOnKeyPressed(new EventHandler<KeyEvent>() {
 
             @Override
-            public void handle(KeyEvent event) {
-                if (event.getCode().equals(KeyCode.ENTER)) {
+            public void handle(KeyEvent _event) {
+                if (_event.getCode().equals(KeyCode.ENTER)) {
                     loadMainPanel();
-                //TODO: Check credentials here.
-                //TODO: Implement event firing.
+                    //TODO: Check credentials here.
+                    //TODO: Implement event firing.
                 }
             }
         });
 
-        return new Scene(grid, screenWidth, screenHeight);
+        return new Scene(root, screenWidth, screenHeight);
     }
 
     public Scene buildMainPanel() {
@@ -223,19 +300,16 @@ public final class BoffoRegisterGUI extends BoffoFireObject {
         Button btnExit = new Button("Logout");
 
         VBox vbox = this.addVBox("Select Operation", 10, Pos.BASELINE_LEFT);
-        vbox.getChildren().add(btnTransaction);
-        vbox.getChildren().add(btnInventory);
-        vbox.getChildren().add(btnAdministration);
-        vbox.getChildren().add(btnExit);
+        vbox.getChildren().addAll(btnTransaction, btnInventory, btnAdministration, btnExit);
 
         //Fire an event to go to the Transaction panel.
         btnTransaction.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent _e) {
                 loadTransactionPanel();
-//                BoffoEvent evtTransaction =
-//                        new BoffoEvent(this, Routing.TRANSACTION_PANEL);
-//                fireEvent(evtTransaction);
+                //BoffoEvent evtTransaction =
+                //        new BoffoEvent(this, Routing.TRANSACTION_PANEL);
+                //fireEvent(evtTransaction);
             }
         });
 
@@ -262,8 +336,6 @@ public final class BoffoRegisterGUI extends BoffoFireObject {
             @Override
             public void handle(ActionEvent _e) {
                 loadLoginPanel();
-//                BoffoEvent evtExit = new BoffoEvent(this, Routing.EXIT_PANEL);
-//                fireEvent(evtExit);
             }
         });
 
@@ -276,61 +348,61 @@ public final class BoffoRegisterGUI extends BoffoFireObject {
      *       Create event handlers for the buttons.
      */
     public Scene buildTransactionPanel() {
+
         //Split pane options.
         SplitPane transactionPanel = new SplitPane();
         transactionPanel.setDividerPosition(1, .5);
 
         //Transaction options settings and configurations.
-        Button btnAddItem1 = new Button("Add item 1");
-        Button btnAddItem2 = new Button("Add item 2");
+        Button btnRemoveItem = new Button("Remove Selected Item");
         Button btnSubmit = new Button("Submit");
         Button btnExit = new Button("Cancel Transaction");
 
         //SKU/UPC TextField settings and configurations.
         VBox textFieldVbox = this.addVBox("Enter SKU/UPC", 10, Pos.BOTTOM_LEFT);
-        textFieldVbox.setMinHeight(350);
+        textFieldVbox.setMinHeight(400);
         final TextField skuInputField = new TextField();
         textFieldVbox.getChildren().addAll(skuInputField, btnSubmit);
 
         //Creates a new VBox for Transaction options.
-        VBox transactionOptions = this.addVBox("Select Operation", 10, Pos.BASELINE_LEFT);
-        transactionOptions.getChildren().add(btnAddItem1);
-        transactionOptions.getChildren().add(btnAddItem2);
-        transactionOptions.getChildren().add(btnExit);
-        transactionOptions.getChildren().add(textFieldVbox);
+        VBox transactionOptions = this.addVBox(
+                "Select Operation", 10, Pos.BASELINE_LEFT);
+        transactionOptions.getChildren().addAll(btnRemoveItem, btnExit, textFieldVbox);
 
-        //ticketView settings and layout.
-        final ListView ticketView = new ListView();
-        ticketView.setMinHeight(400);
-        ticketView.setMinWidth(250);
+        //TableView settings and configurations.
+        final TableView ticketTbl = new TableView();
+        ticketTbl.setMinHeight(400);
+        ticketTbl.setMinWidth(250);
 
-        VBox ticketViewOptions = new VBox(ticketView);
-        ticketViewOptions.setAlignment(Pos.TOP_RIGHT);
-        ticketViewOptions.setPadding(new Insets(10));
-        transactionPanel.getItems().addAll(transactionOptions, ticketViewOptions);
+        ticketTbl.setEditable(true);
 
-        //Button actions below.
-        btnAddItem1.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent _e) {
-                ticketView.getItems().add("Item 1");
-//                BoffoEvent evtAddItem1 =
-//                        new BoffoEvent(this, Routing.ADD_TRANSACTION);
-//                fireEvent(evtAddItem1);
-            }
-        });
+        // Establish the columns and associate them with Item attributes.
+        final TableColumn nameCol = new TableColumn("Name");
+        nameCol.setMinWidth(125);
+        nameCol.setCellValueFactory(
+                new PropertyValueFactory<Item, String>("itemName"));
 
-        btnAddItem2.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent _e) {
-                ticketView.getItems().add("Item 2");
-//                BoffoEvent evtAddItem2 =
-//                        new BoffoEvent(this, Routing.ADD_TRANSACTION);
-//                fireEvent(evtAddItem2);
-            }
-        });
+        final TableColumn SKUCol = new TableColumn("SKU");
+        SKUCol.setMinWidth(125);
+        SKUCol.setCellValueFactory(
+                new PropertyValueFactory<Item, String>("SKU"));
 
-        //Button actions below.
+        final TableColumn priceCol = new TableColumn("Price");
+        priceCol.setMinWidth(125);
+        priceCol.setCellValueFactory(
+                new PropertyValueFactory<Item, String>("price"));
+
+        // Add the item list to the table.
+        ticketTbl.setItems(itemList);
+        ticketTbl.getColumns().addAll(nameCol, SKUCol, priceCol);
+
+        VBox ticketTblOptions = new VBox(ticketTbl);
+        ticketTblOptions.setAlignment(Pos.TOP_RIGHT);
+        ticketTblOptions.setPadding(new Insets(10));
+        transactionPanel.getItems().addAll(
+                transactionOptions, ticketTblOptions);
+
+        // Button actions follow.
         btnExit.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent _e) {
@@ -338,15 +410,11 @@ public final class BoffoRegisterGUI extends BoffoFireObject {
                         "You will lose any entered data.", "Are you sure?");
             }
         });
-
-        skuInputField.setOnKeyPressed(new EventHandler<KeyEvent>() {
-
+        btnRemoveItem.setOnAction(new EventHandler<ActionEvent>() {
             @Override
-            public void handle(KeyEvent event) {
-                if (event.getCode().equals(KeyCode.ENTER) && skuInputField.getText().isEmpty() != true) {
-                    ticketView.getItems().add(skuInputField.getText());
-                    skuInputField.clear();
-                }
+            public void handle(ActionEvent _e) {
+                Item selectedItem = (Item) ticketTbl.getSelectionModel().getSelectedItem();
+                ticketTbl.getItems().remove(selectedItem);
             }
         });
 
@@ -354,8 +422,20 @@ public final class BoffoRegisterGUI extends BoffoFireObject {
             @Override
             public void handle(ActionEvent event) {
                 if (skuInputField.getText().isEmpty() != true) {
-                    ticketView.getItems().add(skuInputField.getText());
+                    Item itemSKU = new Item(
+                            "SKU Item", skuInputField.getText(), 0.99);
+                    itemList.add(itemSKU);
                     skuInputField.clear();
+                }
+            }
+        });
+
+        btnRemoveItem.setOnKeyPressed(new EventHandler<KeyEvent>() {
+            @Override
+            public void handle(KeyEvent event) {
+                if (event.getCode().equals(KeyCode.ENTER)) {
+                    Item selectedItem = (Item) ticketTbl.getSelectionModel().getSelectedItem();
+                    ticketTbl.getItems().remove(selectedItem);
                 }
             }
         });
@@ -363,8 +443,24 @@ public final class BoffoRegisterGUI extends BoffoFireObject {
         btnSubmit.setOnKeyPressed(new EventHandler<KeyEvent>() {
             @Override
             public void handle(KeyEvent event) {
-                if (event.getCode().equals(KeyCode.ENTER) && skuInputField.getText().isEmpty() != true) {
-                    ticketView.getItems().add(skuInputField.getText());
+                if (event.getCode().equals(KeyCode.ENTER)
+                        && skuInputField.getText().isEmpty() != true) {
+                    Item itemSKU = new Item(
+                            "SKU Item", skuInputField.getText(), 0.99);
+                    itemList.add(itemSKU);
+                    skuInputField.clear();
+                }
+            }
+        });
+
+        skuInputField.setOnKeyPressed(new EventHandler<KeyEvent>() {
+            @Override
+            public void handle(KeyEvent event) {
+                if (event.getCode().equals(KeyCode.ENTER)
+                        && skuInputField.getText().isEmpty() != true) {
+                    Item itemSKU = new Item(
+                            "SKU Item", skuInputField.getText(), 0.99);
+                    itemList.add(itemSKU);
                     skuInputField.clear();
                 }
             }
@@ -409,6 +505,14 @@ public final class BoffoRegisterGUI extends BoffoFireObject {
         return vbox;
     }
 
+    /**
+     * This method is used to display an alert box when called. If okay is
+     * pressed then the GUI returns to the main panel.
+     *
+     * @param _title
+     * @param _header
+     * @param _message
+     */
     private void displayExitAlert(String _title, String _header,
             String _message) {
         Alert alert = new Alert(AlertType.CONFIRMATION);

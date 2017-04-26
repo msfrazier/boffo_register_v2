@@ -2,6 +2,16 @@
 BoffoRegister/src/inventory/InventoryRecord.java
 *.java
 !/BoffoRegister/src/events/BoffoEventData.java
+<<<<<<< HEAD
+<<<<<<< HEAD
+/BoffoRegister/dist/
+=======
 !/BoffoRegister/src/events/BoffoNavigateEventData.java
 !/BoffoRegister/src/events/BoffoUpcEventData.java
 !/BoffoRegister/src/events/BoffoTicketEventData.java
+>>>>>>> master
+=======
+!/BoffoRegister/src/events/BoffoNavigateEventData.java
+!/BoffoRegister/src/events/BoffoUpcEventData.java
+!/BoffoRegister/src/events/BoffoTicketEventData.java
+>>>>>>> master

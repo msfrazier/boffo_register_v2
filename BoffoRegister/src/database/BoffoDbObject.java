@@ -56,14 +56,15 @@ public class BoffoDbObject {
                 fieldName = s;
             }
         }
+        ArrayList<String> entry = new ArrayList<String>();
         try {
-            ArrayList<String> entry = new ArrayList<String>();
+
             entry.add(query.selectFromTable("*", tableName, fieldName, "=", _fieldValue));
-            return BoffoDbObject.invokeConstructor(_obj, entry);
+
         } catch (SQLException e) {
             System.out.println("Could not load entry: " + e);
         }
-        return null;
+        return BoffoDbObject.invokeConstructor(_obj, entry);
     }
 
 
@@ -73,26 +74,27 @@ public class BoffoDbObject {
      * @param _tableName
      * @return A BoffoDbObject with the given name.
      */
-    public static BoffoDbObject loadByName(String _Name, String _tableName) {
+    public static BoffoDbObject loadByName(String _Name, BoffoDbObject _obj) {
 
         //get the name field for the table
-        List<String> tableColumns = query.getTableColumns(_tableName);
+        String tableName = getTableName(_obj);
+        List<String> tableColumns = query.getTableColumns(tableName);
         String nameField = "";
         for (String s : tableColumns) {
             if (s.matches(".*name")) {
                 nameField = s;
             }
         }
-
+        ArrayList<String> entry = new ArrayList<String>();
         try {
-            ArrayList<String> entry = new ArrayList<String>();
-            entry.add(query.selectFromTable("*", _tableName, nameField, "=", _Name));
+
+            entry.add(query.selectFromTable("*", tableName, nameField, "=", _Name));
             System.out.println(entry);
         } catch (SQLException e) {
             System.out.println("Could not load entry: " + e);
         }
 
-        return null;
+        return BoffoDbObject.invokeConstructor(_obj, entry);
     }
 
 
@@ -116,7 +118,7 @@ public class BoffoDbObject {
 
         ArrayList<String> entry = new ArrayList<String>();
         try {
-            entry.add(query.selectFromTable("*", "product", null, null, null));
+            entry.add(query.selectFromTable("*", uuidField, null, null, null));
             System.out.println(entry.get(0));
         } catch (SQLException e) {
             System.out.println("Could not load entry: " + e);
@@ -177,7 +179,7 @@ public class BoffoDbObject {
             }
         }
         try {
-            query.executeUpdate("DELETE FROM " + _obj.getTableName(_obj) + " WHERE "+uuidField+" = '" + _obj.getUuid() + "'");
+            query.executeUpdate("DELETE FROM " + _obj.getTableName(_obj) + " WHERE " + uuidField + " = '" + _obj.getUuid() + "'");
         } catch (SQLException e) {
             System.out.println(e);
             return false;

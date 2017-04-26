@@ -21,6 +21,12 @@ public class ProductObject extends BoffoDbObject implements TicketElement{
     public ProductObject(){
         BoffoDbObject.create();
     }
+
+    
+    public ProductObject(String _tableName){
+        this.tableName = _tableName;
+    }
+
     
     public ProductObject(String _name, int _quant, double _price, int _UPC, String _sk, Rating _rat, String _upc, String _tableName, String _description) {
        this.name = _name;
@@ -116,6 +122,54 @@ public class ProductObject extends BoffoDbObject implements TicketElement{
         return this.SKU;
     }
 
+
+    //ProductObject.load() is a BoffoDbObject so still cast as ProductObject
+    public static ProductObject loadBySKU(String _sku) {
+        return (ProductObject)ProductObject.load("sku", _sku, new ProductObject(tableName));
+    }
+
+
+    public static ProductObject loadByUpc(String _upc) {
+        return (ProductObject)ProductObject.load("upc", _upc, new ProductObject(tableName));
+    }
+
+
+    public static ProductObject loadByName(String _name) {
+       return (ProductObject)ProductObject.load("name", _name, new ProductObject(tableName));
+    }
+
+
+    public static ProductObject loadByQuantity(String _quant) {
+       return (ProductObject)ProductObject.load("quantity", _quant, new ProductObject(tableName));
+    }
+
+
+    public static ProductObject loadByRating(String _rat) {
+        return (ProductObject)ProductObject.load("rating", _rat, new ProductObject(tableName));
+    }
+
+
+    public static ProductObject loadByPrice(String _price) {
+        return (ProductObject)ProductObject.load("price", _price, new ProductObject(tableName));
+    }
+
+
+    public HashMap printProductLine(){
+        if(!this.map.isEmpty()){
+        this.map.clear();
+    }
+        else if (this.map.isEmpty()){
+            this.map.put("name", this.name);
+            this.map.put("quantity", this.quantity);
+            this.map.put("price", this.price);
+            this.map.put("upc", this.UPC);
+            this.map.put("sku", this.SKU);
+            this.map.put("rating", this.rat);
+        }
+        return this.map;
+    }
+
+
     @Override
     public String toString() {
         String str = "Name: " + this.getName() + "\n" + 
@@ -128,35 +182,4 @@ public class ProductObject extends BoffoDbObject implements TicketElement{
                      "Description: " + this.description + "\n";
         return str;
     }
-
-
-    //ProductObject.load() is a BoffoDbObject so still cast as ProductObject
-    public static ProductObject loadBySKU(String _sku) {
-        return (ProductObject)ProductObject.load("sku", _sku, ProductObject.tableName);
-    }
-
-
-    public static ProductObject loadByUpc(String _upc) {
-        return (ProductObject)ProductObject.load("upc", _upc, ProductObject.tableName);
-    }
-
-
-    public static ProductObject loadByName(String _name) {
-       return (ProductObject)ProductObject.load("name", _name, ProductObject.tableName);
-    }
-
-
-    public static ProductObject loadByQuantity(String _quant) {
-       return (ProductObject)ProductObject.load("quantity", _quant, ProductObject.tableName);
-    }
-
-
-    public static ProductObject loadByRating(String _rat) {
-        return (ProductObject)ProductObject.load("rating", _rat, ProductObject.tableName);
-    }
-
-
-    public static ProductObject loadByPrice(String _price) {
-        return (ProductObject)ProductObject.load("price", _price, ProductObject.tableName);
-    } 
 } 

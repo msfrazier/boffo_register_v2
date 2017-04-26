@@ -56,13 +56,15 @@ public class BoffoDbObject {
                 fieldName = s;
             }
         }
+        ArrayList<String> entry = new ArrayList<String>();
         try {
-            ArrayList<String> entry = query.selectFromTable("*", tableName, fieldName, "=", _fieldValue);
-            return BoffoDbObject.invokeConstructor(_obj, entry);
+
+            entry.add(query.selectFromTable("*", tableName, fieldName, "=", _fieldValue));
+
         } catch (SQLException e) {
             System.out.println("Could not load entry: " + e);
         }
-        return null;
+        return BoffoDbObject.invokeConstructor(_obj, entry);
     }
 
 
@@ -72,25 +74,27 @@ public class BoffoDbObject {
      * @param _tableName
      * @return A BoffoDbObject with the given name.
      */
-    public static BoffoDbObject loadByName(String _Name, String _tableName) {
+    public static BoffoDbObject loadByName(String _Name, BoffoDbObject _obj) {
 
         //get the name field for the table
-        List<String> tableColumns = query.getTableColumns(_tableName);
+        String tableName = getTableName(_obj);
+        List<String> tableColumns = query.getTableColumns(tableName);
         String nameField = "";
         for (String s : tableColumns) {
             if (s.matches(".*name")) {
                 nameField = s;
             }
         }
-
+        ArrayList<String> entry = new ArrayList<String>();
         try {
-            ArrayList<String> entry = query.selectFromTable("*", _tableName, nameField, "=", _Name);
+
+            entry.add(query.selectFromTable("*", tableName, nameField, "=", _Name));
             System.out.println(entry);
         } catch (SQLException e) {
             System.out.println("Could not load entry: " + e);
         }
 
-        return null;
+        return BoffoDbObject.invokeConstructor(_obj, entry);
     }
 
 
@@ -100,10 +104,11 @@ public class BoffoDbObject {
      * @param _tableName
      * @return A BoffoDbObject with the given UUID
      */
-    public static BoffoDbObject loadByUUID(String _UUID, String _tableName) {
+    public static BoffoDbObject loadByUUID(String _UUID, BoffoDbObject _obj) {
 
         //get the uuid field for the table
-        List<String> tableColumns = query.getTableColumns(_tableName);
+        String tableName = getTableName(_obj);
+        List<String> tableColumns = query.getTableColumns(tableName);
         String uuidField = "";
         for (String s : tableColumns) {
             if (s.matches(".*_id")) {
@@ -111,15 +116,15 @@ public class BoffoDbObject {
             }
         }
 
-        ArrayList<String> entry;
+        ArrayList<String> entry = new ArrayList<String>();
         try {
-            entry = query.selectFromTable("*", _tableName, uuidField, "=", _UUID);
-            System.out.println(entry);
+            entry.add(query.selectFromTable("*", uuidField, null, null, null));
+            System.out.println(entry.get(0));
         } catch (SQLException e) {
             System.out.println("Could not load entry: " + e);
         }
 
-        return null;
+        return BoffoDbObject.invokeConstructor(_obj, entry);
     }
 
 
@@ -130,8 +135,18 @@ public class BoffoDbObject {
      */
     public boolean save(BoffoDbObject _obj) {
 
+        //get the uuid field for the table
+        String tableName = getTableName(_obj);
+        List<String> tableColumns = query.getTableColumns(tableName);
+        String uuidField = "";
+        for (String s : tableColumns) {
+            if (s.matches(".*_id")) {
+                uuidField = s;
+            }
+        }
         try {
-            ArrayList<String> entry = query.selectFromTable("*", _obj.getTableName(_obj), "UUID", "=", _obj.getUuid());
+            ArrayList<String> entry = new ArrayList<String>();
+            entry.add(query.selectFromTable("*", _obj.getTableName(_obj), uuidField, "=", _obj.getUuid()));
             String[] tValues = getMatchedValues(_obj);
 
             if (entry.size() == 0) {
@@ -154,8 +169,17 @@ public class BoffoDbObject {
      * @return True if delete successful false otherwise.
      */
     public boolean delete(BoffoDbObject _obj) {
+        //get the uuid field for the table
+        String tableName = getTableName(_obj);
+        List<String> tableColumns = query.getTableColumns(tableName);
+        String uuidField = "";
+        for (String s : tableColumns) {
+            if (s.matches(".*_id")) {
+                uuidField = s;
+            }
+        }
         try {
-            query.executeUpdate("DELETE FROM " + _obj.getTableName(_obj) + " WHERE UUID = '" + _obj.getUuid() + "'");
+            query.executeUpdate("DELETE FROM " + _obj.getTableName(_obj) + " WHERE " + uuidField + " = '" + _obj.getUuid() + "'");
         } catch (SQLException e) {
             System.out.println(e);
             return false;
@@ -282,11 +306,12 @@ public class BoffoDbObject {
         List<String> methodNames = getMethods(_obj);
 
         try {
+            tValues[0] = values.get(0);
             //Get ready to see some shit.
-            for (int i = 0; i < fields.size(); i++) {
-                String tmpField = fields.get(i);
-                for (int j = 0; j < methodNames.size(); j++) {
-                    String tmpName = methodNames.get(j);
+            for (int i = 1; i < fields.size(); i++) {
+                String tmpField = fields.get(i).toLowerCase();
+                for (int j = 1; j < methodNames.size(); j++) {
+                    String tmpName = methodNames.get(j).toLowerCase();
                     //Remove get from the name.
                     tmpName = tmpName.substring(3);
 
@@ -299,7 +324,6 @@ public class BoffoDbObject {
             }
 
             //Grab the UUID since it is added last to the values list.
-            tValues[tValues.length - 1] = values.get(values.size() - 1);
         } catch (Exception e) {
             System.out.println("Unable to save: " + e);
         }

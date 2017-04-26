@@ -5,8 +5,10 @@ package boffoIO;
  * @author sjwhyatt
  */
 import events.BoffoEvent;
+import events.BoffoEventData;
 import events.BoffoFireObject;
 import events.BoffoListenerInterface;
+import events.BoffoUpcEventData;
 import java.util.Scanner;
 
 public class BoffoIO extends BoffoFireObject implements BoffoListenerInterface{
@@ -19,7 +21,7 @@ public class BoffoIO extends BoffoFireObject implements BoffoListenerInterface{
     public void scanDouble(){
         double tempDouble = this.input.nextDouble();
         if(product.ProductObject.loadByPrice(String.valueOf(tempDouble)) != null){
-//            fireEvent(new BoffoEvent(this,message));
+            fireEvent(new BoffoEvent(this,new BoffoEventData(tempDouble)));
         }
     }
 
@@ -29,10 +31,11 @@ public class BoffoIO extends BoffoFireObject implements BoffoListenerInterface{
     public void scanInt(){
         int tempInt = this.input.nextInt();
         if(product.ProductObject.loadByQuantity(String.valueOf(tempInt)) != null){
-//            fireEvent(new BoffoEvent(this,message));
+            fireEvent(new BoffoEvent(this,new BoffoEventData(tempInt)));
         }
         else if(product.ProductObject.loadByUpc(String.valueOf(tempInt)) != null){
-//            fireEvent(new BoffoEvent(this,message));
+            fireEvent(new BoffoEvent(this,
+                    new BoffoUpcEventData(BoffoUpcEventData.EventType.NEW_UPC, tempInt)));
         }
     }
 
@@ -42,11 +45,16 @@ public class BoffoIO extends BoffoFireObject implements BoffoListenerInterface{
     public void scanString(){
         String tempString = input.next();
         if(product.ProductObject.loadByName(tempString) != null){
-//            fireEvent(new BoffoEvent(this,message));
+            fireEvent(new BoffoEvent(this,new BoffoEventData(tempString)));
         }
         else if(product.ProductObject.loadBySKU(tempString) != null){
-//            fireEvent(new BoffoEvent(this,message));
+            fireEvent(new BoffoEvent(this,new BoffoEventData(tempString)));
         }
+    }
+
+    public void scanLogin(){
+        String name = input.next();
+        String pass = input.next();
     }
 
     @Override

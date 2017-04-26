@@ -21,7 +21,8 @@ CREATE TABLE IF NOT EXISTS boffo_register_schema.inventory_tbl (
   price DOUBLE NULL,
   upc INT NULL,
   sku INT NULL,
-  rating VARCHAR(45) NULL,
+  rating INT NULL,
+  description VARCHAR(200) NULL,
   PRIMARY KEY (product_id),
   UNIQUE INDEX product_id_UNIQUE (product_id ASC))
 ENGINE = InnoDB;
@@ -87,6 +88,9 @@ CREATE TABLE IF NOT EXISTS boffo_register_schema.store_info_tbl (
   store_hours VARCHAR(45) NULL,
   phone_num VARCHAR(45) NULL,
   tax_rate DOUBLE NULL,
+  trans_key VARCHAR(45) NULL,
+  login VARCHAR(45) NULL,
+  secret_key VARCHAR(45) NULL,
   PRIMARY KEY (store_id),
   UNIQUE INDEX store_id_UNIQUE (store_id ASC))
 ENGINE = InnoDB;
@@ -99,10 +103,12 @@ CREATE TABLE IF NOT EXISTS boffo_register_schema.bundle_tbl (
   bundle_id INT UNSIGNED NOT NULL,
   `name` VARCHAR(45) NULL,
   `description` VARCHAR(200) NULL,
-  discount_type VARCHAR(45) NULL,
+  discount_type INT NULL,
   discount_amount DOUBLE NULL,
-  start_date DATETIME NULL,
-  end_date DATETIME NULL,
+  max_allowed INT NULL,
+  sku INT NULL,
+  start_date VARCHAR(45) NULL,
+  end_date VARCHAR(45) NULL,
   PRIMARY KEY (bundle_id),
   UNIQUE INDEX bundle_id_UNIQUE (bundle_id ASC))
 ENGINE = InnoDB;
@@ -119,6 +125,7 @@ CREATE TABLE IF NOT EXISTS boffo_register_schema.bundle_items_tbl (
   product_id INT UNSIGNED NOT NULL,
 	FOREIGN KEY fk_product_id(product_id)
     REFERENCES inventory_tbl(product_id),
+  quantity INT NULL,
   PRIMARY KEY (bundle_items_id),
   UNIQUE INDEX bundle_items_id_UNIQUE (bundle_items_id ASC))
 ENGINE = InnoDB;

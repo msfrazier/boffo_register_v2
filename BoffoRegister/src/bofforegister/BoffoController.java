@@ -38,6 +38,7 @@ public class BoffoController extends BoffoFireObject implements BoffoListenerInt
 
     BoffoController(Stage _primaryStage) {
         this.gui = new BoffoRegisterGUI(_primaryStage);
+        //
     }
 
     /**
@@ -50,11 +51,9 @@ public class BoffoController extends BoffoFireObject implements BoffoListenerInt
     public void messageReceived(BoffoEvent _event) {
 
         /**
-         * Also using cascading if else statements to catch events within a
-         * given range. Using literal ints until the event system is nailed
-         * down.
+         * 
          */
-        switch(_event.getMessage().getCode().getEventType()) {
+        switch(_event.getMessage().getCode().getEventType) {
             case EventType.LOGIN_REQUEST:
                 //if(User.loginUser(_event)) {
                 CURRENT_USER = new User(/*

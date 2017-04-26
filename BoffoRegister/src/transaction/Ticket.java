@@ -14,55 +14,37 @@ import events.BoffoListenerInterface;
 import java.util.List;
 import product.ProductObject;
 
-<<<<<<< HEAD
+
 public class Ticket extends Transaction {
     //Declare the variables.
     protected double total;
     protected int upc;
     protected String name, sku;
-=======
-public class Ticket extends BoffoDbObject implements BoffoListenerInterface {
->>>>>>> master
+
+//public class Ticket extends BoffoDbObject implements BoffoListenerInterface
 
     private List<ProductObject> products;
 
     public Ticket() {
         //Initiate the variables.
-        this.name = "";
-        this.sku = "";
+        this.name = " ";
+        this.sku = " ";
         this.total= 0.00;
         this.upc = 0;
-
     }
-
-<<<<<<< HEAD
-    public ProductObject addProductUPC(int _upc) {
-        ProductObject product = ProductObject.loadByUpc(name);
-=======
+    
     public ProductObject addProductbyUPC(String UPC) {
         ProductObject product = (ProductObject) ProductObject.loadByUpc(UPC);
->>>>>>> master
-        this.products.add(product);
-        return product;
-    }
-
-<<<<<<< HEAD
-    public ProductObject addProductName(String _name) {
-        ProductObject product = ProductObject.loadByName(name);
         this.products.add(product);
         return product;
     }
     
-    public ProductObject addProductSKU(String _sku){
-        ProductObject product = ProductObject.loadBySKU(sku);
-=======
     public ProductObject addProductbyName(String name) {
         ProductObject product = (ProductObject) ProductObject.loadByName(name);
->>>>>>> master
         this.products.add(product);
         return product;
     }
-
+    
     public void removeProductbyUPC(String UPC) {
         ProductObject product = (ProductObject) ProductObject.loadByUpc(UPC);
         this.products.remove(product);

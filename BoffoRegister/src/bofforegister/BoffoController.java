@@ -15,6 +15,7 @@ package bofforegister;
  */
 import administration.Administration;
 import events.BoffoEvent;
+import events.BoffoEventData;
 import events.BoffoFireObject;
 import gui.BoffoRegisterGUI;
 import javafx.stage.Stage;
@@ -54,7 +55,7 @@ public class BoffoController extends BoffoFireObject implements BoffoListenerInt
          * given range. Using literal ints until the event system is nailed
          * down.
          */
-        if (_event.getMessage().getCode() == 0) {
+        if (_event.getMessage().getCode()) {
             // Create new user object with data from login panel.
         } else if (_event.getMessage().getCode() == 1) {
             printReceipt();

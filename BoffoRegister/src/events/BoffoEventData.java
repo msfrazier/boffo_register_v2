@@ -1,63 +1,58 @@
 package events;
 
-/*
-Last edited: 4/23
-
-This class pairs a string with a T or BoffoDbObject so events can pass
-specified data.
-
-Ray Cockerham
+/**
+ * Last Edited: 4/25
+ * This class is for passing data between generic events.
+ * @author Ray
  */
 import database.BoffoDbObject;
+import java.util.*;
 
 public class BoffoEventData<T> {
 
     T eventData;
-    String eventType;
     BoffoDbObject eventObj;
-
-    //constructor to pass any value in an event.
-    BoffoEventData(String _str, T _data) {
-        this.eventType = _str;
+    
+   public BoffoEventData() {
+        
+    }
+    
+    /**
+     * Constructor to pass a basic data type.
+     * @param _data The basic data type you wish to pass.
+     */
+   public BoffoEventData(T _data) {
         this.eventData = _data;
     }
 
-
-    //overloaded constructor to pass entire BoffoDbObjects in an event.
-    BoffoEventData(String _str, BoffoDbObject _obj) {
-        this.eventType = _str;
+   
+/**
+ *  Constructor to pass entire BoffoDbObjects in an event.  
+ * @param _obj BoffoDbObject you wish to pass.
+ */
+    public BoffoEventData(BoffoDbObject _obj) {
         this.eventObj = _obj;
     }
 
-
+    
     //getters and setters
-    T getEventData() {
+   public T getEventData() {
         return this.eventData;
     }
 
 
-    BoffoDbObject getEventObj() {
+    public BoffoDbObject getEventObj() {
         return this.eventObj;
     }
 
 
-    String getEventType() {
-        return this.eventType;
-    }
-
-
-    void setEventData(T _data) {
+    public void setEventData(T _data) {
         this.eventData = _data;
     }
 
 
-    void setEventObj(BoffoDbObject _obj) {
+    public void setEventObj(BoffoDbObject _obj) {
         this.eventObj = _obj;
-    }
-
-
-    void setEventType(String _str) {
-        this.eventType = _str;
     }
 
 }

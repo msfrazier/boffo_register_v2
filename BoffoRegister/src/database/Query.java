@@ -1,5 +1,12 @@
 package database;
 
+/**
+ * A class that handles with the query using JDBC.
+ *
+ * @author Thien Le
+ * @author Thomas Cole
+ * @lastEdited: 4/25/2017
+ */
 import java.sql.Connection;
 import java.sql.Statement;
 import java.sql.ResultSet;
@@ -11,22 +18,26 @@ public class Query {
 
     private final Statement statement;
 
+
     /*
     * Initialize with the current connection
-    */
-    public Query(Connection dbConnection) throws SQLException{
+     */
+    public Query(Connection dbConnection) throws SQLException {
         statement = dbConnection.createStatement();
     }
 
-    public ResultSet executeQuery(String query) throws SQLException{
+
+    public ResultSet executeQuery(String query) throws SQLException {
         return statement.executeQuery(query);
     }
 
-    public ResultSetMetaData getMetaData(ResultSet rs) throws SQLException{
+
+    public ResultSetMetaData getMetaData(ResultSet rs) throws SQLException {
         return rs.getMetaData();
     }
 
-    public ArrayList<String> getTableColumns(String tName){
+
+    public ArrayList<String> getTableColumns(String tName) {
         ArrayList<String> retList = new ArrayList<String>();
 
         try {
@@ -42,14 +53,16 @@ public class Query {
         return retList;
     }
 
-    public void executeUpdate(String query) throws SQLException{
+
+    public void executeUpdate(String query) throws SQLException {
         statement.executeUpdate(query);
     }
 
+
     /*
     * For use by dbAPI class allowing for select statements to be easily executed.
-    */
-    public String selectFromTable(String tField, String tName, String tFilterField, String operator, String tFilter) throws SQLException{
+     */
+    public String selectFromTable(String tField, String tName, String tFilterField, String operator, String tFilter) throws SQLException {
         //System.out.println("Executing: SELECT " + tField + " FROM " + tName + " WHERE " + tFilterField + " " + operator + " '" + tFilter + "'");
 
         ResultSet rs;
@@ -57,12 +70,12 @@ public class Query {
 
         String retString = "";
 
-        if(tFilterField != null || operator != null || tFilter != null){
-            rs = this.executeQuery("SELECT " + tField + " FROM " + tName + " WHERE " + tFilterField+ " " + operator + " '" + tFilter + "'");
+        if (tFilterField != null || operator != null || tFilter != null) {
+            rs = this.executeQuery("SELECT " + tField + " FROM " + tName + " WHERE '" + tFilterField + "' " + operator + " '" + tFilter + "'");
             rsmd = this.getMetaData(rs);
 
-            while(rs.next()){
-                for(int i = 1; i <= rsmd.getColumnCount(); i++){
+            while (rs.next()) {
+                for (int i = 1; i <= rsmd.getColumnCount(); i++) {
                     retString += rs.getString(i) + " ";
                 }
             }
@@ -71,8 +84,8 @@ public class Query {
             rs = this.executeQuery("SELECT " + tField + " FROM " + tName);
             rsmd = this.getMetaData(rs);
 
-            while(rs.next()){
-                for(int i = 1; i <= rsmd.getColumnCount(); i++){
+            while (rs.next()) {
+                for (int i = 1; i <= rsmd.getColumnCount(); i++) {
                     retString += rs.getString(i) + " ";
                 }
             }
@@ -81,14 +94,15 @@ public class Query {
         return retString;
     }
 
-    public boolean insertIntoTable(String tName, String[] tValues) throws SQLException{
+
+    public boolean insertIntoTable(String tName, String[] tValues) throws SQLException {
 
         ResultSetMetaData tableInfo = this.executeQuery("SELECT * FROM " + tName).getMetaData();
         int tableColumnCount = tableInfo.getColumnCount();
 
         String columns = "";
         for (int i = 1; i <= tableColumnCount; i++) {
-            if(i != tableColumnCount){
+            if (i != tableColumnCount) {
                 columns += tableInfo.getColumnName(i) + ", ";
             } else {
                 columns += tableInfo.getColumnName(i);
@@ -97,8 +111,8 @@ public class Query {
 
         String values = "";
         for (int i = 0; i < tValues.length; i++) {
-            if(i != tValues.length - 1){
-                values += "'"+tValues[i] + "', ";
+            if (i != tValues.length - 1) {
+                values += "'" + tValues[i] + "', ";
             } else {
                 values += "'" + tValues[i] + "'";
             }
@@ -107,17 +121,17 @@ public class Query {
         //System.out.println(columns);
         //System.out.println(values);
         //System.out.println("INSERT INTO " + tName + "(" + columns + ") VALUES(" + values + ")");
-
         this.executeUpdate("INSERT INTO " + tName + " VALUES(" + values + ")");
         return true;
     }
 
-    public boolean updateTable(String tName, String[] tFields, String tFilterField, String operator, String tFilter) throws SQLException{
+
+    public boolean updateTable(String tName, String[] tFields, String tFilterField, String operator, String tFilter) throws SQLException {
         String setString = "";
         ArrayList<String> columns = this.getTableColumns(tName);
 
         for (int i = 0; i < columns.size(); i++) {
-            if(i != columns.size() - 1){
+            if (i != columns.size() - 1) {
                 setString += " " + columns.get(i) + " = '" + tFields[i] + "',";
             } else {
                 setString += " " + columns.get(i) + " = '" + tFields[i] + "'";
@@ -129,10 +143,11 @@ public class Query {
         return true;
     }
 
+
     /*
     * This will print the table name, column names, and all rows in the table.
-    */
-    public void printTable(String tName) throws SQLException{
+     */
+    public void printTable(String tName) throws SQLException {
         //System.out.println("Executing SELECT * FROM " + tName);
 
         ResultSet rs = statement.executeQuery("SELECT * FROM " + tName);
@@ -142,13 +157,13 @@ public class Query {
 
         System.out.println("Columns: ");
         for (int i = 1; i <= rsmd.getColumnCount(); i++) {
-            System.out.print(rsmd.getColumnTypeName(i) + ": " + rsmd.getColumnName(i) +  ", ");
+            System.out.print(rsmd.getColumnTypeName(i) + ": " + rsmd.getColumnName(i) + ", ");
         }
         System.out.println("\n");
 
         System.out.println("Values: ");
-        while(rs.next()){
-            for(int i = 1; i <= rsmd.getColumnCount(); i++){
+        while (rs.next()) {
+            for (int i = 1; i <= rsmd.getColumnCount(); i++) {
                 System.out.print(rs.getString(i) + ", ");
             }
             System.out.println("");

@@ -10,11 +10,13 @@ package gui;
  * awaiting full implementation.
  *
  * @author Logan Stanfield and Kevin Keomalaythong
- * @updated 2017-04-23
+ * @updated 2017-04-26
  */
 import events.*;
+import inventory.Inventory;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.util.ArrayList;
 import java.util.Optional;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -45,6 +47,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.Scene;
+import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
@@ -93,9 +96,7 @@ public final class BoffoRegisterGUI extends BoffoFireObject {
     }
 
     // List of items added in the table.
-    ObservableList<Item> itemList = FXCollections.observableArrayList();
-
-    private final Stage BoffoStage;
+    private final Stage boffoStage;
 
     //Window size properties.
     private final int screenWidth = 800;
@@ -106,60 +107,83 @@ public final class BoffoRegisterGUI extends BoffoFireObject {
     //VARIABLES FOR TESTING PURPOSES ONLY//
 
     public BoffoRegisterGUI(Stage _stage) {
-        this.BoffoStage = _stage;
+        this.boffoStage = _stage;
         this.loadLoginPanel();
     }
 
     public void loadAdminPanel() {
         System.out.println("Loading Administration Panel");
-        BoffoStage.setTitle("Administration");
+        boffoStage.setTitle("Administration");
         Scene sceneAdmin = buildAdminPanel();
-        BoffoStage.setScene(sceneAdmin);
-        BoffoStage.show();
+        boffoStage.setScene(sceneAdmin);
+        boffoStage.show();
     }
 
     public void loadInventoryPanel() {
         System.out.println("Loading Inventory Panel");
-        BoffoStage.setTitle("Inventory");
+        boffoStage.setTitle("Inventory");
         Scene sceneInventory = buildInventoryPanel();
-        BoffoStage.setScene(sceneInventory);
-        BoffoStage.show();
+        boffoStage.setScene(sceneInventory);
+        boffoStage.show();
     }
 
     public void loadLoginPanel() {
         System.out.println("Loading Login Panel");
-        BoffoStage.setTitle("BoffoRegister Login");
-        Scene sceneLogin = this.buildLoginScene();
-        this.BoffoStage.setScene(sceneLogin);
+        boffoStage.setTitle("BoffoRegister Login");
+        Scene sceneLogin = this.buildLoginPanel();
+        this.boffoStage.setScene(sceneLogin);
 
         //Set up the login stage.
-        this.BoffoStage.show();
+        this.boffoStage.show();
     }
 
     public void loadMainPanel() {
         System.out.println("Loading Main Panel");
-        BoffoStage.setTitle("Boffo Register Main Menu");
+        boffoStage.setTitle("Boffo Register Main Menu");
         Scene sceneMain = this.buildMainPanel();
 
         //Set up the main stage.
-        BoffoStage.setScene(sceneMain);
-        this.BoffoStage.show();
+        boffoStage.setScene(sceneMain);
+        this.boffoStage.show();
     }
 
     public void loadTransactionPanel() {
         System.out.println("Loading Transaction Panel");
-        BoffoStage.setTitle("Transaction");
+        boffoStage.setTitle("Transaction");
         Scene sceneTransaction = buildTransactionPanel();
-        BoffoStage.setScene(sceneTransaction);
-        BoffoStage.show();
+        boffoStage.setScene(sceneTransaction);
+        boffoStage.show();
     }
 
     //TODO: Add more buttons & associated events to the Administration panel.
     public Scene buildAdminPanel() {
-        Button btnExit = new Button("Exit");
+        StackPane root = new StackPane();
 
-        VBox adminOptions = this.addVBox("Select Operation", 10, Pos.BASELINE_LEFT);
-        adminOptions.getChildren().add(btnExit);
+        Button btnExit = new Button("Exit");
+        Button btnSetPhoneNumber = new Button("Change Store Phone Number");
+        Button btnSetReceiptMsg = new Button("Change Receipt Message");
+        Button btnSetStoreHrs = new Button("Change Store Hours");
+        Button btnSetStoreId = new Button("Change Store ID");
+        Button btnSetStoreName = new Button("Change Store Name");
+        Button btnSetTaxRate = new Button("Change Tax Rate");
+
+        VBox adminBtnVbox = this.addVBox("Select Operation", 10, Pos.BASELINE_LEFT);
+        adminBtnVbox.getChildren().addAll(btnSetPhoneNumber, btnSetStoreHrs,
+                btnSetStoreId, btnSetReceiptMsg, btnSetStoreName,
+                btnSetTaxRate, btnExit);
+
+        //ImageView settigs and configurations.
+        FileInputStream input = null;
+        try {
+            input = new FileInputStream("res/boffo_logo.png");
+        } catch (FileNotFoundException ex) {
+            Logger.getLogger(BoffoRegisterGUI.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        ImageView imageView = new ImageView(new Image(input));
+        VBox imageVbox = this.addVBox("", 15, Pos.BOTTOM_RIGHT);
+        imageVbox.getChildren().add(imageView);
+
+        root.getChildren().addAll(imageVbox, adminBtnVbox);
 
         //Fire an event to go back to the Main panel.
         btnExit.setOnAction(new EventHandler<ActionEvent>() {
@@ -172,15 +196,153 @@ public final class BoffoRegisterGUI extends BoffoFireObject {
         });
 
         //Set up the Admin panel.
-        return new Scene(adminOptions, screenWidth, screenHeight);
+        return new Scene(root, screenWidth, screenHeight);
     }
 
-    //TODO: Add more buttons & associated events to the Inventory panel.
     public Scene buildInventoryPanel() {
+        SplitPane inventoryPanel = new SplitPane();
+        inventoryPanel.setDividerPositions(.25);
+        final ObservableList<Item> itemList = FXCollections.observableArrayList();
+
+        //Initialize the inventory. TODO: Remove after events are available.
+        final Inventory inventory = new Inventory();
+
+        //Inventory Operations settings and configurations.
+        Button btnAddEntry = new Button("Add Entry");
         Button btnExit = new Button("Exit");
+        Button btnLoadInventory = new Button("Load Inventory");
+        Button btnRemoveEntry = new Button("Remove Entry");
+        Button btnSave = new Button("Save");
+        Button btnSearchByName = new Button("Search Item by Name");
+        Button btnSearchBySku = new Button("Search Item by SKU");
+        Button btnSearchByUuid = new Button("Search Item by UUID");
+        Button btnSearchByPrice = new Button("Search Item by Price");
 
         VBox inventoryOptions = this.addVBox("Select Operation", 10, Pos.BASELINE_LEFT);
-        inventoryOptions.getChildren().add(btnExit);
+        inventoryOptions.getChildren().addAll(btnLoadInventory, btnAddEntry,
+                btnRemoveEntry, btnSearchByName, btnSearchBySku, btnSearchByUuid,
+                btnSearchByPrice, btnSave, btnExit);
+
+        //TableView configurations and settings.
+        final TableView inventoryTbl = new TableView();
+        inventoryTbl.setMinHeight(400);
+        inventoryTbl.setMinWidth(250);
+
+        inventoryTbl.setEditable(true);
+
+        // Establish the columns and associate them with Item attributes.
+        final TableColumn nameCol = new TableColumn("Name");
+        nameCol.setMinWidth(125);
+        nameCol.setCellValueFactory(
+                new PropertyValueFactory<Item, String>("itemName"));
+
+        final TableColumn skuCol = new TableColumn("SKU");
+        skuCol.setMinWidth(155);
+        skuCol.setCellValueFactory(
+                new PropertyValueFactory<Item, String>("SKU"));
+
+        final TableColumn uuidCol = new TableColumn("UUID");
+        uuidCol.setMinWidth(155);
+        uuidCol.setCellFactory(
+                new PropertyValueFactory<Item, String>("UUID"));
+
+        final TableColumn priceCol = new TableColumn("Price");
+        priceCol.setMinWidth(125);
+        priceCol.setCellValueFactory(
+                new PropertyValueFactory<Item, String>("price"));
+
+        // Add the item list to the table.
+        inventoryTbl.setItems(itemList);
+        inventoryTbl.getColumns().addAll(nameCol, skuCol, uuidCol, priceCol);
+
+        VBox inventoryTblVbox = new VBox(inventoryTbl);
+        inventoryTblVbox.setAlignment(Pos.TOP_LEFT);
+        inventoryTblVbox.setPadding(new Insets(10));
+
+        inventoryPanel.getItems().addAll(inventoryOptions, inventoryTblVbox);
+
+        btnAddEntry.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent _e) {
+                final Stage dialog = new Stage();
+                dialog.initModality(Modality.APPLICATION_MODAL);
+                dialog.initOwner(boffoStage);
+
+                //Creates a VBox to hold the TextFields and buttons.
+                VBox addEntryVbox = new VBox(10);
+                addEntryVbox.setPadding(new Insets(10));
+
+                //Creates title for vbox.
+                Text title = new Text("Add Entry");
+                title.setFont(Font.font("Tahoma", FontWeight.BOLD, 15));
+
+                //Name, SKU, UUID, and Price TextField properties below.
+                final TextField nameTextField = new TextField();
+                nameTextField.setPromptText("Enter Item Name");
+
+                final TextField skuTextField = new TextField();
+                skuTextField.setPromptText("Enter Item SKU");
+
+                final TextField uuidTextField = new TextField();
+                uuidTextField.setPromptText("Enter Itme UUID");
+
+                final TextField priceTextField = new TextField();
+                priceTextField.setPromptText("Enter Item Price");
+                addEntryVbox.getChildren().addAll(title, nameTextField, skuTextField,
+                        uuidTextField, priceTextField);
+
+                //Cancel and add buttons.
+                Button btnAddItem = new Button("Add item");
+                Button btnCancel = new Button("Cancel");
+
+                final HBox buttonsHbox = new HBox(10);
+                buttonsHbox.getChildren().addAll(btnAddItem, btnCancel);
+                addEntryVbox.getChildren().add(buttonsHbox);
+
+                //Label settings and configurations.
+                //This is used as a warning message for not having the 
+                final Label warningLabel = new Label("All fields must be valid");
+                warningLabel.setFont(Font.font("Tahoma", FontWeight.NORMAL, 8));
+                warningLabel.setTextFill(Color.RED);
+                buttonsHbox.getChildren().add(warningLabel);
+                warningLabel.setVisible(false);
+
+                Scene dialogScene = new Scene(addEntryVbox, 325, 250);
+                dialog.setScene(dialogScene);
+                dialog.show();
+
+                btnAddItem.setOnAction(new EventHandler<ActionEvent>() {
+                    @Override
+                    public void handle(ActionEvent _event) {
+                        String itemName = nameTextField.getText();
+                        String skuValue = skuTextField.getText();
+                        String uuidValue = uuidTextField.getText();
+                        String price = priceTextField.getText();
+
+                        if (nameTextField.getText().trim().equals("")
+                                || skuTextField.getText().trim().equals("")
+                                || uuidTextField.getText().trim().equals("")
+                                || priceTextField.getText().trim().equals("")) {
+                            warningLabel.setVisible(true);
+
+                        } else {
+                            warningLabel.setVisible(false);
+                            //TODO: Implement adding item to inventory.
+                        }
+                    }
+                });
+
+                btnCancel.setOnAction(new EventHandler<ActionEvent>() {
+                    @Override
+                    public void handle(ActionEvent _e) {
+                        dialog.close();
+                    }
+                });
+
+//                BoffoEvent evtExit = new BoffoEvent(this, Routing.EXIT_PANEL);
+//                fireEvent(evtExit);
+            }
+        });
 
         btnExit.setOnAction(new EventHandler<ActionEvent>() {
             @Override
@@ -191,13 +353,369 @@ public final class BoffoRegisterGUI extends BoffoFireObject {
             }
         });
 
+        btnLoadInventory.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent _e) {
+
+//                BoffoEvent evtExit = new BoffoEvent(this, Routing.EXIT_PANEL);
+//                fireEvent(evtExit);
+            }
+        });
+
+        btnRemoveEntry.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent _e) {
+                String sku = "";
+
+                final Stage dialog = new Stage();
+                dialog.initModality(Modality.APPLICATION_MODAL);
+                dialog.initOwner(boffoStage);
+
+                //Creates a VBox to hold the TextFields and buttons.
+                VBox removeEntryVbox = new VBox(10);
+                removeEntryVbox.setPadding(new Insets(10));
+
+                //Creates title for vbox.
+                Text title = new Text("Add Entry");
+                title.setFont(Font.font("Tahoma", FontWeight.BOLD, 15));
+
+                //TextField setting and configurations.
+                final TextField skuTextField = new TextField();
+                skuTextField.setPromptText("Enter Item SKU");
+
+                //Button settings and configurations.
+                HBox buttonsHbox = new HBox(10);
+                Button btnRemoveItem = new Button("Remove Item");
+                Button btnCancel = new Button("Cancel");
+                buttonsHbox.getChildren().addAll(btnRemoveItem, btnCancel);
+
+                //Label settings and configurations.
+                final Label warningLabel = new Label("All fields must be valid");
+                warningLabel.setFont(Font.font("Tahoma", FontWeight.NORMAL, 8));
+                warningLabel.setTextFill(Color.RED);
+                buttonsHbox.getChildren().add(warningLabel);
+                warningLabel.setVisible(false);
+
+                removeEntryVbox.getChildren().addAll(title, skuTextField,
+                        buttonsHbox);
+
+                Scene dialogScene = new Scene(removeEntryVbox, 325, 150);
+                dialog.setScene(dialogScene);
+                dialog.show();
+
+                btnRemoveItem.setOnAction(new EventHandler<ActionEvent>() {
+                    @Override
+                    public void handle(ActionEvent _e) {
+                        String itemToRemove = skuTextField.getText();
+                        if (skuTextField.getText().trim().equals("")) {
+                            warningLabel.setVisible(true);
+
+                        } else {
+                            warningLabel.setVisible(false);
+                            //TODO: Implement adding item to inventory.
+                        }
+                        //TODO: Implement removal of an entry when events are available.
+                    }
+                });
+
+                btnCancel.setOnAction(new EventHandler<ActionEvent>() {
+                    @Override
+                    public void handle(ActionEvent _e) {
+                        dialog.close();
+                    }
+                });
+            }
+        });
+
+        btnSave.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent _e) {
+
+                //TODO: Implement updating the inventory.
+//                BoffoEvent evtExit = new BoffoEvent(this, Routing.EXIT_PANEL);
+//                fireEvent(evtExit);
+            }
+        });
+
+        btnSearchByName.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent _e) {
+                final Stage dialog = new Stage();
+                dialog.initModality(Modality.APPLICATION_MODAL);
+                dialog.initOwner(boffoStage);
+
+                //Creates a VBox to hold the TextFields and buttons.
+                VBox searchEntryVbox = new VBox(10);
+                searchEntryVbox.setPadding(new Insets(10));
+
+                //Creates title for vbox.
+                Text title = new Text("Search for Item by Name");
+                title.setFont(Font.font("Tahoma", FontWeight.BOLD, 15));
+
+                //TextField setting and configurations.
+                final TextField nameTextField = new TextField();
+                nameTextField.setPromptText("Enter Item Name");
+
+                //Button settings and configurations.
+                HBox buttonsHbox = new HBox(10);
+                Button btnSearchItem = new Button("Search Inventory");
+                Button btnCancel = new Button("Cancel");
+                buttonsHbox.getChildren().addAll(btnSearchItem, btnCancel);
+
+                //Label configurations and settings.
+                final Label warningLabel = new Label("All fields must be valid");
+                warningLabel.setFont(Font.font("Tahoma", FontWeight.NORMAL, 8));
+                warningLabel.setTextFill(Color.RED);
+                buttonsHbox.getChildren().add(warningLabel);
+                warningLabel.setVisible(false);
+
+                searchEntryVbox.getChildren().addAll(title, nameTextField,
+                        buttonsHbox);
+
+                Scene dialogScene = new Scene(searchEntryVbox, 325, 150);
+                dialog.setScene(dialogScene);
+                dialog.show();
+
+                btnSearchItem.setOnAction(new EventHandler<ActionEvent>() {
+                    @Override
+                    public void handle(ActionEvent _e) {
+                        String itemToSearch = nameTextField.getText();
+//                        ArrayList items = new ArrayList();
+//                        items = inventory.searchInventoryBySku(nameTextField.getText());
+                        if (nameTextField.getText().trim().equals("")) {
+                            warningLabel.setVisible(true);
+                        } else {
+                            warningLabel.setVisible(false);
+                        }
+
+                        //Clear data on the TableView with search results.
+                        clearTableView(inventoryTbl);
+                        //TODO: Implement search of an entry when events are available.
+                    }
+                });
+
+                btnCancel.setOnAction(new EventHandler<ActionEvent>() {
+                    @Override
+                    public void handle(ActionEvent _e) {
+                        dialog.close();
+                    }
+                });
+//                BoffoEvent evtExit = new BoffoEvent(this, Routing.EXIT_PANEL);
+//                fireEvent(evtExit);
+            }
+        });
+
+        btnSearchBySku.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent _e) {
+                final Stage dialog = new Stage();
+                dialog.initModality(Modality.APPLICATION_MODAL);
+                dialog.initOwner(boffoStage);
+
+                //Creates a VBox to hold the TextFields and buttons.
+                VBox searchEntryVbox = new VBox(10);
+                searchEntryVbox.setPadding(new Insets(10));
+
+                //Creates title for vbox.
+                Text title = new Text("Search for Item by SKU");
+                title.setFont(Font.font("Tahoma", FontWeight.BOLD, 15));
+
+                //TextField setting and configurations.
+                final TextField skuTextField = new TextField();
+                skuTextField.setPromptText("Enter Item SKU");
+
+                //Button settings and configurations.
+                HBox buttonsHbox = new HBox(10);
+                Button btnSearchItem = new Button("Search Inventory");
+                Button btnCancel = new Button("Cancel");
+                buttonsHbox.getChildren().addAll(btnSearchItem, btnCancel);
+
+                //Label settings and configurations.
+                final Label warningLabel = new Label("All fields must be valid");
+                warningLabel.setFont(Font.font("Tahoma", FontWeight.NORMAL, 8));
+                warningLabel.setTextFill(Color.RED);
+                buttonsHbox.getChildren().add(warningLabel);
+                warningLabel.setVisible(false);
+
+                searchEntryVbox.getChildren().addAll(title, skuTextField,
+                        buttonsHbox);
+
+                Scene dialogScene = new Scene(searchEntryVbox, 325, 150);
+                dialog.setScene(dialogScene);
+                dialog.show();
+
+                btnSearchItem.setOnAction(new EventHandler<ActionEvent>() {
+                    @Override
+                    public void handle(ActionEvent _e) {
+                        String itemToSearch = skuTextField.getText();
+                        ArrayList items = new ArrayList();
+                        items = inventory.searchInventoryByName(skuTextField.getText());
+
+                        if (skuTextField.getText().trim().equals("")) {
+                            warningLabel.setVisible(true);
+                        } else {
+                            warningLabel.setVisible(false);
+                        }
+
+                        //Clear data on the TableView with search results.
+                        clearTableView(inventoryTbl);
+                        //TODO: Implement search of an entry when events are available.
+                    }
+                });
+
+                btnCancel.setOnAction(new EventHandler<ActionEvent>() {
+                    @Override
+                    public void handle(ActionEvent _e) {
+                        dialog.close();
+                    }
+                });
+//                BoffoEvent evtExit = new BoffoEvent(this, Routing.EXIT_PANEL);
+//                fireEvent(evtExit);
+            }
+        });
+
+        btnSearchByUuid.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent _e) {
+                final Stage dialog = new Stage();
+                dialog.initModality(Modality.APPLICATION_MODAL);
+                dialog.initOwner(boffoStage);
+
+                //Creates a VBox to hold the TextFields and buttons.
+                VBox searchEntryVbox = new VBox(10);
+                searchEntryVbox.setPadding(new Insets(10));
+
+                //Creates title for vbox.
+                Text title = new Text("Search for Item by UUID");
+                title.setFont(Font.font("Tahoma", FontWeight.BOLD, 15));
+
+                //TextField setting and configurations.
+                final TextField uuidTextField = new TextField();
+                uuidTextField.setPromptText("Enter Item UUID");
+
+                //Button settings and configurations.
+                HBox buttonsHbox = new HBox(10);
+                Button btnSearchItem = new Button("Search Inventory");
+                Button btnCancel = new Button("Cancel");
+                buttonsHbox.getChildren().addAll(btnSearchItem, btnCancel);
+
+                //Label settings and configurations.
+                final Label warningLabel = new Label("All fields must be valid");
+                warningLabel.setFont(Font.font("Tahoma", FontWeight.NORMAL, 8));
+                warningLabel.setTextFill(Color.RED);
+                buttonsHbox.getChildren().add(warningLabel);
+                warningLabel.setVisible(false);
+
+                searchEntryVbox.getChildren().addAll(title, uuidTextField,
+                        buttonsHbox);
+
+                Scene dialogScene = new Scene(searchEntryVbox, 325, 150);
+                dialog.setScene(dialogScene);
+                dialog.show();
+
+                btnSearchItem.setOnAction(new EventHandler<ActionEvent>() {
+                    @Override
+                    public void handle(ActionEvent _e) {
+
+                        if (uuidTextField.getText().trim().equals("")) {
+                            warningLabel.setVisible(true);
+                        } else {
+                            warningLabel.setVisible(false);
+                        }
+
+                        //Clear data on the TableView with search results.
+                        clearTableView(inventoryTbl);
+                        //TODO: Implement search of an entry when events are available.
+                    }
+                });
+
+                btnCancel.setOnAction(new EventHandler<ActionEvent>() {
+                    @Override
+                    public void handle(ActionEvent _e) {
+                        dialog.close();
+                    }
+                });
+//                BoffoEvent evtExit = new BoffoEvent(this, Routing.EXIT_PANEL);
+//                fireEvent(evtExit);
+            }
+        });
+
+        btnSearchByPrice.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent _e) {
+                final Stage dialog = new Stage();
+                dialog.initModality(Modality.APPLICATION_MODAL);
+                dialog.initOwner(boffoStage);
+
+                //Creates a VBox to hold the TextFields and buttons.
+                VBox searchEntryVbox = new VBox(10);
+                searchEntryVbox.setPadding(new Insets(10));
+
+                //Creates title for vbox.
+                Text title = new Text("Search for Item by Price");
+                title.setFont(Font.font("Tahoma", FontWeight.BOLD, 15));
+
+                //TextField setting and configurations.
+                final TextField priceTextField = new TextField();
+                priceTextField.setPromptText("Enter Item Price");
+
+                //Button settings and configurations.
+                HBox buttonsHbox = new HBox(10);
+                Button btnSearchItem = new Button("Search Inventory");
+                Button btnCancel = new Button("Cancel");
+                buttonsHbox.getChildren().addAll(btnSearchItem, btnCancel);
+
+                //Label settings and configurations.
+                final Label warningLabel = new Label("All fields must be valid");
+                warningLabel.setFont(Font.font("Tahoma", FontWeight.NORMAL, 8));
+                warningLabel.setTextFill(Color.RED);
+                buttonsHbox.getChildren().add(warningLabel);
+                warningLabel.setVisible(false);
+
+                searchEntryVbox.getChildren().addAll(title, priceTextField,
+                        buttonsHbox);
+
+                Scene dialogScene = new Scene(searchEntryVbox, 325, 150);
+                dialog.setScene(dialogScene);
+                dialog.show();
+
+                btnSearchItem.setOnAction(new EventHandler<ActionEvent>() {
+                    @Override
+                    public void handle(ActionEvent _e) {
+                        String itemToSearch = priceTextField.getText();
+                        ArrayList items = new ArrayList();
+                        //items = inventory.searchInventoryByName(priceTextField.getText());
+
+                        if (priceTextField.getText().trim().equals("")) {
+                            warningLabel.setVisible(true);
+                        } else {
+                            warningLabel.setVisible(false);
+                        }
+
+                        //Clear data on the TableView with search results.
+                        clearTableView(inventoryTbl);
+                        //TODO: Implement search of an entry when events are available.
+                    }
+                });
+
+                btnCancel.setOnAction(new EventHandler<ActionEvent>() {
+                    @Override
+                    public void handle(ActionEvent _e) {
+                        dialog.close();
+                    }
+                });
+//                BoffoEvent evtExit = new BoffoEvent(this, Routing.EXIT_PANEL);
+//                fireEvent(evtExit);
+            }
+        });
+
         //Set up the Inventory panel.
-        return new Scene(inventoryOptions, screenWidth, screenHeight);
+        return new Scene(inventoryPanel, screenWidth, screenHeight);
     }
 
     //Login screen with username & password text fields, plus a sign-in button.
     //TODO: Add event-firing code to the Sign In button.
-    public Scene buildLoginScene() {
+    public Scene buildLoginPanel() {
         StackPane root = new StackPane();
 
         GridPane grid = new GridPane();
@@ -294,6 +812,9 @@ public final class BoffoRegisterGUI extends BoffoFireObject {
     }
 
     public Scene buildMainPanel() {
+        StackPane root = new StackPane();
+
+        //Operations menu configuarations.
         Button btnTransaction = new Button("Transaction");
         Button btnInventory = new Button("Inventory");
         Button btnAdministration = new Button("Administration");
@@ -301,6 +822,19 @@ public final class BoffoRegisterGUI extends BoffoFireObject {
 
         VBox vbox = this.addVBox("Select Operation", 10, Pos.BASELINE_LEFT);
         vbox.getChildren().addAll(btnTransaction, btnInventory, btnAdministration, btnExit);
+
+        //ImageView settigs and configurations.
+        FileInputStream input = null;
+        try {
+            input = new FileInputStream("res/boffo_logo.png");
+        } catch (FileNotFoundException ex) {
+            Logger.getLogger(BoffoRegisterGUI.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        ImageView imageView = new ImageView(new Image(input));
+        VBox imageVbox = this.addVBox("", 15, Pos.BOTTOM_RIGHT);
+        imageVbox.getChildren().add(imageView);
+
+        root.getChildren().addAll(imageVbox, vbox);
 
         //Fire an event to go to the Transaction panel.
         btnTransaction.setOnAction(new EventHandler<ActionEvent>() {
@@ -340,7 +874,7 @@ public final class BoffoRegisterGUI extends BoffoFireObject {
         });
 
         // Create the scene and return.
-        return new Scene(vbox, screenWidth, screenHeight);
+        return new Scene(root, screenWidth, screenHeight);
     }
 
     /*
@@ -348,10 +882,10 @@ public final class BoffoRegisterGUI extends BoffoFireObject {
      *       Create event handlers for the buttons.
      */
     public Scene buildTransactionPanel() {
-
         //Split pane options.
         SplitPane transactionPanel = new SplitPane();
         transactionPanel.setDividerPosition(1, .5);
+        final ObservableList<Item> itemList = FXCollections.observableArrayList();
 
         //Transaction options settings and configurations.
         Button btnRemoveItem = new Button("Remove Selected Item");
@@ -397,7 +931,7 @@ public final class BoffoRegisterGUI extends BoffoFireObject {
         ticketTbl.getColumns().addAll(nameCol, SKUCol, priceCol);
 
         VBox ticketTblOptions = new VBox(ticketTbl);
-        ticketTblOptions.setAlignment(Pos.TOP_RIGHT);
+        ticketTblOptions.setAlignment(Pos.TOP_LEFT);
         ticketTblOptions.setPadding(new Insets(10));
         transactionPanel.getItems().addAll(
                 transactionOptions, ticketTblOptions);
@@ -494,15 +1028,25 @@ public final class BoffoRegisterGUI extends BoffoFireObject {
      * @param _header The title set at the top of the VBox.
      * @param _insets The number of pixels away from the edges.
      */
-    private VBox addVBox(String _header, int _insets, Pos value) {
+    private VBox addVBox(String _header, int _insets, Pos _value) {
         VBox vbox = new VBox();
-        vbox.setPadding(new Insets(10));
+        vbox.setPadding(new Insets(_insets));
         vbox.setSpacing(8);
-        vbox.setAlignment(value);
+        vbox.setAlignment(_value);
         Text title = new Text(_header);
         title.setFont(Font.font("Tahoma", FontWeight.BOLD, 20));
         vbox.getChildren().add(title);
         return vbox;
+    }
+
+    private TableView clearTableView(TableView _tableView) {
+        if (_tableView.getItems().size() > 0) {
+            for (int i = 0; i <= _tableView.getItems().size(); i++) {
+                _tableView.getItems().clear();
+            }
+        }
+
+        return _tableView;
     }
 
     /**
@@ -520,7 +1064,7 @@ public final class BoffoRegisterGUI extends BoffoFireObject {
         alert.setHeaderText(_header);
         alert.setContentText(_message);
         alert.initModality(Modality.APPLICATION_MODAL);
-        alert.initOwner(BoffoStage);
+        alert.initOwner(boffoStage);
 
         Optional<ButtonType> result = alert.showAndWait();
         if (result.get() == ButtonType.OK) {

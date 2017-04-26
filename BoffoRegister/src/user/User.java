@@ -1,11 +1,12 @@
 package user;
 /*
 Author: SHANSHAN CHEN
-Last update: 04/19/2017
+Last updated: 04/25/2017
 */
 import events.BoffoEvent;
 import database.BoffoDbObject;
-import events.BoffoMessenger;   
+import events.BoffoMessenger;
+import authorization.Authorization;
 
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
@@ -23,6 +24,8 @@ public class User extends BoffoDbObject{
     private String l_name;
     private int id;
     private String pass = "";
+    private int minAuthLevel;
+    
     
     
 public void User(String username, String pass){
@@ -42,7 +45,9 @@ public String getPass(){
 public void setPass(String _userPass){
         this.pass = _userPass;
     }
-
+public int getAuthlevel(){
+        return minAuthLevel;
+}
 //set the variables in the passwordhash class.
 public class PasswordHash
 {
@@ -88,12 +93,8 @@ public class PasswordHash
            throw new RuntimeException( e );
        }
    }
-    public void messageReceived(BoffoEvent event){
-        
-        switch(event.getMessage().getCode()){
 
-}
-}
+
     private static String toHex(byte[] salt) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }

@@ -1,6 +1,12 @@
 /BoffoRegister/build/
 <<<<<<< HEAD
+<<<<<<< HEAD
 BoffoRegister/nbproject/private/private.properties
+=======
+BoffoRegister/src/inventory/InventoryRecord.java
+*.java
+!/BoffoRegister/src/events/BoffoEventData.java
+>>>>>>> master
 =======
 BoffoRegister/src/inventory/InventoryRecord.java
 *.java

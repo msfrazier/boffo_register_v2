@@ -13,165 +13,127 @@ package bofforegister;
  *
  * @author Joshua Brown & Josh Milligan
  */
-
 import administration.Administration;
 import events.BoffoEvent;
+import events.*;
+import events.BoffoFireObject;
 import gui.BoffoRegisterGUI;
 import javafx.stage.Stage;
 import events.BoffoListenerInterface;
 import inventory.Inventory;
-import java.util.ArrayList;
-import java.util.List;
 import printer.Printer;
 import transaction.Transaction;
 import user.User;
 
-public class BoffoController implements BoffoListenerInterface {
-    protected Transaction transaction = null;
-    protected User user = null;
-    protected Inventory inventory = null;
-    protected Administration admin = null;
-    protected Printer printer = null;
+public class BoffoController extends BoffoFireObject implements BoffoListenerInterface {
+
+    public static User CURRENT_USER = null;
+
+    protected Transaction transaction = new Transaction();
+    protected Inventory inventory = new Inventory();
+    protected Administration admin = new Administration();
+    protected Printer printer = new Printer();
     protected BoffoRegisterGUI gui = null;
-    protected BoffoListenerInterface activeModule = null;
-    final protected List boffoListener = new ArrayList();
-    //include a currentUser at all times to keep up with.
 
     BoffoController(Stage _primaryStage) {
         this.gui = new BoffoRegisterGUI(_primaryStage);
     }
 
+    public void initilize() {
+        this.gui.addListener(this);
+        this.addListener(gui);
+    }
+
     /**
      * Changes the active module, changes the GUI panel, and calls out to
      * registerPanelListener change the current listener.
+     *
      * @param _event
      */
-
-     @Override
+    @Override
     public void messageReceived(BoffoEvent _event) {
 
         /**
-        * Also using cascading if else statements to catch events
-        * within a given range.
-        * Using literal ints until the event system is nailed down.
-        */
-        if(_event.getMessage().getCode() == 0) {
-            // check user login data
+         * We need a login event?
+         */
+        if(_event.getMessage().getCode() instanceof BoffoNavigateEventData) {
+            changePanel(_event);
+            return;
         }
-        else if (_event.getMessage().getCode() == 1) {
-            printReceipt();
-        }
-        else if(_event.getMessage().getCode() <= 10) {
-            //
-            this.changePanel(_event);
-        }
-        else if(_event.getMessage().getCode() <= 20) {
-            //
-            this.performAction(_event);
-        }
-        // If the messageString does not fall within range, ignore it.
-    }
 
-    @Override
-    public void addBRegisterListener(BoffoListenerInterface _listener) {
-        boffoListener.add(_listener);
-    }
-
-    @Override
-    public void removeBRegisterListener(BoffoListenerInterface _listener) {
-        boffoListener.remove(_listener);
-    }
-
-    @Override
-    public void fireEvent(BoffoEvent _event) {
-        Object[] temp_list = this.boffoListener.toArray();
-        for (Object temp_list1 : temp_list) {
-            BoffoListenerInterface temp_obj = (BoffoListenerInterface) temp_list1;
-            temp_obj.messageReceived(_event);
-        }
+        fireEvent(_event);
     }
 
     private void changePanel(BoffoEvent _event) {
-        //Think I want to change the parameter to changePanel(BoffoBaseModule module)
-        switch(_event.getMessage().getCode()) {
-
-            case 2:
-                // Change to the main GUI panel.
-                this.gui.loadMainPanel();
-                this.activeModule = null;
+        // Get the event data as a seperate object.
+        BoffoNavigateEventData eventData = (BoffoNavigateEventData)_event.getMessage().getCode();
+        //
+        switch (eventData.getEventType()) {
+            case LOGIN_PANEL:
+                toLogin();
                 break;
-
-            case 3:
-                // Change to the login GUI panel.
-
-                /*if(login == null) {
-                    login = new LoginModule();
-                }
-                this.gui.loadLoginPanel();*/
+            case MAIN_PANEL:
+                toMainMenu();
                 break;
-
-            case 4:
-                // Change to the admin GUI panel.
-
-                if(admin == null) {
-                    admin = new Administration();
-                }
-                this.gui.loadAdminPanel();
+            case ADMIN_PANEL:
+                toAdmin();
                 break;
-
-            case 5:
-                // Change to the user GUI panel.
-
-                if(user == null) {
-                    user = new User();
-                }
-                //we would load the user panel;
+            case INVENTORY_PANEL:
+                toInventory();
                 break;
-
-            case 6:
-                // Change to the Inventory GUI panel.
-
-                if(inventory == null) {
-                    inventory = new Inventory();
-                }
-
-                this.gui.loadInventoryPanel();
+            case TRANSACTION_PANEL:
+                toTransaction();
                 break;
-
-            case 7:
-                // Change to the Transaction GUI panel.
-
-                if(transaction == null) {
-                    transaction = new Transaction();
-                }
-                this.gui.loadTransactionPanel();
-                break;
-
             default:
-                System.out.println("Not a Panel Change event, passing event to relevant class.");
+                // If we have reached this point then something has gone wrong...
                 break;
         }
     }
 
-    /**
-     * Respond to events that require instructions to be sent.
-     * @param _event
-     */
-    private void performAction(BoffoEvent _event) {
+    private void toLogin(){
+        // log out the current user and change to the login panel.
+        CURRENT_USER = null;
+        this.removeAllListeners();
+        // Remove all our modules.
+        this.gui.loadLoginPanel();
+    }
 
-        switch(_event.getMessage().getCode()) {
-            default:
-                // If its not a action _event, but in range, ignore it.
-                break;
-        }
+    private void toMainMenu() {
+        // Change to the main GUI panel.
+        this.gui.loadMainPanel();
+        this.removeListener(admin);
+        this.removeListener(inventory);
+        this.removeListener(transaction);
+    }
+
+    private void toAdmin() {
+        // Change to the admin GUI panel.
+        this.gui.loadAdminPanel();
+        this.addListener(admin);
+        this.admin.addListener(this);
+        this.removeListener(inventory);
+        this.removeListener(transaction);
+    }
+
+    private void toTransaction() {
+        // Change to the Inventory GUI panel.
+        this.gui.loadTransactionPanel();
+        this.addListener(transaction);
+        this.transaction.addListener(this);
+        this.removeListener(inventory);
+        this.removeListener(admin);
+    }
+
+    private void toInventory() {
+        // Change to the Transaction GUI panel.
+        this.gui.loadInventoryPanel();
+        this.addListener(inventory);
+        this.inventory.addListener(this);
+        this.removeListener(inventory);
+        this.removeListener(admin);
     }
 
     private void printReceipt() {
-        // printer.print(transactionModule);
-    }
-
-    private void registerListener(BoffoListenerInterface _newModule) {
-        this.activeModule =  _newModule;
-        //addBRegisterListener the nextModule to the activeModule (add to GUI).
+        // Pass in all relevent objects into the printer and let it sort them out.
     }
 }

@@ -80,7 +80,8 @@ public class PasswordHash
         return PBKDF2_ITERATIONS + ":" + toHex(salt) + ":" +  toHex(hash);
     }
     
-    public static byte[] PasswordHash( final char[] password, final byte[] salt, final int iterations, final int keyLength ) {
+    public static byte[] PasswordHash( final char[] password, final byte[] salt,
+            final int iterations, final int keyLength ) {
  
        try {
            SecretKeyFactory skf = SecretKeyFactory.getInstance( "PBKDF2WithHmacSHA1" );
@@ -93,7 +94,10 @@ public class PasswordHash
            throw new RuntimeException( e );
        }
    }
-
+   
+    public void messageReceived(BoffoEvent event) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
 
     private static String toHex(byte[] salt) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.

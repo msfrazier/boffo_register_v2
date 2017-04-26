@@ -28,7 +28,7 @@ public class Transaction {
      * @param event
      */
     public void messageReceived(BoffoEvent event){
-        switch(event.getMessage().getCode()){
+       // switch(event.getMessage().getCode()){
             /*
             case RegisterMessage.addProduct:
                 this.addItem();
@@ -43,4 +43,4 @@ public class Transaction {
             */
         }
     }
-}
+//}

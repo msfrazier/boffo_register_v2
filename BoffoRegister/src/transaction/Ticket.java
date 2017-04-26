@@ -27,15 +27,22 @@ public class Ticket extends Transaction {
 
     }
 
-    public ProductObject addProductUPC(int UPC) {
-        // ProductObject product = (ProductObject) product.add(null, null);
-        // this.products.add(product);
-        // return product;
-        return null;
+    public ProductObject addProductUPC(int _upc) {
+        ProductObject product = ProductObject.loadByUpc(name);
+        this.products.add(product);
+        return product;
     }
 
-    public ProductObject addProductName(String name) {
-        return null;
+    public ProductObject addProductName(String _name) {
+        ProductObject product = ProductObject.loadByName(name);
+        this.products.add(product);
+        return product;
+    }
+    
+    public ProductObject addProductSKU(String _sku){
+        ProductObject product = ProductObject.loadBySKU(sku);
+        this.products.add(product);
+        return product;
     }
 
     public ProductObject removeProductUPC(int UPC) {

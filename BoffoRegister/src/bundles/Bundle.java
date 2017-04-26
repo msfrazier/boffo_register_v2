@@ -7,17 +7,20 @@ import java.util.List;
  * Bundle class for storing and using bundles and discounts, contains methods
  * for processing products into lists including discounts.
  *
+ * @TODO Use utility format price for toString().
+ * @TODO Add updateBundles to receive and return a ArrayList of TicketElements
+ * @TODO loadBySKU, loadAll
+ *
  * @author Michael Resnik
  * @author Travis Cox
  * @lastEdited: 4/18/2017
  */
-public class Bundle implements TicketElement {
+public class Bundle extends database.BoffoDbObject implements TicketElement {
 
     // List of all bundles, will be removed and be replaced by database call.
     public static List<Bundle> allBundles = new ArrayList();
     // List of the products that comprise a bundle or discount.
     private final GroupList<Product_Test> products;
-
     private final DiscountType discountType;
     // Discount amount (based on discountType).
     private final double discountAmount;
@@ -26,6 +29,8 @@ public class Bundle implements TicketElement {
     private String name;
     private String description;
     private String sku;
+
+    protected static String tableName = "bundle_tbl";
 
 
     /**
@@ -42,9 +47,9 @@ public class Bundle implements TicketElement {
      * transaction. For no limit use 0.
      * @param _sku The bundle SKU
      */
-    private Bundle(String _name, String _description,
+    public Bundle(String _name, String _description,
             GroupList<Product_Test> _products, DiscountType _discountType,
-            double _discountAmount, int _maxAllowed, String _sku) {
+            double _discountAmount, int _maxAllowed, String _sku, boolean _active) {
         // TODO Validate input and throw exceptions.
         this.name = _name;
         this.description = _description;
@@ -67,6 +72,7 @@ public class Bundle implements TicketElement {
         this.discountAmount = tempDoubleAmount;
         this.maxAllowed = _maxAllowed;
         this.sku = _sku;
+        this.active = _active;
     }
 
 
@@ -77,7 +83,8 @@ public class Bundle implements TicketElement {
      */
     @Override
     public Bundle clone() {
-        return new Bundle(this.name, this.description, this.products.clone(), this.discountType, this.discountAmount, this.maxAllowed, this.sku);
+        return new Bundle(this.name, this.description, this.products.clone(),
+                this.discountType, this.discountAmount, this.maxAllowed, this.sku, this.active);
     }
 
 
@@ -96,8 +103,11 @@ public class Bundle implements TicketElement {
      * @param _sku The bundle SKU
      * @return The generated Bundle.
      */
-    public static Bundle generator(String _name, String _description, GroupList<Product_Test> _products, DiscountType _discountType, double _discountAmount, int _maxAllowed, String _sku) {
-        Bundle b = new Bundle(_name, _description, _products, _discountType, _discountAmount, _maxAllowed, _sku);
+    public static Bundle generator(String _name, String _description,
+            GroupList<Product_Test> _products, DiscountType _discountType,
+            double _discountAmount, int _maxAllowed, String _sku, boolean _active) {
+        Bundle b = new Bundle(_name, _description, _products, _discountType,
+                _discountAmount, _maxAllowed, _sku, _active);
         add(b);
         return b.clone();
     }
@@ -111,6 +121,17 @@ public class Bundle implements TicketElement {
     @Override
     public String getDescription() {
         return this.description;
+    }
+
+
+    public static Bundle[] getActiveBundles() {
+        ArrayList<Bundle> bundles = new ArrayList();
+        for (Bundle bundle : allBundles) {
+            if (bundle.active) {
+                bundles.add(bundle);
+            }
+        }
+        return bundles.toArray(new Bundle[bundles.size()]);
     }
 
 
@@ -145,14 +166,14 @@ public class Bundle implements TicketElement {
     public double getPrice() {
         switch (discountType) {
             case PERCENT:
-                return products.getTotal() * (100 - discountAmount) / 100;
+                return this.products.getTotal() * (100 - this.discountAmount) / 100;
             case DOLLAR:
-                return products.getTotal() - discountAmount;
+                return this.products.getTotal() - this.discountAmount;
             case BOGO:
-                double elementPrice = products.getTotal() / 2;
-                return (elementPrice + elementPrice * (100 - discountAmount) / 100);
+                double elementPrice = this.products.getTotal() / 2;
+                return (elementPrice + elementPrice * (100 - this.discountAmount) / 100);
             default:
-                return products.getTotal();
+                return this.products.getTotal();
         }
     }
 
@@ -185,27 +206,27 @@ public class Bundle implements TicketElement {
 
     @Override
     public String toString() {
-        return "Bundle:" + "[" + this.name + this.description + "]" + " " + this.discountType.formatString(this.discountAmount);
+        return "Bundle:" + "[" + this.name + this.description + "]" + " "
+                + this.discountType.formatString(this.discountAmount);
     }
 
 
     /**
-     * Returns a GroupList of TicketElements (products and bundles). Takes a
-     * group list of products that represent all the items on a transaction
-     * (with no bundles). The returned list will contain the products passed in
-     * as well as bundles. When bundles are added, the corresponding products
-     * are removed and added as to the bundle that represents them. This method
-     * preprocesses the lists and then calls the recursive method.
+     * Returns a List of TicketElements (products and bundles). Takes a list of
+     * products that represent all the items on a transaction. The returned list
+     * will contain the products passed in as well as bundles. The bundles will
+     * represent the best possible discount, including changing the bundles that
+     * were in the original list.
      *
-     * @param _products A GroupList of Products.
-     * @return A GroupList of TicketElements containing Bundles and Products.
+     * @param _products A List of Products.
+     * @return A List of TicketElements containing Bundles and Products.
      */
-    public static GroupList<TicketElement> updateBundles(GroupList<Product_Test> _products) {
-        // Get list of applicable bundles and create new (empty) list of elements.
-        GroupList<Bundle> bundles = getApplicable(_products);
-        GroupList<TicketElement> elements = new GroupList(BYSKU);
-        return Bundle.recursiveMethod(_products.clone(), bundles.clone(),
-                elements.clone());
+    public static List<TicketElement> updateBundles(List<Product_Test> _products) {
+        GroupList<Product_Test> products = new GroupList(BYSKU);
+        for (Product_Test product : _products) {
+            products.add(product);
+        }
+        return updateBundles(products).toAbsoluteList();
     }
 
 
@@ -219,7 +240,8 @@ public class Bundle implements TicketElement {
      * @param _fromBundles The list of Bundles to add from.
      * @return A GroupList of Bundles containing all applicable Bundles.
      */
-    private static GroupList<Bundle> getApplicable(GroupList<Product_Test> _allProducts, List<Bundle> _fromBundles) {
+    private static GroupList<Bundle> getApplicable(GroupList<Product_Test> _allProducts,
+            Bundle[] _fromBundles) {
         GroupList<Bundle> applicable = new GroupList(BYSKU);
         // Iterate over all the bundles and see if there are matching products.
         for (Bundle bundle : _fromBundles) {
@@ -257,7 +279,7 @@ public class Bundle implements TicketElement {
     private static GroupList<Bundle> getApplicable(GroupList<Product_Test> _allProducts) {
         // Call getApplicable with allBundles. Will be replaced by DB call
         // loading all bundles.
-        return getApplicable(_allProducts, allBundles);
+        return getApplicable(_allProducts, getActiveBundles());
     }
 
 
@@ -302,7 +324,8 @@ public class Bundle implements TicketElement {
      * @return A GroupList of Bundles that no longer includes invalidated
      * bundles
      */
-    private static GroupList<TicketElement> recursiveMethod(GroupList<Product_Test> _products, GroupList<Bundle> _bundles,
+    private static GroupList<TicketElement> recursiveUpdateBundles(GroupList<Product_Test> _products,
+            GroupList<Bundle> _bundles,
             GroupList<TicketElement> _elements) {
         // If the bundle list being referenced is empty, add remaining products
         // to elements and return elements.
@@ -319,7 +342,8 @@ public class Bundle implements TicketElement {
         Group<Bundle> bundleGroup = _bundles.get(0);
         _bundles.remove(bundleGroup.getElement(), 1);
         // Perform right recursion with copies of current info (bundle not used).
-        GroupList<TicketElement> rightElements = recursiveMethod(_products.clone(), _bundles.clone(), _elements.clone());
+        GroupList<TicketElement> rightElements = recursiveUpdateBundles(_products.clone(),
+                _bundles.clone(), _elements.clone());
 
         // Remove products from _products and add them to a GroupList to create
         // a BundleWrapper containing the bundle and products it contains.
@@ -332,12 +356,32 @@ public class Bundle implements TicketElement {
         _elements.add(bw);
         // Since left recursion removes products, prune before recursing.
         _bundles = pruneBundles(_products, _bundles);
-        GroupList<TicketElement> leftElements = recursiveMethod(_products, _bundles, _elements);
+        GroupList<TicketElement> leftElements = recursiveUpdateBundles(_products, _bundles, _elements);
         if (GroupList.BYPRICE.compare(leftElements, rightElements) <= 0) {
             return leftElements;
         } else {
             return rightElements;
         }
+    }
+
+
+    /**
+     * Returns a GroupList of TicketElements (products and bundles). Takes a
+     * group list of products that represent all the items on a transaction
+     * (with no bundles). The returned list will contain the products passed in
+     * as well as bundles. When bundles are added, the corresponding products
+     * are removed and added as to the bundle that represents them. This method
+     * preprocesses the lists and then calls the recursive method.
+     *
+     * @param _products A GroupList of Products.
+     * @return A GroupList of TicketElements containing Bundles and Products.
+     */
+    private static GroupList<TicketElement> updateBundles(GroupList<Product_Test> _products) {
+        // Get list of applicable bundles and create new (empty) list of elements.
+        GroupList<Bundle> bundles = getApplicable(_products);
+        GroupList<TicketElement> elements = new GroupList(BYSKU);
+        return Bundle.recursiveUpdateBundles(_products.clone(), bundles.clone(),
+                elements.clone());
     }
     // </editor-fold>
 

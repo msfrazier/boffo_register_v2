@@ -15,6 +15,7 @@ package bofforegister;
  */
 import administration.Administration;
 import events.BoffoEvent;
+import events.*;
 import events.BoffoFireObject;
 import gui.BoffoRegisterGUI;
 import javafx.stage.Stage;
@@ -28,16 +29,19 @@ public class BoffoController extends BoffoFireObject implements BoffoListenerInt
 
     public static User CURRENT_USER = null;
 
-    protected Transaction transaction = null;
-    protected Inventory inventory = null;
-    protected Administration admin = null;
-    protected Printer printer = null;
+    protected Transaction transaction = new Transaction();
+    protected Inventory inventory = new Inventory();
+    protected Administration admin = new Administration();
+    protected Printer printer = new Printer();
     protected BoffoRegisterGUI gui = null;
 
     BoffoController(Stage _primaryStage) {
         this.gui = new BoffoRegisterGUI(_primaryStage);
-        //this.addListener(gui);
-        // create user object
+    }
+
+    public void initilize() {
+        this.gui.addListener(this);
+        this.addListener(gui);
     }
 
     /**
@@ -50,76 +54,83 @@ public class BoffoController extends BoffoFireObject implements BoffoListenerInt
     public void messageReceived(BoffoEvent _event) {
 
         /**
-         * Also using cascading if else statements to catch events within a
-         * given range. Using literal ints until the event system is nailed
-         * down.
+         * We need a login event?
          */
-        if (_event.getMessage().getCode() == 0) {
-            // Create new user object with data from login panel.
-        } else if (_event.getMessage().getCode() == 1) {
-            printReceipt();
-        } else {
-            //
-            this.changePanel(_event);
+        if(_event.getMessage().getCode() instanceof BoffoNavigateEventData) {
+            changePanel(_event);
+            return;
         }
-        // If the messageString does not fall within range, ignore it.
+
+        fireEvent(_event);
     }
 
     private void changePanel(BoffoEvent _event) {
-        //Think I want to change the parameter to changePanel(BoffoBaseModule module)
-        switch (_event.getMessage().getCode()) {
-
-            case 2:
-                // log out the current user and change to the login panel.
-                this.gui.loadLoginPanel();
-
+        // Get the event data as a seperate object.
+        BoffoNavigateEventData eventData = (BoffoNavigateEventData)_event.getMessage().getCode();
+        //
+        switch (eventData.getEventType()) {
+            case LOGIN_PANEL:
+                toLogin();
                 break;
-
-            case 3:
-                // Change to the main GUI panel.
-                this.gui.loadMainPanel();
-
+            case MAIN_PANEL:
+                toMainMenu();
                 break;
-
-            case 4:
-                // If there is no Administration object, create it.
-                if (admin == null) {
-                    admin = new Administration();
-                }
-                // Change to the admin GUI panel.
-                this.gui.loadAdminPanel();
-
+            case ADMIN_PANEL:
+                toAdmin();
                 break;
-
-            case 5:
-                // Change to the User GUI panel.
+            case INVENTORY_PANEL:
+                toInventory();
                 break;
-
-            case 6:
-                // If there is no Inventory object, create one.
-                if (inventory == null) {
-                    inventory = new Inventory();
-                }
-                // Change to the Inventory GUI panel.
-                this.gui.loadInventoryPanel();
-
+            case TRANSACTION_PANEL:
+                toTransaction();
                 break;
-
-            case 7:
-                // Change to the Transaction GUI panel.
-                if (transaction == null) {
-                    transaction = new Transaction();
-                }
-                // Change to the Transaction GUI panel.
-                this.gui.loadTransactionPanel();
-
-                break;
-
             default:
-                // If we have reached this point then the message is not for us.
-                this.fireEvent(_event);
+                // If we have reached this point then something has gone wrong...
                 break;
         }
+    }
+
+    private void toLogin(){
+        // log out the current user and change to the login panel.
+        CURRENT_USER = null;
+        this.removeAllListeners();
+        // Remove all our modules.
+        this.gui.loadLoginPanel();
+    }
+
+    private void toMainMenu() {
+        // Change to the main GUI panel.
+        this.gui.loadMainPanel();
+        this.removeListener(admin);
+        this.removeListener(inventory);
+        this.removeListener(transaction);
+    }
+
+    private void toAdmin() {
+        // Change to the admin GUI panel.
+        this.gui.loadAdminPanel();
+        this.addListener(admin);
+        this.admin.addListener(this);
+        this.removeListener(inventory);
+        this.removeListener(transaction);
+    }
+
+    private void toTransaction() {
+        // Change to the Inventory GUI panel.
+        this.gui.loadTransactionPanel();
+        this.addListener(transaction);
+        this.transaction.addListener(this);
+        this.removeListener(inventory);
+        this.removeListener(admin);
+    }
+
+    private void toInventory() {
+        // Change to the Transaction GUI panel.
+        this.gui.loadInventoryPanel();
+        this.addListener(inventory);
+        this.inventory.addListener(this);
+        this.removeListener(inventory);
+        this.removeListener(admin);
     }
 
     private void printReceipt() {

@@ -4,29 +4,39 @@ import authorization.Authorization;
 import authorization.AuthorizationInterface;
 import database.BoffoDbObject;    
 import events.BoffoEvent;
+import events.BoffoFireObject;
 import events.BoffoListenerInterface;
 import events.BoffoMessenger;   
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.ArrayList; 
+import javax.swing.JOptionPane;
 import transaction.Ticket;
 import user.User;
   
 //hold a list of InventoryRecord object as ArrayList(dynamic list )
 //does not currently have a method to update inventory from ticket object
 
-public class Inventory extends BoffoDbObject implements AuthorizationInterface, BoffoListenerInterface{ //extends BoffoFireObject bc DBobject inherit from it
-    ArrayList<InventoryRecord> list=null;
+public class Inventory extends BoffoFireObject implements AuthorizationInterface, BoffoListenerInterface{ //extends BoffoFireObject bc DBobject inherit from it
+     ArrayList<InventoryRecord> list=null;
    public String table="inventory_tbl";
      
    
     public Inventory(){
         System.out.println("Inventory loaded"); 
-        }   
+                }
+            
     //update inventory fron ticket
-    public void UpdateInvRecord(Ticket _ticket){
-    //we need more from ticket; something to let us know how much to remove or add to inventory based on transaction made
-//ticket holds a list of pruduct, so it make sense to use ticket object as paarameter
-//this method will update inventory record based on Ticket object
-    }
+//    public void UpdateInvRecord(Ticket _ticket){
+//       
+//   for (int i = 0; i < _ticket.size(); i++){
+//       if(this.list.iterator().next().uuid==i.uuid){
+//       this.decrementRecordQuantity(table, i);
+//       }
+//       
+//   } 
+//
+//    }
     //return quantity of specific record 
     public int getInvRecordCount(String _sku){
         int count =0;
@@ -69,7 +79,7 @@ public class Inventory extends BoffoDbObject implements AuthorizationInterface, 
         }
     
     }
-    public void addInventoryRecord(String _uuid,String _sku,String _upc,int _quantity, StateOfInvetory _state,String _location, String _productName,int _price,String _vender){
+    public void addInventoryRecord(String _uuid,String _sku,String _upc,int _quantity, StateOfInvetory _state,String _location, String _productName,double _price,String _vender){
         //if already on list based on sku,update quantity of inventory 
          if(this.list.iterator().next().getSku()==_sku){
          this.list.iterator().next().setQuantity(this.list.iterator().next().getQuantity()+_quantity);
@@ -136,13 +146,16 @@ public class Inventory extends BoffoDbObject implements AuthorizationInterface, 
         }
          return l;
         } 
-      
+     //return size of inventory list 
+      public int GetListSize(){
+     return this.list.size();
+      }
      
     public void messageReceived(BoffoEvent event){
         
         switch(event.getMessage().getCode()){ 
             
-//            case BoffoMessenger.ADD_INVENTORY:
+//            case BoffoMessenger:
 //                this.addInventory();
 //                break;
 //            case BoffoMessenger.REMOVE_INVENTORY:
@@ -171,7 +184,12 @@ public class Inventory extends BoffoDbObject implements AuthorizationInterface, 
     }
 
     public void fireEvent(BoffoEvent _event) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        String message="";
+        
+        if(_event.getSource()==this.list){
+                message ="Inventory updated";
+        } 
+        JOptionPane.showMessageDialog(null, message);
     }
 } 
 

@@ -1,13 +1,18 @@
 package authorization;
 
-import user.User;
+import bofforegister.BoffoController;
 
-//Authors: CJ and Thomas Pedraza
+/**
+ * @author CJ
+ * @author Thomas Pedraza
+ *
+ * The sole purpose of this class is for Administration, Transaction, and
+ * Inventory to pass an Integer from their HashMaps.
+ *
+ */
 
 public class Authorization {
-    public boolean isAuthorized (int minAuthLevel){
-        //return (User.getAuthLevel >= minAuthLevel);
-        //below is to avoid errrors until user has a getAuthLevel method.
-        return false;
+    public static boolean isAuthorized (int minAuthLevel){
+        return (BoffoController.CURRENT_USER.getAuthlevel() >= minAuthLevel);
     }
 }

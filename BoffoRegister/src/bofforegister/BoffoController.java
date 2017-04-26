@@ -134,49 +134,6 @@ public class BoffoController extends BoffoFireObject implements BoffoListenerInt
         this.removeListener(admin);
     }
     
-    private void toLogin(){
-        // log out the current user and change to the login panel.
-        CURRENT_USER = null;
-        this.removeAllListeners();
-        // Remove all our modules.
-        this.gui.loadLoginPanel();
-    }
-    
-    private void toMainMenu() {
-        // Change to the main GUI panel.
-        this.gui.loadMainPanel();
-        this.removeListener(admin);
-        this.removeListener(inventory);
-        this.removeListener(transaction);
-    }
-    
-    private void toAdmin() {
-        // Change to the admin GUI panel.
-        this.gui.loadAdminPanel();
-        this.addListener(admin);
-        this.admin.addListener(this);
-        this.removeListener(inventory);
-        this.removeListener(transaction);
-    }
-    
-    private void toTransaction() {
-        // Change to the Inventory GUI panel.
-        this.gui.loadTransactionPanel();
-        this.addListener(transaction);
-        this.transaction.addListener(this);
-        this.removeListener(inventory);
-        this.removeListener(admin);
-    }
-    
-    private void toInventory() {
-        // Change to the Transaction GUI panel.
-        this.gui.loadInventoryPanel();
-        this.addListener(inventory);
-        this.inventory.addListener(this);
-        this.removeListener(inventory);
-        this.removeListener(admin);
-    }
-    
     private void printReceipt() {
         // Pass in all relevent objects into the printer and let it sort them out.
     }

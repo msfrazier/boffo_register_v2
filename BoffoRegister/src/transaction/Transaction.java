@@ -1,8 +1,10 @@
 package transaction;
 
 import events.BoffoEvent;
+import events.BoffoFireObject;
+import events.BoffoListenerInterface;
 
-public class Transaction {
+public class Transaction extends BoffoFireObject implements BoffoListenerInterface{
     public Transaction(){
            System.out.println("Transaction Module Loaded");
     }

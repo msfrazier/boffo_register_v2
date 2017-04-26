@@ -1,5 +1,13 @@
 package transaction;
 
+/*
+ * Last updated: 4-25-17
+ *
+ * This class create a product list and allow to add or remove item 
+ * from the list
+ *
+ * @author Fan Yang
+ */
 import database.BoffoDbObject;
 import events.BoffoEvent;
 import events.BoffoListenerInterface;

@@ -5,3 +5,4 @@ BoffoRegister/src/inventory/InventoryRecord.java
 !/BoffoRegister/src/events/BoffoNavigateEventData.java
 !/BoffoRegister/src/events/BoffoUpcEventData.java
 !/BoffoRegister/src/events/BoffoTicketEventData.java
+!/BoffoRegister/src/events/BoffoUserEventData.java

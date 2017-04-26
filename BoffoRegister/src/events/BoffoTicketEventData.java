@@ -48,11 +48,6 @@ public class BoffoTicketEventData<T> extends BoffoEventData {
     }
 
     
-    public EventType getEventType() {
-        return this.eventType;
-    }
-
-    
     public void setEventType(EventType _newType) {
         this.eventType = _newType;
     }

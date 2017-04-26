@@ -1,6 +1,5 @@
 
 package events;
-
 import database.BoffoDbObject;
 
 /**
@@ -43,11 +42,6 @@ public class BoffoUpcEventData<T> extends BoffoEventData {
     public BoffoUpcEventData(EventType _newType, BoffoDbObject _obj) {
         this.eventType = _newType;
         this.eventObj = _obj;
-    }
-    
-    
-    public EventType getEventType(){
-        return this.eventType;
     }
     
     

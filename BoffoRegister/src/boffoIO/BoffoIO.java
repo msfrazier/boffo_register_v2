@@ -6,10 +6,10 @@ package boffoIO;
  */
 import events.BoffoEvent;
 import events.BoffoFireObject;
+import events.BoffoListenerInterface;
 import java.util.Scanner;
-import product.ProductObject;
 
-public class BoffoIO extends BoffoFireObject{
+public class BoffoIO extends BoffoFireObject implements BoffoListenerInterface{
 
     protected Scanner input = new Scanner(System.in);
 
@@ -18,7 +18,7 @@ public class BoffoIO extends BoffoFireObject{
     */
     public void scanDouble(){
         double tempDouble = this.input.nextDouble();
-        if( product.ProductObject.loadByPrice("price", String.valueOf(tempDouble)) != null){
+        if(product.ProductObject.loadByPrice(String.valueOf(tempDouble)) != null){
 //            fireEvent(new BoffoEvent(this,message));
         }
     }
@@ -28,10 +28,10 @@ public class BoffoIO extends BoffoFireObject{
     */
     public void scanInt(){
         int tempInt = this.input.nextInt();
-        if( product.ProductObject.loadByQuantity("quantity", String.valueOf(tempInt)) != null){
+        if(product.ProductObject.loadByQuantity(String.valueOf(tempInt)) != null){
 //            fireEvent(new BoffoEvent(this,message));
         }
-        else if( product.ProductObject.loadByUPC("upc", String.valueOf(tempInt)) != null){
+        else if(product.ProductObject.loadByUpc(String.valueOf(tempInt)) != null){
 //            fireEvent(new BoffoEvent(this,message));
         }
     }
@@ -41,12 +41,17 @@ public class BoffoIO extends BoffoFireObject{
     */
     public void scanString(){
         String tempString = input.next();
-        if( product.ProductObject.loadByName("name", tempString) != null){
+        if(product.ProductObject.loadByName(tempString) != null){
 //            fireEvent(new BoffoEvent(this,message));
         }
-        else if( product.ProductObject.loadBySKU("sku", tempString) != null){
+        else if(product.ProductObject.loadBySKU(tempString) != null){
 //            fireEvent(new BoffoEvent(this,message));
         }
+    }
+
+    @Override
+    public void messageReceived(BoffoEvent event) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 }
 

@@ -15,7 +15,7 @@ package bofforegister;
  */
 import administration.Administration;
 import events.BoffoEvent;
-import events.BoffoEventData;
+import events.*;
 import events.BoffoFireObject;
 import gui.BoffoRegisterGUI;
 import javafx.stage.Stage;
@@ -34,11 +34,14 @@ public class BoffoController extends BoffoFireObject implements BoffoListenerInt
     protected Administration admin = new Administration();
     protected Printer printer = new Printer();
     protected BoffoRegisterGUI gui = null;
-    protected BoffoListenerInterface currentModule = null;
 
     BoffoController(Stage _primaryStage) {
         this.gui = new BoffoRegisterGUI(_primaryStage);
-        //
+    }
+
+    public void initilize() {
+        this.gui.addListener(this);
+        this.addListener(gui);
     }
 
     /**
@@ -51,100 +54,83 @@ public class BoffoController extends BoffoFireObject implements BoffoListenerInt
     public void messageReceived(BoffoEvent _event) {
 
         /**
-         * 
+         * We need a login event?
          */
-        switch(_event.getMessage().getCode().getEventType) {
-            case EventType.LOGIN_REQUEST:
-                //if(User.loginUser(_event)) {
-                CURRENT_USER = new User(/*
-                        _event.getMessage.getCode().getEventData(),
-                _event.getMessageValue(MessageCodes.USER_PASS)*/);
-                this.gui.loadMainPanel();
-                this.gui.addListener(this);
-                //}
+        if(_event.getMessage().getCode() instanceof BoffoNavigateEventData) {
+            changePanel(_event);
+            return;
+        }
+
+        fireEvent(_event);
+    }
+
+    private void changePanel(BoffoEvent _event) {
+        // Get the event data as a seperate object.
+        BoffoNavigateEventData eventData = (BoffoNavigateEventData)_event.getMessage().getCode();
+        //
+        switch (eventData.getEventType()) {
+            case LOGIN_PANEL:
+                toLogin();
                 break;
-        // If the messageString does not fall within range, ignore it.
-            case EventType.LOGOUT_REQUEST:
-                // TODO Call a static logout class?
-                this.fireEvent(_event);
-                this.removeAllListeners();
-                // TODO Null out all modules? Somehow wait for them to finish tasks before-hand?
-                CURRENT_USER = null;
-                this.gui.loadLoginPanel();
+            case MAIN_PANEL:
+                toMainMenu();
                 break;
-            case EventType.FIND_UPC:
-                //If currentModule is a Transaction class remove inventory from listeners
-                // else remove transaction from listeners because both don't need
-                // to edit look for UPC at the same time.
-                if (this.currentModule.getClass().equals(transaction.getClass()))
-                    this.removeListener(inventory);
-                else
-                    this.removeListener(transaction);
-                this.fireEvent(_event);
-                this.addListener(currentModule);
+            case ADMIN_PANEL:
+                toAdmin();
                 break;
-            case EventType.NEW_UPC:
-                //This should only run by inventory when they add a new item.
-                this.removeListener(transaction);
-                this.fireEvent(_event);
+            case INVENTORY_PANEL:
+                toInventory();
                 break;
-            case EventType.PRINT_RECEIPT:
-                printReceipt();
+            case TRANSACTION_PANEL:
+                toTransaction();
                 break;
             default:
-                this.changePanel(_event);
+                // If we have reached this point then something has gone wrong...
                 break;
         }
     }
 
-    private void changePanel(BoffoEvent _event) {
-        //Think I want to change the parameter to changePanel(BoffoBaseModule module)
-        switch (_event.getMessage().getCode().getEventType()) {
+    private void toLogin(){
+        // log out the current user and change to the login panel.
+        CURRENT_USER = null;
+        this.removeAllListeners();
+        // Remove all our modules.
+        this.gui.loadLoginPanel();
+    }
 
-            case EventType.LOGIN_PANEL:
-                // log out the current user and change to the login panel.
-                this.gui.loadLoginPanel();
+    private void toMainMenu() {
+        // Change to the main GUI panel.
+        this.gui.loadMainPanel();
+        this.removeListener(admin);
+        this.removeListener(inventory);
+        this.removeListener(transaction);
+    }
 
-                break;
+    private void toAdmin() {
+        // Change to the admin GUI panel.
+        this.gui.loadAdminPanel();
+        this.addListener(admin);
+        this.admin.addListener(this);
+        this.removeListener(inventory);
+        this.removeListener(transaction);
+    }
 
-            case EventType.MAIN_PANEL:
-                // Change to the main GUI panel.
-                this.gui.loadMainPanel();
-                this.gui.addListener(this);
+    private void toTransaction() {
+        // Change to the Inventory GUI panel.
+        this.gui.loadTransactionPanel();
+        this.addListener(transaction);
+        this.transaction.addListener(this);
+        this.removeListener(inventory);
+        this.removeListener(admin);
+    }
 
-                break;
-
-            case EventType.ADMIN_PANEL:
-                // If there is no Administration object, create it.
-                // Change to the admin GUI panel.
-                this.gui.loadAdminPanel();
-                this.currentModule = admin;
-                this.addListener(admin);
-
-                break;
-
-            case EventType.INVENTORY_PANEL:
-                // If there is no Inventory object, create one.
-                // Change to the Inventory GUI panel.
-                this.gui.loadInventoryPanel();
-                this.addListener(inventory);
-                this.inventory.addListener(this);
-
-                break;
-
-            case EventType.TRANSACTION_PANEL:
-                // Change to the Transaction GUI panel.
-                this.gui.loadTransactionPanel();
-                this.addListener(transaction);
-                this.transaction.addListener(this);
-
-                break;
-
-            default:
-                // If we have reached this point then the message is not for us.
-                this.fireEvent(_event);
-                break;
-        }
+    private void toInventory() {
+        // Change to the Transaction GUI panel.
+        this.gui.loadInventoryPanel();
+        this.addListener(inventory);
+        this.inventory.addListener(this);
+        this.removeListener(inventory);
+        this.removeListener(admin);
     }
 
     private void printReceipt() {

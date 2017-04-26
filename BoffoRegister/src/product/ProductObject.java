@@ -158,7 +158,7 @@ public class ProductObject extends BoffoDbObject implements TicketElement{
         if(!this.map.isEmpty()){
         this.map.clear();
     }
-        else{
+        else if (this.map.isEmpty()){
             this.map.put("name", this.name);
             this.map.put("quantity", this.quantity);
             this.map.put("price", this.price);

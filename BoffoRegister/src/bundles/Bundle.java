@@ -9,6 +9,7 @@ import java.util.List;
  *
  * @TODO Use utility format price for toString().
  * @TODO Add updateBundles to receive and return a ArrayList of TicketElements
+ * @TODO loadBySKU, loadAll
  *
  * @author Michael Resnik
  * @author Travis Cox
@@ -29,7 +30,7 @@ public class Bundle extends database.BoffoDbObject implements TicketElement {
     private String description;
     private String sku;
 
-    protected static String tableName = "product";
+    protected static String tableName = "bundle_tbl";
 
 
     /**

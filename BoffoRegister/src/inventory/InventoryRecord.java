@@ -12,10 +12,10 @@ public class InventoryRecord {
     String uuid;
     String sku;
     String upc;
-    int price;
+    double price;
     String vender;
     String productName;
-    
+
 public InventoryRecord(){
 this.quantity=0;
 this.state=NEW;  
@@ -27,7 +27,7 @@ this.price=0;
 this.vender=null;
 this.productName=null;
 }
-public InventoryRecord(String _uuid,String _sku,String _upc,int _quantity, StateOfInvetory _state,String _location, String _productName,int _price,String _vender){
+public InventoryRecord(String _uuid,String _sku,String _upc,int _quantity, StateOfInvetory _state,String _location, String _productName,double _price,String _vender){
 this.quantity=_quantity;
 this.state=_state;
 this.location=_location;
@@ -104,11 +104,11 @@ this.upc=_upc;
     }
 
 
-    public int getPrice() {
+    public double getPrice() {
         return price;
     }
 
-    public void setPrice(int price) {
+    public void setPrice(double price) {
         this.price = price;
     }
    

@@ -33,31 +33,31 @@ public class Ticket extends Transaction {
         this.total = 0.00;
         this.upc = 0;
     }
-    
-    public ProductObject addProductbyUPC(String UPC) {
-        ProductObject product = (ProductObject) ProductObject.loadByUpc(UPC);
+
+    public ProductObject addProductbyUPC(String _upc) {
+        ProductObject product = (ProductObject) ProductObject.loadByUpc(_upc);
         this.products.add(product);
-        this.productbundles=Bundle.updateBundles(products);
+        this.productbundles = Bundle.updateBundles(products);
         return product;
-    }
-    
-    public ProductObject addProductbyName(String name) {
-        ProductObject product = (ProductObject) ProductObject.loadByName(name);
-        this.products.add(product);
-        this.productbundles=Bundle.updateBundles(products);
-        return product;
-    }
-    
-    public void removeProductbyUPC(String UPC) {
-        ProductObject product = (ProductObject) ProductObject.loadByUpc(UPC);
-        this.products.remove(product);
-        this.productbundles=Bundle.updateBundles(products);
     }
 
-    public void removeProductbyName(String name) {
-        ProductObject product = (ProductObject) ProductObject.loadByName(name);
+    public ProductObject addProductbyName(String _name) {
+        ProductObject product = (ProductObject) ProductObject.loadByName(_name);
+        this.products.add(product);
+        this.productbundles = Bundle.updateBundles(products);
+        return product;
+    }
+
+    public void removeProductbyUPC(String _upc) {
+        ProductObject product = (ProductObject) ProductObject.loadByUpc(_upc);
         this.products.remove(product);
-        this.productbundles=Bundle.updateBundles(products);
+        this.productbundles = Bundle.updateBundles(products);
+    }
+
+    public void removeProductbyName(String _name) {
+        ProductObject product = (ProductObject) ProductObject.loadByName(_name);
+        this.products.remove(product);
+        this.productbundles = Bundle.updateBundles(products);
     }
 
     public double getTotalPrice(String String_price) {

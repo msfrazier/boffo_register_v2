@@ -12,9 +12,9 @@ CREATE SCHEMA IF NOT EXISTS boffo_register_schema DEFAULT CHARACTER SET utf8 ;
 USE boffo_register_schema ;
 
 -- -----------------------------------------------------
--- Table boffo_register_schema.inventory_tbl
+-- Table boffo_register_schema.product_tbl
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS boffo_register_schema.inventory_tbl (
+CREATE TABLE IF NOT EXISTS boffo_register_schema.product_tbl (
   product_id INT UNSIGNED NOT NULL,
   `name` VARCHAR(45) NULL,
   quantity INT NULL,
@@ -49,8 +49,8 @@ CREATE TABLE IF NOT EXISTS boffo_register_schema.transaction_tbl (
   transaction_id INT UNSIGNED NOT NULL,
   product_id INT UNSIGNED NOT NULL,
 	FOREIGN KEY fk_product_id(product_id)
-    REFERENCES inventory_tbl(product_id),
-  quantity INT NULL,
+    REFERENCES product_tbl(product_id),
+  quantity INT NOT NULL,
   ticket_id INT UNSIGNED NOT NULL,
 	FOREIGN KEY fk_ticket_id(ticket_id)
     REFERENCES ticket_tbl(ticket_id),
@@ -124,7 +124,7 @@ CREATE TABLE IF NOT EXISTS boffo_register_schema.bundle_items_tbl (
     REFERENCES bundle_tbl(bundle_id),
   product_id INT UNSIGNED NOT NULL,
 	FOREIGN KEY fk_product_id(product_id)
-    REFERENCES inventory_tbl(product_id),
+    REFERENCES product_tbl(product_id),
   quantity INT NULL,
   PRIMARY KEY (bundle_items_id),
   UNIQUE INDEX bundle_items_id_UNIQUE (bundle_items_id ASC))

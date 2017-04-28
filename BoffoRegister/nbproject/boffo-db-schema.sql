@@ -47,16 +47,11 @@ ENGINE = InnoDB;
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS boffo_register_schema.transaction_tbl (
   transaction_id INT UNSIGNED NOT NULL,
-  product_id INT UNSIGNED NOT NULL,
-	FOREIGN KEY fk_product_id(product_id)
-    REFERENCES product_tbl(product_id),
+  element_id INT UNSIGNED NOT NULL,
   quantity INT NOT NULL,
   ticket_id INT UNSIGNED NOT NULL,
 	FOREIGN KEY fk_ticket_id(ticket_id)
     REFERENCES ticket_tbl(ticket_id),
-  bundle_id INT UNSIGNED NOT NULL,
-	FOREIGN KEY fk_bundle_id(bundle_id)
-    REFERENCES bundle_tbl(bundle_id),
   price DOUBLE NULL,
   PRIMARY KEY (transaction_id),
   UNIQUE INDEX transaction_id_UNIQUE (transaction_id ASC))
@@ -125,7 +120,7 @@ CREATE TABLE IF NOT EXISTS boffo_register_schema.bundle_items_tbl (
   product_id INT UNSIGNED NOT NULL,
 	FOREIGN KEY fk_product_id(product_id)
     REFERENCES product_tbl(product_id),
-  quantity INT NULL,
+  quantity INT UNSIGNED NOT NULL,
   PRIMARY KEY (bundle_items_id),
   UNIQUE INDEX bundle_items_id_UNIQUE (bundle_items_id ASC))
 ENGINE = InnoDB;

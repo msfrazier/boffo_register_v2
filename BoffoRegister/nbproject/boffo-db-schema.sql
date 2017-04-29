@@ -12,13 +12,13 @@ CREATE SCHEMA IF NOT EXISTS boffo_register_schema DEFAULT CHARACTER SET utf8 ;
 USE boffo_register_schema ;
 
 -- -----------------------------------------------------
--- Table boffo_register_schema.inventory_tbl
+-- Table boffo_register_schema.product_tbl
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS boffo_register_schema.inventory_tbl (
+CREATE TABLE IF NOT EXISTS boffo_register_schema.product_tbl (
   product_id INT UNSIGNED NOT NULL,
   `name` VARCHAR(45) NULL,
-  quantity INT NULL,
-  price DOUBLE NULL,
+  quantity INT UNSIGNED NOT NULL,
+  price DOUBLE NOT NULL,
   upc INT NULL,
   sku INT NULL,
   rating INT NULL,
@@ -47,17 +47,13 @@ ENGINE = InnoDB;
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS boffo_register_schema.transaction_tbl (
   transaction_id INT UNSIGNED NOT NULL,
-  product_id INT UNSIGNED NOT NULL,
-	FOREIGN KEY fk_product_id(product_id)
-    REFERENCES inventory_tbl(product_id),
-  quantity INT NULL,
+  element_id INT UNSIGNED NOT NULL,
+  is_bundle BOOLEAN NULL,
+  quantity INT UNSIGNED NOT NULL,
   ticket_id INT UNSIGNED NOT NULL,
 	FOREIGN KEY fk_ticket_id(ticket_id)
     REFERENCES ticket_tbl(ticket_id),
-  bundle_id INT UNSIGNED NOT NULL,
-	FOREIGN KEY fk_bundle_id(bundle_id)
-    REFERENCES bundle_tbl(bundle_id),
-  price DOUBLE NULL,
+  price DOUBLE NOT NULL,
   PRIMARY KEY (transaction_id),
   UNIQUE INDEX transaction_id_UNIQUE (transaction_id ASC))
 ENGINE = InnoDB;
@@ -87,7 +83,7 @@ CREATE TABLE IF NOT EXISTS boffo_register_schema.store_info_tbl (
   receipt_msg VARCHAR(200) NULL,
   store_hours VARCHAR(45) NULL,
   phone_num VARCHAR(45) NULL,
-  tax_rate DOUBLE NULL,
+  tax_rate DOUBLE UNSIGNED NOT NULL,
   trans_key VARCHAR(45) NULL,
   login VARCHAR(45) NULL,
   secret_key VARCHAR(45) NULL,
@@ -107,6 +103,8 @@ CREATE TABLE IF NOT EXISTS boffo_register_schema.bundle_tbl (
   discount_amount DOUBLE NULL,
   max_allowed INT NULL,
   sku INT NULL,
+  start_date VARCHAR(45) NULL,
+  end_date VARCHAR(45) NULL,
   PRIMARY KEY (bundle_id),
   UNIQUE INDEX bundle_id_UNIQUE (bundle_id ASC))
 ENGINE = InnoDB;
@@ -122,8 +120,8 @@ CREATE TABLE IF NOT EXISTS boffo_register_schema.bundle_items_tbl (
     REFERENCES bundle_tbl(bundle_id),
   product_id INT UNSIGNED NOT NULL,
 	FOREIGN KEY fk_product_id(product_id)
-    REFERENCES inventory_tbl(product_id),
-  quantity INT NULL,
+    REFERENCES product_tbl(product_id),
+  quantity INT UNSIGNED NOT NULL,
   PRIMARY KEY (bundle_items_id),
   UNIQUE INDEX bundle_items_id_UNIQUE (bundle_items_id ASC))
 ENGINE = InnoDB;

@@ -1,6 +1,7 @@
 package authorization;
 
 import java.util.HashMap;
+
 /*
  *
  * @author CJ
@@ -17,5 +18,5 @@ import java.util.HashMap;
 */
 public interface AuthorizationInterface
 {
-    static HashMap<String, Integer> authTable = new HashMap<>();
+    static HashMap<String, int[]> authTable = new HashMap<>();
 }

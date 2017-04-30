@@ -1,5 +1,6 @@
 BoffoRegister/nbproject/private/private.properties
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 *.properties
 
@@ -10,4 +11,8 @@ BoffoRegister/nbproject/private/private.properties
 *.properties
 =======
 /BoffoRegister/build/
+>>>>>>> master
+=======
+/BoffoRegister/build/
+*.properties
 >>>>>>> master

@@ -3,8 +3,8 @@ package a.net;
 import administration.Administration;
 
 class ChargeCreditCard extends Administration {
-  //  final String transactionKey = getTransactionKey();
-  //  final String SecretKey = getSecretKey();
+    final String transactionKey = printTransactionKey();
+    final String SecretKey = printSecretKey();
     double amtCharge;
     int cardNumber;
     int expDate;

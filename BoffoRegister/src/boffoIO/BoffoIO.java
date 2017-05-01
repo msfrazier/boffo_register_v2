@@ -1,13 +1,14 @@
 package boffoIO;
 
 /**
- *
+ * This class is used for reading inputs and firing events to pass the data to other classes.
  * @author sjwhyatt
  */
 import events.BoffoEvent;
 import events.BoffoEventData;
 import events.BoffoFireObject;
 import events.BoffoListenerInterface;
+import events.BoffoUPCEvent;
 import events.BoffoUpcEventData;
 import java.util.Scanner;
 
@@ -34,9 +35,19 @@ public class BoffoIO extends BoffoFireObject implements BoffoListenerInterface{
             fireEvent(new BoffoEvent(this,new BoffoEventData(tempInt)));
         }
         else if(product.ProductObject.loadByUpc(String.valueOf(tempInt)) != null){
-            fireEvent(new BoffoEvent(this,
+            fireEvent(new BoffoUPCEvent(this,
                     new BoffoUpcEventData(BoffoUpcEventData.EventType.NEW_UPC, tempInt)));
         }
+    }
+
+        // Reads in two strings, puts them in an array, and fires an event with the array
+    public void scanLogin(){
+        String name = input.next();
+        String pass = input.next();
+        String[] login = new String[2];
+        login[0] = name;
+        login[1] = pass;
+        fireEvent(new BoffoEvent(this,new BoffoEventData(login)));
     }
 
     /* Reads in a string and checks to see if there is a product with that string.
@@ -52,19 +63,27 @@ public class BoffoIO extends BoffoFireObject implements BoffoListenerInterface{
         }
     }
 
-    // Reads in two strings, puts them in an array, and fires an event with the array
-    public void scanLogin(){
-        String name = input.next();
-        String pass = input.next();
-        String[] login = new String[2];
-        login[0] = name;
-        login[1] = pass;
-        fireEvent(new BoffoEvent(this,new BoffoEventData(login)));
-    }
-
+    // Checks to see what is the event is and calls the proper method.
     @Override
-    public void messageReceived(BoffoEvent event) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public void messageReceived(BoffoEvent _event) {
+        if(_event.getMessage().getCode() instanceof BoffoEventData){
+            // Calls scanDouble if the message reads double.
+            if(_event.getMessage().getCode().getEventData().toString().equalsIgnoreCase("double")){
+                scanDouble();
+            }
+            // Calls scanInt if the message reads int.
+            else if(_event.getMessage().getCode().getEventData().toString().equalsIgnoreCase("int")){
+                scanInt();
+            }
+            // Calls scanLogin if the message reads login.
+            else if(_event.getMessage().getCode().getEventData().toString().equalsIgnoreCase("login")){
+                scanLogin();
+            }
+            // Calls scanString if the message reads string.
+            else if(_event.getMessage().getCode().getEventData().toString().equalsIgnoreCase("string")){
+                scanString();
+            }
+        }
     }
 }
 

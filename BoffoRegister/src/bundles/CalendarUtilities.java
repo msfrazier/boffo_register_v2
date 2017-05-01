@@ -7,7 +7,8 @@ import java.util.Calendar;
 public abstract class CalendarUtilities {
 
     /**
-     * yyyy-MM-dd
+     * yyyy-MM-dd 
+     * MM-dd-yyyy
      *
      * @param input
      * @return

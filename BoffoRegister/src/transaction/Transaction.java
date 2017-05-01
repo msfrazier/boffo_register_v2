@@ -1,17 +1,20 @@
 package transaction;
 
 import events.BoffoEvent;
+import events.BoffoFireObject;
+import events.BoffoListenerInterface;
 
-public class Transaction {
+public class Transaction extends BoffoFireObject implements BoffoListenerInterface{
     public Transaction(){
            System.out.println("Transaction Module Loaded");
     }
-
+    
+    
     /**
      * gets called when an item has been added to the ticket
     */
     public void addItem(){
-        //an item has been added to the ticker
+        //an item has been added to the ticket
         System.out.println("Item has been added to ticket.");
     }
 
@@ -27,7 +30,7 @@ public class Transaction {
      * @param event
      */
     public void messageReceived(BoffoEvent event){
-        switch(event.getMessage().getCode()){
+       // switch(event.getMessage().getCode()){
             /*
             case RegisterMessage.addProduct:
                 this.addItem();
@@ -42,6 +45,4 @@ public class Transaction {
             */
         }
     }
-
-
-}
+//}

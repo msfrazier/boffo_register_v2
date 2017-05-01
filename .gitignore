@@ -1,7 +1,3 @@
+BoffoRegister/nbproject/private/private.properties
 /BoffoRegister/build/
-BoffoRegister/src/inventory/InventoryRecord.java
-*.java
-!/BoffoRegister/src/events/BoffoEventData.java
-!/BoffoRegister/src/events/BoffoNavigateEventData.java
-!/BoffoRegister/src/events/BoffoUpcEventData.java
-!/BoffoRegister/src/events/BoffoTicketEventData.java
+*.properties

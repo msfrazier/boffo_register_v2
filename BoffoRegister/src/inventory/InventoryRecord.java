@@ -16,9 +16,7 @@ public class InventoryRecord extends BoffoFireObject{
     protected String location;
     protected String vender;
     protected ProductObject product;
-    protected int quantity;
-    protected HashMap<String, Integer> inventory_hash = new HashMap<>();
-    protected String tableName = "inventory_tbl";
+    protected int quantity;    
 
 public InventoryRecord(){
     this.status = null;

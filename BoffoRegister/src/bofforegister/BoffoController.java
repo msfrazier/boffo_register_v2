@@ -1,7 +1,7 @@
 package bofforegister;
 
 /*
- * Last Updated: 04/09/2017
+ * Last Updated: 05/01/2017
  *
  * This class is the controller for the BoffoRegister.
  * The controller 'controls' the BoffoRegisters actions.
@@ -39,6 +39,9 @@ public class BoffoController extends BoffoFireObject implements BoffoListenerInt
         this.gui = new BoffoRegisterGUI(_primaryStage);
     }
 
+    /**
+     *
+     */
     public void initilize() {
         this.gui.addListener(this);
         this.addListener(gui);
@@ -52,10 +55,9 @@ public class BoffoController extends BoffoFireObject implements BoffoListenerInt
      */
     @Override
     public void messageReceived(BoffoEvent _event) {
-
-        /**
-         * We need a login event?
-         */
+        // Need a login event.
+        // Need a logout event.
+        // Need a print event, can be a generic event if needed.
         if(_event.getMessage().getCode() instanceof BoffoNavigateEventData) {
             changePanel(_event);
             return;
@@ -64,25 +66,37 @@ public class BoffoController extends BoffoFireObject implements BoffoListenerInt
         fireEvent(_event);
     }
 
+    /**
+     *
+     * @param _event
+     */
     private void changePanel(BoffoEvent _event) {
         // Get the event data as a seperate object.
         BoffoNavigateEventData eventData = (BoffoNavigateEventData)_event.getMessage().getCode();
-        //
         switch (eventData.getEventType()) {
             case LOGIN_PANEL:
-                toLogin();
+                CURRENT_USER = null;
+                this.removeAllExcept(gui);
+                this.gui.loadLoginPanel();
                 break;
             case MAIN_PANEL:
-                toMainMenu();
+                this.removeAllExcept(gui);
+                this.gui.loadMainPanel();
                 break;
             case ADMIN_PANEL:
-                toAdmin();
+                this.gui.loadAdminPanel();
+                this.admin.addListener(this);
+                this.changeTo(admin);
                 break;
             case INVENTORY_PANEL:
-                toInventory();
+                this.gui.loadInventoryPanel();
+                this.transaction.addListener(this);
+                this.changeTo(inventory);
                 break;
             case TRANSACTION_PANEL:
-                toTransaction();
+                this.gui.loadTransactionPanel();
+                this.inventory.addListener(this);
+                this.changeTo(transaction);
                 break;
             default:
                 // If we have reached this point then something has gone wrong...
@@ -90,51 +104,18 @@ public class BoffoController extends BoffoFireObject implements BoffoListenerInt
         }
     }
 
-    private void toLogin(){
-        // log out the current user and change to the login panel.
-        CURRENT_USER = null;
-        this.removeAllListeners();
-        // Remove all our modules.
-        this.addListener(gui);
-        this.gui.addListener(this);
-        this.gui.loadLoginPanel();
+    /**
+     *
+     * @param _listener
+     */
+    private void changeTo(BoffoListenerInterface _listener) {
+        this.removeAllExcept(gui);
+        this.addListener(_listener);
     }
 
-    private void toMainMenu() {
-        // Change to the main GUI panel.
-        this.gui.loadMainPanel();
-        this.removeListener(admin);
-        this.removeListener(inventory);
-        this.removeListener(transaction);
-    }
-
-    private void toAdmin() {
-        // Change to the admin GUI panel.
-        this.gui.loadAdminPanel();
-        this.addListener(admin);
-        this.admin.addListener(this);
-        this.removeListener(inventory);
-        this.removeListener(transaction);
-    }
-
-    private void toTransaction() {
-        // Change to the Inventory GUI panel.
-        this.gui.loadTransactionPanel();
-        this.addListener(transaction);
-        this.transaction.addListener(this);
-        this.removeListener(inventory);
-        this.removeListener(admin);
-    }
-
-    private void toInventory() {
-        // Change to the Transaction GUI panel.
-        this.gui.loadInventoryPanel();
-        this.addListener(inventory);
-        this.inventory.addListener(this);
-        this.removeListener(inventory);
-        this.removeListener(admin);
-    }
-
+    /**
+     *
+     */
     private void printReceipt() {
         // Pass in all relevent objects into the printer and let it sort them out.
     }

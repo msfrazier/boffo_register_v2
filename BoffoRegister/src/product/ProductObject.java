@@ -1,5 +1,14 @@
 package product;
 
+/*
+Last update: 5/1/2017
+
+Description: Class ProductObject constructs the product object and includes
+             find methods that search by attributes.
+
+Author: John Kaiserlik
+*/
+
 import utility.Utility;
 import bundles.*;
 import java.util.HashMap;
@@ -122,7 +131,6 @@ public class ProductObject extends BoffoDbObject implements TicketElement{
     }
 
 
-    //ProductObject.load() is a BoffoDbObject so still cast as ProductObject
     public static ProductObject loadBySKU(String _sku) {
         return (ProductObject)ProductObject.load("sku", _sku, new ProductObject(tableName));
     }

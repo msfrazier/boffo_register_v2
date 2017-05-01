@@ -1,10 +1,15 @@
-
 package inventory;
-//enumeration type for state of product to be use in InventoryRecord class
-public class StateOfInvetory{
-    public static final int NEW=0;
-    public static final int USED=1;
-    public static final int DAMAGED=2;
-    public static final int IN_TRANSIT=3;
-    public static final int ON_SHELF=4;
+
+/*
+This is enumeration type for state of product to be use in InventoryRecord class.
+authurs: Chad Schmidt, Tey Tang
+last updated 4/29/17
+*/
+
+public class StateOfInvetory{ 
+    protected static final int NEW = 0;
+    protected static final int USED = 1;
+    protected static final int DAMAGED = 2;
+    protected static final int IN_TRANSIT = 3;
+    protected static final int ON_SHELF = 4;
 }

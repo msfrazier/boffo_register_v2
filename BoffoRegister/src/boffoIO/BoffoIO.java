@@ -52,9 +52,14 @@ public class BoffoIO extends BoffoFireObject implements BoffoListenerInterface{
         }
     }
 
+    // Reads in two strings, puts them in an array, and fires an event with the array
     public void scanLogin(){
         String name = input.next();
         String pass = input.next();
+        String[] login = new String[2];
+        login[0] = name;
+        login[1] = pass;
+        fireEvent(new BoffoEvent(this,new BoffoEventData(login)));
     }
 
     @Override

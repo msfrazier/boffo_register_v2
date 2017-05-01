@@ -9,7 +9,7 @@ import product.ProductObject;
  *
  * @author Michael Resnik
  * @author Travis Cox
- * @lastEdited: 4/18/2017
+ * @lastEdited: 05/01/2017
  */
 public class BundleWrapper implements TicketElement {
 

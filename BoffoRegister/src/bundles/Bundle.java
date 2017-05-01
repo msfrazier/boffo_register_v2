@@ -16,7 +16,7 @@ import database.BoffoDbObject;
  *
  * @author Michael Resnik
  * @author Travis Cox
- * @lastEdited: 4/18/2017
+ * @lastEdited: 05/01/2017
  */
 public class Bundle extends BoffoDbObject implements TicketElement {
 
@@ -39,7 +39,7 @@ public class Bundle extends BoffoDbObject implements TicketElement {
     protected static String tableName = "bundle_tbl";
 
 
-    public Bundle(){
+    public Bundle() {
         BoffoDbObject.create();
         this.name = "";
         this.description = "";
@@ -52,7 +52,8 @@ public class Bundle extends BoffoDbObject implements TicketElement {
         this.maxAllowed = 0;
         this.active = false;
     }
-    
+
+
     /**
      * Constructor for a bundle
      *
@@ -189,20 +190,21 @@ public class Bundle extends BoffoDbObject implements TicketElement {
         return bundles.toArray(new Bundle[bundles.size()]);
     }
 
+
     public static Bundle[] getBundlesBy(Boolean _active, String _name, String _description, String _sku) {
         ArrayList<Bundle> bundles = new ArrayList();
         boolean[] truthValues = new boolean[4];
         for (Bundle bundle : allBundles) {
-            if (_active != null && _active != bundle.active){
+            if (_active != null && _active != bundle.active) {
                 continue;
             }
-            if(_name != null && _name.equals(bundle.getName())){
+            if (_name != null && _name.equals(bundle.getName())) {
                 continue;
             }
-            if(_description != null && _description.equals(bundle.getDescription())){
+            if (_description != null && _description.equals(bundle.getDescription())) {
                 continue;
             }
-            if(_sku != null && _sku.equals(bundle.getSku())){
+            if (_sku != null && _sku.equals(bundle.getSku())) {
                 continue;
             }
             bundles.add(bundle);
@@ -373,7 +375,7 @@ public class Bundle extends BoffoDbObject implements TicketElement {
     private static GroupList<Bundle> getApplicable(GroupList<ProductObject> _allProducts) {
         // Call getApplicable with allBundles. Will be replaced by DB call
         // loading all bundles.
-        return getApplicable(_allProducts, getBundlesBy(true,null,null,null));
+        return getApplicable(_allProducts, getBundlesBy(true, null, null, null));
     }
 
 

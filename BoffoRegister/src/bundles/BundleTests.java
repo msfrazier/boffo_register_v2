@@ -1,7 +1,6 @@
 package bundles;
 
 import static bundles.TicketElement.*;
-import database.BoffoDatabaseAPI;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -11,7 +10,6 @@ import product.Rating;
 public class BundleTests {
 
     public static void main(String[] args) {
-        BoffoDatabaseAPI.getInstance().dbLogin("mike", "resnik");
         long base = System.currentTimeMillis();
         //testRecursive(Group.BYPRICE);
         testWithLists(Group.BYPRICE);
@@ -69,7 +67,6 @@ public class BundleTests {
         /**
          * Create Products for later PairList and Bundle parameters.
          */
-        
         // String _name, int _quant, double _price, int _UPC, String _sk, Rating _rat, String _upc, String _tableName, String _description
         ProductObject p1 = generateProduct("p1", "", 3.75, "P1");
         ProductObject p2 = generateProduct("p2", "", 4.00, "P2");
@@ -173,13 +170,12 @@ public class BundleTests {
 
     /**
      * testTicket(). private static void testTicket() { Ticket_Test ticket = new
-     * Ticket_Test(); ProductObject p1 = generateProduct("p1", "", 3.75,
-     * "P1"); ProductObject p2 = generateProduct("p2", "", 4.00, "P2");
-     * ProductObject p3 = generateProduct("p3", "", 3.50, "P3");
-     * ProductObject p4 = generateProduct("p4", "", 3.25, "P4");
-     * ProductObject p5 = generateProduct("p5", "", 3.00, "P5");
-     * ticket.add(p1, 3); ticket.add(p2, 5); ticket.add(p3, 4); ticket.add(p4,
-     * 6); ticket.add(p5, 4);
+     * Ticket_Test(); ProductObject p1 = generateProduct("p1", "", 3.75, "P1");
+     * ProductObject p2 = generateProduct("p2", "", 4.00, "P2"); ProductObject
+     * p3 = generateProduct("p3", "", 3.50, "P3"); ProductObject p4 =
+     * generateProduct("p4", "", 3.25, "P4"); ProductObject p5 =
+     * generateProduct("p5", "", 3.00, "P5"); ticket.add(p1, 3); ticket.add(p2,
+     * 5); ticket.add(p3, 4); ticket.add(p4, 6); ticket.add(p5, 4);
      *
      * System.out.println(ticket.toString());
      *
@@ -209,7 +205,6 @@ public class BundleTests {
         GroupList<ProductObject> b6PL = new GroupList(BYSKU);
 
         // <editor-fold desc="Add all Products to Bundles.">
-                
         /**
          * Add all Products to Bundle : b1.
          * <b1> : <p1, 2> , <p2, 3>, <p3, 1>
@@ -363,8 +358,9 @@ public class BundleTests {
 
         System.out.println(b1.inRange());
     }
-    
-    public static ProductObject generateProduct(String _name, String _description, double _price, String _sku){
+
+
+    public static ProductObject generateProduct(String _name, String _description, double _price, String _sku) {
         ProductObject retProduct = new ProductObject(_name, 1, _price, 0, _sku, new Rating("e", 5), "upc", "product", _description);
         return retProduct;
     }

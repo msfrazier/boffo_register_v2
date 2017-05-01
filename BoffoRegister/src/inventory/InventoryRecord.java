@@ -2,97 +2,50 @@
 package inventory;
 
 
+import authorization.AuthorizationInterface; 
+import events.BoffoEvent;
+import events.BoffoFireObject;
+import events.BoffoListenerInterface;
 import static inventory.StateOfInvetory.*;
+import product.ProductObject;
  //To be use in Inventory class as list of Object
-//Product Object can be use as attribute here but not necessary 
-public class InventoryRecord {
-    int quantity;
-    StateOfInvetory state;
-    String location;
-    String uuid;
-    String sku;
-    String upc;
-    double price;
-    String vender;
-    String productName;
-
+//Product Object can be use as attribute here but not necessary
+public class InventoryRecord extends BoffoFireObject {
+    protected StateOfInvetory status;
+    protected String location;
+    protected String vender;
+    protected ProductObject product;
+    protected String uuid;
+    protected int quantity;
 public InventoryRecord(){
-this.quantity=0;
-this.state=NEW;  
-this.location=null;
-this.uuid=null;
-this.sku=null;
-this.upc=null;
-this.price=0; 
-this.vender=null;
-this.productName=null;
+    this.status=null;
+    this.location=null;
+    this.vender=null;
+    this.product=null;
+    this.uuid=null;
+    this.quantity=0;
+
 }
-public InventoryRecord(String _uuid,String _sku,String _upc,int _quantity, StateOfInvetory _state,String _location, String _productName,double _price,String _vender){
-this.quantity=_quantity;
-this.state=_state;
-this.location=_location;
-this.productName=_productName;
-this.price=_price; 
-this.vender=_vender;
-this.uuid=_uuid;
-this.sku=_sku;
-this.upc=_upc;
-}
+public InventoryRecord(ProductObject _product,String _uuid,int _quantity, StateOfInvetory _status,String _location,String _vender){
+    this.status=_status;
+    this.location=_location;
+    this.vender=_vender;
+    this.product=_product;
+    this.uuid=_uuid;
+    this.quantity=_quantity;
 
-    public String getUuid() {
-        return uuid;
+} 
+    @Override
+    protected synchronized void fireEvent(BoffoEvent event) {
+        super.fireEvent(event); //To change body of generated methods, choose Tools | Templates.
     }
 
-    public void setUuid(String uuid) {
-        this.uuid = uuid;
+    public StateOfInvetory getStatus() {
+        return status;
     }
 
-    public String getSku() {
-        return sku;
-    }
-
-    public void setSku(String sku) {
-        this.sku = sku;
-    }
-
-    public String getUpc() {
-        return upc;
-    }
-
-    public void setUpc(String upc) {
-        this.upc = upc;
-    }
-
-    public String getProductName() {
-        return productName;
-    }
-
-    public void setProductName(String productName) {
-        this.productName = productName;
-    }
-
-    public String getVender() {
-        return vender;
-    }
-
-    public void setVender(String vender) {
-        this.vender = vender;
-    }
-
-    public int getQuantity() {
-        return quantity;
-    }
-
-    public void setQuantity(int qantity) {
-        this.quantity = qantity;
-    }
-
-    public StateOfInvetory getState() {
-        return state;
-    }
-
-    public void setState(StateOfInvetory state) {
-        this.state = state;
+    public void setStatus(StateOfInvetory status) {
+        this.status = status;
     }
 
     public String getLocation() {
@@ -103,14 +56,37 @@ this.upc=_upc;
         this.location = location;
     }
 
-
-    public double getPrice() {
-        return price;
+    public String getVender() {
+        return vender;
     }
 
-    public void setPrice(double price) {
-        this.price = price;
+    public void setVender(String vender) {
+        this.vender = vender;
     }
-   
+
+    public ProductObject getProduct() {
+        return product;
+    }
+
+    public void setProduct(ProductObject product) {
+        this.product = product;
+    }
+
+    public String getUuid() {
+        return uuid;
+    }
+
+    public void setUuid(String uuid) {
+        this.uuid = uuid;
+    }
+
+    public int getQuantity() {
+        return quantity;
+    }
+
+    public void setQuantity(int quantity) {
+        this.quantity = quantity;
+    }
+
 }
 

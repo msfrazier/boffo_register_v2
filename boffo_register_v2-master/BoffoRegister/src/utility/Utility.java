@@ -1,0 +1,16 @@
+package utility;
+
+/**
+ *
+ * @author sjwhyatt
+ */
+
+public final class Utility {
+
+    /*Formats and returns a double as a String.
+    *Format for String is ($#.##)
+    */
+    public static String formatPrice(double price){
+        return String.format("$%.2f", price);
+    }
+}

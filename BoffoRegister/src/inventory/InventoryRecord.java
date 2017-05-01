@@ -1,116 +1,105 @@
 
 package inventory;
 
-
+import authorization.AuthorizationInterface;
+import events.BoffoEvent;
+import events.BoffoFireObject;
+import events.BoffoListenerInterface;
 import static inventory.StateOfInvetory.*;
- //To be use in Inventory class as list of Object
-//Product Object can be use as attribute here but not necessary 
-public class InventoryRecord {
-    int quantity;
-    StateOfInvetory state;
-    String location;
-    String uuid;
-    String sku;
-    String upc;
-    int price;
-    String vender;
-    String productName;
-    
+import java.awt.event.ActionEvent; 
+import java.awt.event.ActionListener;
+import java.util.HashMap;
+import product.ProductObject;
+
+/*
+This class is to be manage by Inventory class as list of Object
+used to update table.
+authurs: Chad Schmidt, Tey Tang
+last updated 4/29/17
+*/
+
+public class InventoryRecord extends BoffoFireObject{
+    protected StateOfInvetory status;
+    protected String location;
+    protected String vender;
+    protected ProductObject product;
+    protected int quantity;
+    protected HashMap<String, Integer> inventory_hash = new HashMap<>();
+    protected String tableName="inventory_tbl";
+
 public InventoryRecord(){
-this.quantity=0;
-this.state=NEW;  
-this.location=null;
-this.uuid=null;
-this.sku=null;
-this.upc=null;
-this.price=0; 
-this.vender=null;
-this.productName=null;
-}
-public InventoryRecord(String _uuid,String _sku,String _upc,int _quantity, StateOfInvetory _state,String _location, String _productName,int _price,String _vender){
-this.quantity=_quantity;
-this.state=_state;
-this.location=_location;
-this.productName=_productName;
-this.price=_price; 
-this.vender=_vender;
-this.uuid=_uuid;
-this.sku=_sku;
-this.upc=_upc;
+    this.status = null;
+    this.location = null;
+    this.vender = null;
+    this.product = null;
+    this.quantity = 0;
+       //
+//
+//   //1=user
+//   //2=manager
+//   //3-administration
+//   public Inventory(){
+//System.out.println("Inventory loaded");
+//inventory_hash.put("addInvnetory", 2);
 }
 
-    public String getUuid() {
-        return uuid;
+
+public InventoryRecord(ProductObject _product,int _quantity, StateOfInvetory _status,String _location,String _vender){
+    this.status = _status;
+    this.location = _location;
+    this.vender = _vender;
+    this.product = _product;
+    this.quantity = _quantity;
+}
+
+
+    public StateOfInvetory getStatus() {
+        return status;
     }
 
-    public void setUuid(String uuid) {
-        this.uuid = uuid;
+
+    public void setStatus(StateOfInvetory _status) {
+        this.status = _status;
     }
 
-    public String getSku() {
-        return sku;
-    }
-
-    public void setSku(String sku) {
-        this.sku = sku;
-    }
-
-    public String getUpc() {
-        return upc;
-    }
-
-    public void setUpc(String upc) {
-        this.upc = upc;
-    }
-
-    public String getProductName() {
-        return productName;
-    }
-
-    public void setProductName(String productName) {
-        this.productName = productName;
-    }
-
-    public String getVender() {
-        return vender;
-    }
-
-    public void setVender(String vender) {
-        this.vender = vender;
-    }
-
-    public int getQuantity() {
-        return quantity;
-    }
-
-    public void setQuantity(int qantity) {
-        this.quantity = qantity;
-    }
-
-    public StateOfInvetory getState() {
-        return state;
-    }
-
-    public void setState(StateOfInvetory state) {
-        this.state = state;
-    }
 
     public String getLocation() {
         return location;
     }
 
-    public void setLocation(String location) {
-        this.location = location;
+
+    public void setLocation(String _location) {
+        this.location = _location;
     }
 
 
-    public int getPrice() {
-        return price;
+    public String getVender() {
+        return vender;
     }
 
-    public void setPrice(int price) {
-        this.price = price;
+
+    public void setVender(String _vender) {
+        this.vender = _vender;
     }
-   
+
+
+    public ProductObject getProduct() {
+        return product;
+    }
+
+
+    public void setProduct(ProductObject _product) {
+        this.product = _product;
+    }
+
+
+    public int getQuantity() {
+        return quantity;
+    }
+
+
+    public void setQuantity(int _quantity) {
+        this.quantity = _quantity;
+    }
 }
 

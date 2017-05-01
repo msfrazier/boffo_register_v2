@@ -2,17 +2,12 @@ package inventory;
 
 import authorization.Authorization;
 import authorization.AuthorizationInterface;
-import database.BoffoDbObject;
 import events.BoffoEvent;
 import events.BoffoEventData;
 import events.BoffoFireObject;
-import events.BoffoListenerInterface;
 import java.util.ArrayList;
-import inventory.InventoryRecord;
 import java.util.Arrays;
 import product.ProductObject;
-import product.ProductObject;
-import user.User;
 
 /*
 * This class holds a list of InventoryRecord object as ArrayList(dynamic list ).

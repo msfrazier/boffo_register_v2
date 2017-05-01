@@ -1,12 +1,6 @@
 package inventory;
 
-import authorization.AuthorizationInterface;
-import events.BoffoEvent;
 import events.BoffoFireObject;
-import events.BoffoListenerInterface;
-import static inventory.StateOfInvetory.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.util.HashMap;
 import product.ProductObject;
 

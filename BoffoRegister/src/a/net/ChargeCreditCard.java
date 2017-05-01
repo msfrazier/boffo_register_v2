@@ -19,7 +19,5 @@ class ChargeCreditCard extends Administration {
         return "ERR";
     }
     
-    public static ANetApiResponse run(String apiLoginId, String transactionKey, Double amount){
-        
-    }
+    
 }

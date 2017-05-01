@@ -22,6 +22,7 @@ public class Inventory extends BoffoFireObject implements AuthorizationInterface
      BoffoEventData data = new BoffoEventData("updated");
      BoffoEvent update = new BoffoEvent(this,data);
      protected static HashMap<String, ArrayList<Integer>> inventory_hash = new HashMap<>();
+     protected String tableName = "inventory_tbl";
 
     public Inventory(){
        System.out.println("Inventory loaded");

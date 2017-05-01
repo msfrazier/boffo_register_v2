@@ -1,7 +1,7 @@
 package user;
 /*
 Author: SHANSHAN CHEN
-Last updated: 04/25/2017
+Last updated: 05/01/2017
 */
 import events.BoffoEvent;
 import database.BoffoDbObject;
@@ -28,9 +28,9 @@ public class User extends BoffoDbObject{
     
     
     
-public void User(String username, String pass){
-    this.username = username;
-    this.pass = pass;
+public void User(String _username, String _pass){
+    this.username = _username;
+    this.pass = _pass;
 }
         
 public String getUsername(){

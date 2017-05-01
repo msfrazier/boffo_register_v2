@@ -35,27 +35,27 @@ public class Ticket extends Transaction {
         this.upc = 0;
     }
 
-    public ProductObject addProductbyUPC(String UPC, List<Product_Test> _products) {
+    public ProductObject addProductbyUPC(String UPC, List<ProductObject> _products) {
         ProductObject product = (ProductObject) ProductObject.loadByUpc(UPC);
         this.products.add(product);
         this.productbundles = Bundle.updateBundles(_products);
         return product;
     }
 
-    public ProductObject addProductbyName(String name, List<Product_Test> _products) {
+    public ProductObject addProductbyName(String name, List<ProductObject> _products) {
         ProductObject product = (ProductObject) ProductObject.loadByName(name);
         this.products.add(product);
         this.productbundles = Bundle.updateBundles(_products);
         return product;
     }
 
-    public void removeProductbyUPC(String UPC, List<Product_Test> _products) {
+    public void removeProductbyUPC(String UPC, List<ProductObject> _products) {
         ProductObject product = (ProductObject) ProductObject.loadByUpc(UPC);
         this.products.remove(product);
         this.productbundles = Bundle.updateBundles(_products);
     }
 
-    public void removeProductbyName(String name, List<Product_Test> _products) {
+    public void removeProductbyName(String name, List<ProductObject> _products) {
         ProductObject product = (ProductObject) ProductObject.loadByName(name);
         this.products.remove(product);
         this.productbundles = Bundle.updateBundles(_products);

@@ -1,13 +1,12 @@
 package user;
 /*
 Author: SHANSHAN CHEN
-Last updated: 04/25/2017
+Last updated: 05/01/2017
 */
 import events.BoffoEvent;
 import database.BoffoDbObject;
 import events.BoffoMessenger;
 import authorization.Authorization;
-
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.security.spec.InvalidKeySpecException;
@@ -24,13 +23,11 @@ public class User extends BoffoDbObject{
     private String l_name;
     private int id;
     private String pass = "";
-    private int minAuthLevel;
+    private int minAuthLevel;        
     
-    
-    
-public void User(String username, String pass){
-    this.username = username;
-    this.pass = pass;
+public void User(String _username, String _pass){
+    this.username = _username;
+    this.pass = _pass;
 }
         
 public String getUsername(){
@@ -49,8 +46,8 @@ public int getAuthlevel(){
         return minAuthLevel;
 }
 //set the variables in the passwordhash class.
-public class PasswordHash
-{
+public class PasswordHash{
+    
     public static final String PBKDF2_ALGORITHM = "PBKDF2WithHmacSHA1";
     public static final int SALT_BYTE_SIZE = 24;
     public static final int HASH_BYTE_SIZE = 24;

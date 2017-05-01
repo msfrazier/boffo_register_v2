@@ -1,92 +1,87 @@
-
 package inventory;
 
-
-import authorization.AuthorizationInterface; 
-import events.BoffoEvent;
 import events.BoffoFireObject;
-import events.BoffoListenerInterface;
-import static inventory.StateOfInvetory.*;
+import java.util.HashMap;
 import product.ProductObject;
- //To be use in Inventory class as list of Object
-//Product Object can be use as attribute here but not necessary
-public class InventoryRecord extends BoffoFireObject {
+
+/*
+This class is to be manage by Inventory class as list of Object
+used to update table.
+authurs: Chad Schmidt, Tey Tang
+last updated 5/1/17
+*/
+
+public class InventoryRecord extends BoffoFireObject{
     protected StateOfInvetory status;
     protected String location;
     protected String vender;
     protected ProductObject product;
-    protected String uuid;
-    protected int quantity;
+    protected int quantity;    
+
 public InventoryRecord(){
-    this.status=null;
-    this.location=null;
-    this.vender=null;
-    this.product=null;
-    this.uuid=null;
-    this.quantity=0;
-
+    this.status = null;
+    this.location = null;
+    this.vender = null;
+    this.product = null;
+    this.quantity = 0;
 }
-public InventoryRecord(ProductObject _product,String _uuid,int _quantity, StateOfInvetory _status,String _location,String _vender){
-    this.status=_status;
-    this.location=_location;
-    this.vender=_vender;
-    this.product=_product;
-    this.uuid=_uuid;
-    this.quantity=_quantity;
 
-} 
-    @Override
-    protected synchronized void fireEvent(BoffoEvent event) {
-        super.fireEvent(event); //To change body of generated methods, choose Tools | Templates.
+
+public InventoryRecord(ProductObject _product,int _quantity, StateOfInvetory _status,String _location,String _vender){
+    this.status = _status;
+    this.location = _location;
+    this.vender = _vender;
+    this.product = _product;
+    this.quantity = _quantity;
     }
+
+
+  public String getLocation() {
+        return location;
+    }
+
+
+   public ProductObject getProduct() {
+        return product;
+    }
+
 
     public StateOfInvetory getStatus() {
         return status;
     }
 
-    public void setStatus(StateOfInvetory status) {
-        this.status = status;
+
+     public int getQuantity() {
+        return quantity;
     }
 
-    public String getLocation() {
-        return location;
-    }
-
-    public void setLocation(String location) {
-        this.location = location;
-    }
 
     public String getVender() {
         return vender;
     }
 
-    public void setVender(String vender) {
-        this.vender = vender;
+
+    public void setLocation(String _location) {
+        this.location = _location;
     }
 
-    public ProductObject getProduct() {
-        return product;
+
+    public void setProduct(ProductObject _product){
+        this.product = _product;
     }
 
-    public void setProduct(ProductObject product) {
-        this.product = product;
+
+    public void setStatus(StateOfInvetory _status) {
+        this.status = _status;
     }
 
-    public String getUuid() {
-        return uuid;
+
+    public void setQuantity(int _quantity) {
+        this.quantity = _quantity;
     }
 
-    public void setUuid(String uuid) {
-        this.uuid = uuid;
-    }
 
-    public int getQuantity() {
-        return quantity;
+    public void setVender(String _vender) {
+        this.vender = _vender;
     }
-
-    public void setQuantity(int quantity) {
-        this.quantity = quantity;
-    }
-
 }
-

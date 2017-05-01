@@ -33,12 +33,12 @@ ENGINE = InnoDB;
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS boffo_register_schema.user_tbl (
   user_id INT UNSIGNED NOT NULL,
-  user_name VARCHAR(45) NULL,
-  `password` VARCHAR(45) NULL,
-  first_name VARCHAR(45) NULL,
-  last_name VARCHAR(45) NULL,
+  username VARCHAR(45) NULL,
+  `pass` VARCHAR(45) NULL,
+  f_name VARCHAR(45) NULL,
+  l_name VARCHAR(45) NULL,
   PRIMARY KEY (user_id),
-  UNIQUE INDEX user_id_UNIQUE (user_id ASC))
+  UNIQUE INDEX id (user_id ASC))
 ENGINE = InnoDB;
 
 

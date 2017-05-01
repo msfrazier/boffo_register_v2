@@ -3,8 +3,9 @@ package inventory;
 /*
 This is enumeration type for state of product to be use in InventoryRecord class.
 authurs: Chad Schmidt, Tey Tang
-last updated 4/29/17
+last updated 5/1/17
 */
+
 
 public class StateOfInvetory{
     protected static final int NEW = 0;

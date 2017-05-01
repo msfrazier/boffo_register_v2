@@ -14,7 +14,7 @@ import product.ProductObject;
 This class is to be manage by Inventory class as list of Object
 used to update table.
 authurs: Chad Schmidt, Tey Tang
-last updated 4/30/17
+last updated 5/1/17
 */
 
 public class InventoryRecord extends BoffoFireObject{
@@ -24,7 +24,7 @@ public class InventoryRecord extends BoffoFireObject{
     protected ProductObject product;
     protected int quantity;
     protected HashMap<String, Integer> inventory_hash = new HashMap<>();
-    protected String tableName="inventory_tbl";
+    protected String tableName = "inventory_tbl";
 
 public InventoryRecord(){
     this.status = null;
@@ -74,7 +74,7 @@ public InventoryRecord(ProductObject _product,int _quantity, StateOfInvetory _st
     }
 
 
-    public void setProduct(ProductObject _product) {
+    public void setProduct(ProductObject _product){
         this.product = _product;
     }
 

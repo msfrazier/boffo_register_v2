@@ -11,12 +11,14 @@ import java.util.ArrayList;
 import inventory.InventoryRecord;
 import java.util.Arrays;
 import product.ProductObject;
+import product.ProductObject;
 import user.User;
 
 /*
-This class holds a list of InventoryRecord object as ArrayList(dynamic list ).
-It uses the list to manage seaching and updating table in data base.
-authurs: Chad Schmidt, Tey Tang
+* This class holds a list of InventoryRecord object as ArrayList(dynamic list ).
+* It uses the list to manage seaching and updating table in data base.
+* authors: Chad Schmidt, Tey Tang
+* last updated: 5/1/2017
 */
 
 public class Inventory extends BoffoFireObject implements AuthorizationInterface{
@@ -46,7 +48,7 @@ public class Inventory extends BoffoFireObject implements AuthorizationInterface
            fireEvent(update);
          }
         }
-//price sku uuid
+
 
     public static void buildMap(){
          ArrayList<Integer> addInventoryRecord = new ArrayList<>();
@@ -97,12 +99,12 @@ public class Inventory extends BoffoFireObject implements AuthorizationInterface
                 fireEvent(update);
          }else
         if(this.list.iterator().next().product.getSku() != _sku){
-        System.out.println("record not found");
+            System.out.println("record not found");
         }
     }
 
 
-//decrease quantity by one
+    //decrease quantity by one
     public void decrementInventory(String _sku){
         if(this.list.iterator().next().product.getSku() == _sku){
         this.list.iterator().next().product.setQuantity(this.list.iterator().next().getQuantity()-1);
@@ -112,8 +114,8 @@ public class Inventory extends BoffoFireObject implements AuthorizationInterface
     }
 
 
-//delete record
-    public void deleteInventoryRecord(String _sku){
+    //delete record
+ public void deleteInventoryRecord(String _sku){
         if(this.list.iterator().next().product.getSku() == _sku){
         this.list.remove(this.list.iterator().next());
         delete(this.list.iterator().next().product);
@@ -140,7 +142,7 @@ public class Inventory extends BoffoFireObject implements AuthorizationInterface
       }
 
 
-//increase quantity of specific record by specified amount
+    //increase quantity of specific record by specified amount
     public void increaseRecordQuantity(String _sku,int _quantity){
         if(this.list.iterator().next().product.getSku() == _sku){
         this.list.iterator().next().product.setQuantity(this.list.iterator().next().getQuantity()+_quantity);

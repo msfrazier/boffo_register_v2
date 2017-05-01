@@ -33,12 +33,12 @@ ENGINE = InnoDB;
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS boffo_register_schema.user_tbl (
   user_id INT UNSIGNED NOT NULL,
-  user_name VARCHAR(45) NULL,
-  `password` VARCHAR(45) NULL,
-  first_name VARCHAR(45) NULL,
-  last_name VARCHAR(45) NULL,
+  username VARCHAR(45) NULL,
+  `pass` VARCHAR(45) NULL,
+  f_name VARCHAR(45) NULL,
+  l_name VARCHAR(45) NULL,
   PRIMARY KEY (user_id),
-  UNIQUE INDEX user_id_UNIQUE (user_id ASC))
+  UNIQUE INDEX id (user_id ASC))
 ENGINE = InnoDB;
 
 
@@ -126,6 +126,20 @@ CREATE TABLE IF NOT EXISTS boffo_register_schema.bundle_items_tbl (
   UNIQUE INDEX bundle_items_id_UNIQUE (bundle_items_id ASC))
 ENGINE = InnoDB;
 
+-- -----------------------------------------------------
+-- Table boffo_register_schema.inventory_tbl
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS boffo_register_schema.inventory_tbl (
+  inventory_id INT UNSIGNED NOT NULL,
+  uuid VARCHAR(45) NOT NULL,
+  vendor VARCHAR(100) NULL,
+  product_id INT UNSIGNED NOT NULL,
+	FOREIGN KEY fk_product_id(product_id)
+    REFERENCES product_tbl(product_id),
+  quantity INT UNSIGNED NOT NULL,
+  PRIMARY KEY (inventory_id),
+  UNIQUE INDEX inventory_id_UNIQUE (inventory_id ASC))
+ENGINE = InnoDB;
 
 SET SQL_MODE=@OLD_SQL_MODE;
 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;

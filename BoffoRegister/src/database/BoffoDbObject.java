@@ -14,7 +14,6 @@ import java.util.UUID;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -234,101 +233,25 @@ public class BoffoDbObject {
 
 
     /**
-     * A method similar to grabValue but gets the method name instead of the value.
-     * @param _someObject
-     * @return ArrayList<String>
-     */
-    private ArrayList<String> getMethods(BoffoDbObject _someObject) {
-        ArrayList<String> retList = new ArrayList<String>();
-
-        for (Method method : _someObject.getClass().getDeclaredMethods()) {
-            if (Modifier.isPublic(method.getModifiers())
-                    && method.getParameterTypes().length == 0
-                    && method.getReturnType() != void.class
-                    && (method.getName().startsWith("get") || method.getName().startsWith("is"))) {
-                try {
-                    Object value = method.invoke(_someObject);
-                    if (value != null) {
-                        //System.out.println(method.getName());
-                        retList.add(method.getName());
-                    }
-                } catch (IllegalAccessException | IllegalArgumentException
-                        | InvocationTargetException ex) {
-                    Logger.getLogger(BoffoDbObject.class.getName()).log(Level.SEVERE, null, ex);
-                }
-            }
-        }
-        return retList;
-    }
-
-
-    /**
-     * A method that take the value all the getter methods with the given class
-     * using reflection Method();
-     * @return ArrayList<String>.
-     */
-    private ArrayList<String> grabValue(BoffoDbObject _someObject) {
-        ArrayList<String> retList = new ArrayList<String>();
-
-        for (Method method : _someObject.getClass().getDeclaredMethods()) {
-            if (Modifier.isPublic(method.getModifiers())
-                    && method.getParameterTypes().length == 0
-                    && method.getReturnType() != void.class
-                    && (method.getName().startsWith("get") || method.getName().startsWith("is"))) {
-                try {
-                    Object value = method.invoke(_someObject);
-                    if (value != null) {
-                        //System.out.println(method.getName() + "=" + value);
-                        retList.add(value.toString());
-                    }
-                } catch (IllegalAccessException | IllegalArgumentException
-                        | InvocationTargetException ex) {
-                    Logger.getLogger(BoffoDbObject.class.getName()).log(Level.SEVERE, null, ex);
-                }
-            }
-        }
-        retList.add(_someObject.uuid);
-        return retList;
-    }
-
-
-    /**
-     * A method to preform some black magic voo-doo to match(MOSTLY) a class property to
+     * A method to match a class property to
      * the coresponding sql field
      * @param _obj
      * @return String[] of values matched to its sql entry.
      */
     private String[] getMatchedValues(BoffoDbObject _obj) {
-        List<String> fields = query.getTableColumns(_obj.getTableName(_obj));
-        List<String> values = grabValue(_obj);
-        String[] tValues = new String[values.size()];
+        List<String> columns = query.getTableColumns(getTableName(_obj));
+        String[] retString = new String[columns.size()];
 
-        List<String> methodNames = getMethods(_obj);
-
-        try {
-            tValues[0] = values.get(0);
-            //Get ready to see some shit.
-            for (int i = 1; i < fields.size(); i++) {
-                String tmpField = fields.get(i).toLowerCase();
-                for (int j = 1; j < methodNames.size(); j++) {
-                    String tmpName = methodNames.get(j).toLowerCase();
-                    //Remove get from the name.
-                    tmpName = tmpName.substring(3);
-
-                    //Test to see if names match
-                    if (tmpField.matches(".*" + tmpName + ".*")) {
-                        //System.out.println(tmpField + " : " + tmpName);
-                        tValues[i] = values.get(j);
-                    }
-                }
+        for (int i = 0; i < retString.length; i++) {
+            String tmpString = columns.get(i);
+            try {
+                retString[i] = _obj.getClass().getField(tmpString).toString()                    ;
+            } catch (NoSuchFieldException | SecurityException ex) {
+                Logger.getLogger(BoffoDbObject.class.getName()).log(Level.SEVERE, null, ex);
             }
-
-            //Grab the UUID since it is added last to the values list.
-        } catch (Exception e) {
-            System.out.println("Unable to save: " + e);
         }
 
-        return tValues;
+        return retString;
     }
 
 

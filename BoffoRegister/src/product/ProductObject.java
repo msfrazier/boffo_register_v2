@@ -6,7 +6,6 @@ import java.util.HashMap;
 import database.BoffoDbObject;
 
 public class ProductObject extends BoffoDbObject implements TicketElement{
-   //need product object 'factory'
         protected String name = "";
         protected int quantity = 0;
         protected double price = 0.00;
@@ -24,7 +23,7 @@ public class ProductObject extends BoffoDbObject implements TicketElement{
 
 
     public ProductObject(String _tableName){
-        this.tableName = _tableName;
+        ProductObject.tableName = _tableName;
     }
 
 
@@ -36,7 +35,7 @@ public class ProductObject extends BoffoDbObject implements TicketElement{
        this.SKU = _sk;
        this.rat = _rat;
        this.uuid = _upc;
-       this.tableName = _tableName;
+       ProductObject.tableName = _tableName;
        this.description = _description;
     }
 
@@ -79,7 +78,7 @@ public class ProductObject extends BoffoDbObject implements TicketElement{
 
 
     public ProductObject getProduct() {
-        return new ProductObject(this.name, this.quantity, this.price, this.UPC, this.SKU, this.rat, this.uuid, this.tableName, this.description);
+        return new ProductObject(this.name, this.quantity, this.price, this.UPC, this.SKU, this.rat, this.uuid, tableName, this.description);
     }
 
 

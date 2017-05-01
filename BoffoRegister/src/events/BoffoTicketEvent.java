@@ -6,9 +6,16 @@
 package events;
 
 /**
+ *Last updated: 4-26-17
  *
- * @author msf10_000
+ *This class extends the generic BoffoEvent and is used for anyone who fires
+ * events that pass the ticket
+ *
+ * @author Maclean Frazier
  */
-public class BoffoTicketEvent {
-    
+public class BoffoTicketEvent extends BoffoEvent{
+      public BoffoTicketEvent(Object source, BoffoEventData messageString){
+          super(source, messageString);
 }
+}
+

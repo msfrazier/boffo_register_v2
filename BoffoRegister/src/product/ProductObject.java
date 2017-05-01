@@ -20,12 +20,12 @@ public class ProductObject extends BoffoDbObject implements TicketElement{
         protected String name = "";
         protected int quantity = 0;
         protected double price = 0.00;
-        protected String UPC = "";
+        protected int UPC = 0;
         protected String SKU = "";
         protected Rating rat = null;
         protected static String tableName = "product";
         protected String uuid = "";
-        protected HashMap map = null;
+        protected HashMap map = new HashMap();
         protected String description = "";
 
     public ProductObject(){
@@ -38,7 +38,7 @@ public class ProductObject extends BoffoDbObject implements TicketElement{
     }
 
 
-    public ProductObject(String _name, int _quant, double _price, String _UPC, String _sk, Rating _rat, String _uuid, String _tableName, String _description) {
+    public ProductObject(String _name, int _quant, double _price, int _UPC, String _sk, Rating _rat, String _uuid, String _tableName, String _description) {
        this.name = _name;
        this.quantity = _quant;
        this.price = _price;
@@ -113,12 +113,12 @@ public class ProductObject extends BoffoDbObject implements TicketElement{
     }
 
 
-    public void setUPC(String _upc) {
+    public void setUPC(int _upc) {
         this.UPC = _upc;
     }
 
 
-    public String getUPC() {
+    public int getUPC() {
         return this.UPC;
     }
 
@@ -197,10 +197,7 @@ public class ProductObject extends BoffoDbObject implements TicketElement{
     }
 
 
-    public Object generator(){
-        for (Object o : this.map.values()){
-            return o.toString();
-        }
-        return null;
+    public ProductObject generator(String _name, int _quant, double _price, int _UPC, String _sku, Rating _rat, String _uuid, String _tableName, String _description) {
+        return new ProductObject(_name, _quant, _price, _UPC, _sku, _rat, _uuid, _tableName, _description);
     }
 }

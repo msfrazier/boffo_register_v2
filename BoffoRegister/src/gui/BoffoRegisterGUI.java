@@ -4,15 +4,18 @@ package gui;
  * Boffo Register GUI
  *
  * @purpose This class contains the Graphical User Interface (GUI) for the
- * BoffoRegister application.
- *
- * @status The GUI does not yet support event handling since the event module is
- * awaiting full implementation.
+ * BoffoRegister application. The GUI consists of a login panel to start and
+ * then after logging in the user is presented with the main panel. The main
+ * panel consists of Transaction, Inventory, and Administration. This class is
+ * structured where the load methods are first, the build methods second, and
+ * helper methods at the very bottom of the file.
  *
  * @author Logan Stanfield and Kevin Keomalaythong
- * @updated 2017-04-26
+ * @updated 2017-05-01
  */
 import events.*;
+import events.BoffoNavigateEventData.EventType;
+import static events.BoffoNavigateEventData.EventType.*;
 import inventory.Inventory;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -20,7 +23,6 @@ import java.util.ArrayList;
 import java.util.Optional;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
@@ -33,7 +35,6 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
-import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.SplitPane;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
@@ -47,6 +48,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.Scene;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
@@ -54,63 +56,63 @@ import javafx.scene.text.Text;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 
-public final class BoffoRegisterGUI extends BoffoFireObject {
-
-    // Temporary class used for storing item attributes.
-    // Needed in order to add items to the TableView.
-    public static class Item {
-
-        private SimpleStringProperty itemName;
-        private SimpleStringProperty SKU;
-        private double price;
-
-        private Item(String _itemName, String _SKU, double _price) {
-            this.itemName = new SimpleStringProperty(_itemName);
-            this.SKU = new SimpleStringProperty(_SKU);
-            this.price = _price;
-        }
-
-        public String getItemName() {
-            return this.itemName.get();
-        }
-
-        public void setItemName(String _itemName) {
-            this.itemName.set(_itemName);
-        }
-
-        public String getSKU() {
-            return this.SKU.get();
-        }
-
-        public void setSKU(String _SKU) {
-            this.SKU.set(_SKU);
-        }
-
-        public double getPrice() {
-            return this.price;
-        }
-
-        public void setPrice(double _price) {
-            this.price = _price;
-        }
-    }
+public final class BoffoRegisterGUI extends BoffoFireObject implements BoffoListenerInterface {
 
     // List of items added in the table.
     private final Stage boffoStage;
 
-    //Window size properties.
+    //Window properties.
     private final int screenWidth = 800;
     private final int screenHeight = 600;
+    private final boolean resizable = false;
+
+    //Dialog size properties.
+    private final int dialogWidth = 400;
+    private final int dialogHeight = 150;
+    private final int addEntryDialogWidth = 400;
+    private final int addEntryDialogHeight = 250;
+
+    //Filepaths for images
+    private final String boffoLogoFilepath = "res/boffo_logo/boffo_logo.png";
+    private final String administrationBtnNormalImagePath = "res/administration/button_main.png";
+    private final String administrationBtnHoverImagePath = "res/administration/button_hover.png";
+    private final String administrationBtnPressedImagePath = "res/administration/button_click.png";
+    private final String transactionBtnNormalImagePath = "res/transaction/button_main.png";
+    private final String transactionBtnHoverImagePath = "res/transaction/button_hover.png";
+    private final String transactionBtnPressedImagePath = "res/transaction/button_click.png";
+    private final String inventoryBtnNormalImagePath = "res/inventory/button_main.png";
+    private final String inventoryBtnHoverImagePath = "res/inventory/button_hover.png";
+    private final String inventoryBtnPressedImagePath = "res/inventory/button_click.png";
+    private final String logoutBtnNormalImagePath = "res/logout/button_main.png";
+    private final String logoutBtnHoverImagePath = "res/logout/button_hover.png";
+    private final String logoutBtnPressedImagePath = "res/logout/button_click.png";
+    private final String signInBtnNormalImagePath = "res/signin/button_main.png";
+    private final String signInBtnHoverImagePath = "res/signin/button_hover.png";
+    private final String signSinBtnPressedImagePath = "res/signin/button_click.png";
+
+    //Styling for buttons properties.
+    final String STYLE_NORMAL = "-fx-background-color: transparent; -fx-padding: 5, 5, 5, 5;";
+    final String STYLE_PRESSED = "-fx-background-color: transparent; -fx-padding: 6 4 4 6;";
 
     //VARIABLES FOR TESTING PURPOSES ONLY//
     int counter = 0;
     //VARIABLES FOR TESTING PURPOSES ONLY//
 
+    /**
+     * This constructor sets up the stage and loads the main panel.
+     *
+     * @param _stage
+     */
     public BoffoRegisterGUI(Stage _stage) {
         this.boffoStage = _stage;
+        this.boffoStage.setResizable(resizable);
         this.loadLoginPanel();
     }
 
+    /**
+     * This method loads the admin panel to the stage and is built by calling
+     * the buildAdminPanel() method.
+     */
     public void loadAdminPanel() {
         System.out.println("Loading Administration Panel");
         boffoStage.setTitle("Administration");
@@ -119,6 +121,10 @@ public final class BoffoRegisterGUI extends BoffoFireObject {
         boffoStage.show();
     }
 
+    /**
+     * This method loads the inventory panel to the stage and is built by
+     * calling the buildInventoryPanel() method.
+     */
     public void loadInventoryPanel() {
         System.out.println("Loading Inventory Panel");
         boffoStage.setTitle("Inventory");
@@ -127,6 +133,10 @@ public final class BoffoRegisterGUI extends BoffoFireObject {
         boffoStage.show();
     }
 
+    /**
+     * This method loads the login panel to the stage and is built by calling
+     * the buildLoginPanel() method.
+     */
     public void loadLoginPanel() {
         System.out.println("Loading Login Panel");
         boffoStage.setTitle("BoffoRegister Login");
@@ -137,6 +147,10 @@ public final class BoffoRegisterGUI extends BoffoFireObject {
         this.boffoStage.show();
     }
 
+    /**
+     * This method loads the main panel to the stage and is built by calling the
+     * buildMainPanel() method.
+     */
     public void loadMainPanel() {
         System.out.println("Loading Main Panel");
         boffoStage.setTitle("Boffo Register Main Menu");
@@ -147,6 +161,10 @@ public final class BoffoRegisterGUI extends BoffoFireObject {
         this.boffoStage.show();
     }
 
+    /**
+     * This method loads the transaction panel to the stage and is built by
+     * calling the buildTransactionPanel() method.
+     */
     public void loadTransactionPanel() {
         System.out.println("Loading Transaction Panel");
         boffoStage.setTitle("Transaction");
@@ -155,10 +173,16 @@ public final class BoffoRegisterGUI extends BoffoFireObject {
         boffoStage.show();
     }
 
-    //TODO: Add more buttons & associated events to the Administration panel.
+    /**
+     * This method builds the entire Administration panel. The root of the stage
+     * is a StackPane and has several layers added on top of it.
+     *
+     * @return new Scene
+     */
     public Scene buildAdminPanel() {
         StackPane root = new StackPane();
 
+        //Button settings and configurations.
         Button btnExit = new Button("Exit");
         Button btnSetPhoneNumber = new Button("Change Store Phone Number");
         Button btnSetReceiptMsg = new Button("Change Receipt Message");
@@ -175,7 +199,7 @@ public final class BoffoRegisterGUI extends BoffoFireObject {
         //ImageView settigs and configurations.
         FileInputStream input = null;
         try {
-            input = new FileInputStream("res/boffo_logo.png");
+            input = new FileInputStream(boffoLogoFilepath);
         } catch (FileNotFoundException ex) {
             Logger.getLogger(BoffoRegisterGUI.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -185,13 +209,374 @@ public final class BoffoRegisterGUI extends BoffoFireObject {
 
         root.getChildren().addAll(imageVbox, adminBtnVbox);
 
-        //Fire an event to go back to the Main panel.
+        //Button settings below.
         btnExit.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent _e) {
                 loadMainPanel();
 //                BoffoEvent evtExit = new BoffoEvent(this, Routing.EXIT_PANEL);
 //                fireEvent(evtExit);
+            }
+        });
+
+        btnSetPhoneNumber.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent _e) {
+                final Stage dialog = new Stage();
+                dialog.initModality(Modality.APPLICATION_MODAL);
+                dialog.initOwner(boffoStage);
+
+                //Creates a VBox to hold the TextFields and buttons.
+                VBox removeEntryVbox = new VBox(10);
+                removeEntryVbox.setPadding(new Insets(10));
+
+                //Creates title for vbox.
+                Text title = new Text("Change Store Phone Number");
+                title.setFont(Font.font("Tahoma", FontWeight.BOLD, 15));
+
+                //TextField setting and configurations.
+                final TextField skuTextField = new TextField();
+                skuTextField.setPromptText("Enter Store Phone Number");
+
+                //Button settings and configurations.
+                HBox buttonsHbox = new HBox(10);
+                Button btnRemoveItem = new Button("Save");
+                Button btnCancel = new Button("Cancel");
+                //Label settings and configurations.
+                final Label warningLabel = addWarningLabel("*All fields must have valid data*",
+                        8, Color.RED);
+                buttonsHbox.getChildren().addAll(btnRemoveItem, btnCancel, warningLabel);
+
+                removeEntryVbox.getChildren().addAll(title, skuTextField,
+                        buttonsHbox);
+
+                Scene dialogScene = new Scene(removeEntryVbox, dialogWidth, dialogHeight);
+                dialog.setScene(dialogScene);
+                dialog.show();
+
+                btnRemoveItem.setOnAction(new EventHandler<ActionEvent>() {
+                    @Override
+                    public void handle(ActionEvent _e) {
+                        String itemToRemove = skuTextField.getText();
+                        if (skuTextField.getText().trim().equals("")) {
+                            warningLabel.setVisible(true);
+
+                        } else {
+                            warningLabel.setVisible(false);
+                            dialog.close();
+                            //TODO: Implement adding item to inventory.
+                        }
+                        //TODO: Implement removal of an entry when events are available.
+                    }
+                });
+
+                btnCancel.setOnAction(new EventHandler<ActionEvent>() {
+                    @Override
+                    public void handle(ActionEvent _e) {
+                        dialog.close();
+                    }
+                });
+            }
+        });
+
+        btnSetReceiptMsg.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent _e) {
+                final Stage dialog = new Stage();
+                dialog.initModality(Modality.APPLICATION_MODAL);
+                dialog.initOwner(boffoStage);
+
+                //Creates a VBox to hold the TextFields and buttons.
+                VBox removeEntryVbox = new VBox(10);
+                removeEntryVbox.setPadding(new Insets(10));
+
+                //Creates title for vbox.
+                Text title = new Text("Change Receipt Message");
+                title.setFont(Font.font("Tahoma", FontWeight.BOLD, 15));
+
+                //TextField setting and configurations.
+                final TextField skuTextField = new TextField();
+                skuTextField.setPromptText("Enter Receipt Message");
+
+                //Button settings and configurations.
+                HBox buttonsHbox = new HBox(10);
+                Button btnRemoveItem = new Button("Save");
+                Button btnCancel = new Button("Cancel");
+                //Label settings and configurations.
+                final Label warningLabel = addWarningLabel("*All fields must have valid data*",
+                        8, Color.RED);
+                buttonsHbox.getChildren().addAll(btnRemoveItem, btnCancel, warningLabel);
+
+                removeEntryVbox.getChildren().addAll(title, skuTextField,
+                        buttonsHbox);
+
+                Scene dialogScene = new Scene(removeEntryVbox, dialogWidth, dialogHeight);
+                dialog.setScene(dialogScene);
+                dialog.show();
+
+                btnRemoveItem.setOnAction(new EventHandler<ActionEvent>() {
+                    @Override
+                    public void handle(ActionEvent _e) {
+                        String itemToRemove = skuTextField.getText();
+                        if (skuTextField.getText().trim().equals("")) {
+                            warningLabel.setVisible(true);
+
+                        } else {
+                            warningLabel.setVisible(false);
+                            dialog.close();
+                            //TODO: Implement adding item to inventory.
+                        }
+                        //TODO: Implement removal of an entry when events are available.
+                    }
+                });
+
+                btnCancel.setOnAction(new EventHandler<ActionEvent>() {
+                    @Override
+                    public void handle(ActionEvent _e) {
+                        dialog.close();
+                    }
+                });
+            }
+        });
+
+        btnSetStoreHrs.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent _e) {
+                final Stage dialog = new Stage();
+                dialog.initModality(Modality.APPLICATION_MODAL);
+                dialog.initOwner(boffoStage);
+
+                //Creates a VBox to hold the TextFields and buttons.
+                VBox removeEntryVbox = new VBox(10);
+                removeEntryVbox.setPadding(new Insets(10));
+
+                //Creates title for vbox.
+                Text title = new Text("Change Store Hours");
+                title.setFont(Font.font("Tahoma", FontWeight.BOLD, 15));
+
+                //TextField setting and configurations.
+                final TextField skuTextField = new TextField();
+                skuTextField.setPromptText("Enter Store Hours");
+
+                //Button settings and configurations.
+                HBox buttonsHbox = new HBox(10);
+                Button btnRemoveItem = new Button("Save");
+                Button btnCancel = new Button("Cancel");
+                //Label settings and configurations.
+                final Label warningLabel = addWarningLabel("*All fields must have valid data*",
+                        8, Color.RED);
+                buttonsHbox.getChildren().addAll(btnRemoveItem, btnCancel, warningLabel);
+
+                removeEntryVbox.getChildren().addAll(title, skuTextField,
+                        buttonsHbox);
+
+                Scene dialogScene = new Scene(removeEntryVbox, dialogWidth, dialogHeight);
+                dialog.setScene(dialogScene);
+                dialog.show();
+
+                btnRemoveItem.setOnAction(new EventHandler<ActionEvent>() {
+                    @Override
+                    public void handle(ActionEvent _e) {
+                        String itemToRemove = skuTextField.getText();
+                        if (skuTextField.getText().trim().equals("")) {
+                            warningLabel.setVisible(true);
+
+                        } else {
+                            warningLabel.setVisible(false);
+                            dialog.close();
+                            //TODO: Implement adding item to inventory.
+                        }
+                        //TODO: Implement removal of an entry when events are available.
+                    }
+                });
+
+                btnCancel.setOnAction(new EventHandler<ActionEvent>() {
+                    @Override
+                    public void handle(ActionEvent _e) {
+                        dialog.close();
+                    }
+                });
+            }
+        });
+
+        btnSetStoreId.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent _e) {
+                final Stage dialog = new Stage();
+                dialog.initModality(Modality.APPLICATION_MODAL);
+                dialog.initOwner(boffoStage);
+
+                //Creates a VBox to hold the TextFields and buttons.
+                VBox removeEntryVbox = new VBox(10);
+                removeEntryVbox.setPadding(new Insets(10));
+
+                //Creates title for vbox.
+                Text title = new Text("Change Store ID");
+                title.setFont(Font.font("Tahoma", FontWeight.BOLD, 15));
+
+                //TextField setting and configurations.
+                final TextField skuTextField = new TextField();
+                skuTextField.setPromptText("Enter Store ID");
+
+                //Button settings and configurations.
+                HBox buttonsHbox = new HBox(10);
+                Button btnRemoveItem = new Button("Save");
+                Button btnCancel = new Button("Cancel");
+                //Label settings and configurations.
+                final Label warningLabel = addWarningLabel("*All fields must have valid data*",
+                        8, Color.RED);
+                buttonsHbox.getChildren().addAll(btnRemoveItem, btnCancel, warningLabel);
+
+                removeEntryVbox.getChildren().addAll(title, skuTextField,
+                        buttonsHbox);
+
+                Scene dialogScene = new Scene(removeEntryVbox, dialogWidth, dialogHeight);
+                dialog.setScene(dialogScene);
+                dialog.show();
+
+                btnRemoveItem.setOnAction(new EventHandler<ActionEvent>() {
+                    @Override
+                    public void handle(ActionEvent _e) {
+                        String itemToRemove = skuTextField.getText();
+                        if (skuTextField.getText().trim().equals("")) {
+                            warningLabel.setVisible(true);
+
+                        } else {
+                            warningLabel.setVisible(false);
+                            dialog.close();
+                            //TODO: Implement adding item to inventory.
+                        }
+                        //TODO: Implement removal of an entry when events are available.
+                    }
+                });
+
+                //Cancel button properties.
+                btnCancel.setOnAction(new EventHandler<ActionEvent>() {
+                    @Override
+                    public void handle(ActionEvent _e) {
+                        dialog.close();
+                    }
+                });
+            }
+        });
+
+        btnSetStoreName.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent _e) {
+                final Stage dialog = new Stage();
+                dialog.initModality(Modality.APPLICATION_MODAL);
+                dialog.initOwner(boffoStage);
+
+                //Creates a VBox to hold the TextFields and buttons.
+                VBox removeEntryVbox = new VBox(10);
+                removeEntryVbox.setPadding(new Insets(10));
+
+                //Creates title for vbox.
+                Text title = new Text("Change Store Name");
+                title.setFont(Font.font("Tahoma", FontWeight.BOLD, 15));
+
+                //TextField setting and configurations.
+                final TextField skuTextField = new TextField();
+                skuTextField.setPromptText("Enter Store Name");
+
+                //Button settings and configurations.
+                HBox buttonsHbox = new HBox(10);
+                Button btnRemoveItem = new Button("Save");
+                Button btnCancel = new Button("Cancel");
+                //Label settings and configurations.
+                final Label warningLabel = addWarningLabel("*All fields must have valid data*",
+                        8, Color.RED);
+                buttonsHbox.getChildren().addAll(btnRemoveItem, btnCancel, warningLabel);
+
+                removeEntryVbox.getChildren().addAll(title, skuTextField,
+                        buttonsHbox);
+
+                Scene dialogScene = new Scene(removeEntryVbox, dialogWidth, dialogHeight);
+                dialog.setScene(dialogScene);
+                dialog.show();
+
+                btnRemoveItem.setOnAction(new EventHandler<ActionEvent>() {
+                    @Override
+                    public void handle(ActionEvent _e) {
+                        String itemToRemove = skuTextField.getText();
+                        if (skuTextField.getText().trim().equals("")) {
+                            warningLabel.setVisible(true);
+
+                        } else {
+                            warningLabel.setVisible(false);
+                            dialog.close();
+                            //TODO: Implement adding item to inventory.
+                        }
+                        //TODO: Implement removal of an entry when events are available.
+                    }
+                });
+
+                btnCancel.setOnAction(new EventHandler<ActionEvent>() {
+                    @Override
+                    public void handle(ActionEvent _e) {
+                        dialog.close();
+                    }
+                });
+            }
+        });
+
+        btnSetTaxRate.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent _e) {
+                final Stage dialog = new Stage();
+                dialog.initModality(Modality.APPLICATION_MODAL);
+                dialog.initOwner(boffoStage);
+
+                //Creates a VBox to hold the TextFields and buttons.
+                VBox removeEntryVbox = new VBox(10);
+                removeEntryVbox.setPadding(new Insets(10));
+
+                //Creates title for vbox.
+                Text title = new Text("Change Tax Rate (Decimal Form)");
+                title.setFont(Font.font("Tahoma", FontWeight.BOLD, 15));
+
+                //TextField setting and configurations.
+                final TextField skuTextField = new TextField();
+                skuTextField.setPromptText("Enter Tax Rate");
+
+                //Button settings and configurations.
+                HBox buttonsHbox = new HBox(10);
+                Button btnRemoveItem = new Button("Save");
+                Button btnCancel = new Button("Cancel");
+                //Label settings and configurations.
+                final Label warningLabel = addWarningLabel("*All fields must have valid data*",
+                        8, Color.RED);
+                buttonsHbox.getChildren().addAll(btnRemoveItem, btnCancel, warningLabel);
+
+                removeEntryVbox.getChildren().addAll(title, skuTextField,
+                        buttonsHbox);
+
+                Scene dialogScene = new Scene(removeEntryVbox, dialogWidth, dialogHeight);
+                dialog.setScene(dialogScene);
+                dialog.show();
+
+                btnRemoveItem.setOnAction(new EventHandler<ActionEvent>() {
+                    @Override
+                    public void handle(ActionEvent _e) {
+                        String itemToRemove = skuTextField.getText();
+                        if (skuTextField.getText().trim().equals("")) {
+                            warningLabel.setVisible(true);
+
+                        } else {
+                            warningLabel.setVisible(false);
+                            dialog.close();
+                            //TODO: Implement adding item to inventory.
+                        }
+                        //TODO: Implement removal of an entry when events are available.
+                    }
+                });
+
+                btnCancel.setOnAction(new EventHandler<ActionEvent>() {
+                    @Override
+                    public void handle(ActionEvent _e) {
+                        dialog.close();
+                    }
+                });
             }
         });
 
@@ -202,7 +587,7 @@ public final class BoffoRegisterGUI extends BoffoFireObject {
     public Scene buildInventoryPanel() {
         SplitPane inventoryPanel = new SplitPane();
         inventoryPanel.setDividerPositions(.25);
-        final ObservableList<Item> itemList = FXCollections.observableArrayList();
+        final ObservableList<String> itemList = FXCollections.observableArrayList();
 
         //Initialize the inventory. TODO: Remove after events are available.
         final Inventory inventory = new Inventory();
@@ -224,36 +609,11 @@ public final class BoffoRegisterGUI extends BoffoFireObject {
                 btnSearchByPrice, btnSave, btnExit);
 
         //TableView configurations and settings.
-        final TableView inventoryTbl = new TableView();
-        inventoryTbl.setMinHeight(400);
-        inventoryTbl.setMinWidth(250);
-
-        inventoryTbl.setEditable(true);
-
-        // Establish the columns and associate them with Item attributes.
-        final TableColumn nameCol = new TableColumn("Name");
-        nameCol.setMinWidth(125);
-        nameCol.setCellValueFactory(
-                new PropertyValueFactory<Item, String>("itemName"));
-
-        final TableColumn skuCol = new TableColumn("SKU");
-        skuCol.setMinWidth(155);
-        skuCol.setCellValueFactory(
-                new PropertyValueFactory<Item, String>("SKU"));
-
-        final TableColumn uuidCol = new TableColumn("UUID");
-        uuidCol.setMinWidth(155);
-        uuidCol.setCellFactory(
-                new PropertyValueFactory<Item, String>("UUID"));
-
-        final TableColumn priceCol = new TableColumn("Price");
-        priceCol.setMinWidth(125);
-        priceCol.setCellValueFactory(
-                new PropertyValueFactory<Item, String>("price"));
+        String[] tableHeaders = {"Item Name", "SKU", "UUID", "Price"};
+        final TableView inventoryTbl = addTableView(tableHeaders, 400, 250, 140);
 
         // Add the item list to the table.
         inventoryTbl.setItems(itemList);
-        inventoryTbl.getColumns().addAll(nameCol, skuCol, uuidCol, priceCol);
 
         VBox inventoryTblVbox = new VBox(inventoryTbl);
         inventoryTblVbox.setAlignment(Pos.TOP_LEFT);
@@ -294,20 +654,15 @@ public final class BoffoRegisterGUI extends BoffoFireObject {
                 //Cancel and add buttons.
                 Button btnAddItem = new Button("Add item");
                 Button btnCancel = new Button("Cancel");
+                //Label settings and configurations.
+                final Label warningLabel = addWarningLabel("*All fields must contain valid data*",
+                        10, Color.RED);
 
                 final HBox buttonsHbox = new HBox(10);
-                buttonsHbox.getChildren().addAll(btnAddItem, btnCancel);
+                buttonsHbox.getChildren().addAll(btnAddItem, btnCancel, warningLabel);
                 addEntryVbox.getChildren().add(buttonsHbox);
 
-                //Label settings and configurations.
-                //This is used as a warning message for not having the 
-                final Label warningLabel = new Label("All fields must be valid");
-                warningLabel.setFont(Font.font("Tahoma", FontWeight.NORMAL, 8));
-                warningLabel.setTextFill(Color.RED);
-                buttonsHbox.getChildren().add(warningLabel);
-                warningLabel.setVisible(false);
-
-                Scene dialogScene = new Scene(addEntryVbox, 325, 250);
+                Scene dialogScene = new Scene(addEntryVbox, addEntryDialogWidth, addEntryDialogHeight);
                 dialog.setScene(dialogScene);
                 dialog.show();
 
@@ -327,6 +682,7 @@ public final class BoffoRegisterGUI extends BoffoFireObject {
 
                         } else {
                             warningLabel.setVisible(false);
+                            dialog.close();
                             //TODO: Implement adding item to inventory.
                         }
                     }
@@ -365,8 +721,6 @@ public final class BoffoRegisterGUI extends BoffoFireObject {
         btnRemoveEntry.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent _e) {
-                String sku = "";
-
                 final Stage dialog = new Stage();
                 dialog.initModality(Modality.APPLICATION_MODAL);
                 dialog.initOwner(boffoStage);
@@ -376,7 +730,7 @@ public final class BoffoRegisterGUI extends BoffoFireObject {
                 removeEntryVbox.setPadding(new Insets(10));
 
                 //Creates title for vbox.
-                Text title = new Text("Add Entry");
+                Text title = new Text("Remove Entry");
                 title.setFont(Font.font("Tahoma", FontWeight.BOLD, 15));
 
                 //TextField setting and configurations.
@@ -387,19 +741,14 @@ public final class BoffoRegisterGUI extends BoffoFireObject {
                 HBox buttonsHbox = new HBox(10);
                 Button btnRemoveItem = new Button("Remove Item");
                 Button btnCancel = new Button("Cancel");
-                buttonsHbox.getChildren().addAll(btnRemoveItem, btnCancel);
-
-                //Label settings and configurations.
-                final Label warningLabel = new Label("All fields must be valid");
-                warningLabel.setFont(Font.font("Tahoma", FontWeight.NORMAL, 8));
-                warningLabel.setTextFill(Color.RED);
-                buttonsHbox.getChildren().add(warningLabel);
-                warningLabel.setVisible(false);
+                final Label warningLabel = addWarningLabel("*All fields must contain valid data*",
+                        10, Color.RED);
+                buttonsHbox.getChildren().addAll(btnRemoveItem, btnCancel, warningLabel);
 
                 removeEntryVbox.getChildren().addAll(title, skuTextField,
                         buttonsHbox);
 
-                Scene dialogScene = new Scene(removeEntryVbox, 325, 150);
+                Scene dialogScene = new Scene(removeEntryVbox, dialogWidth, dialogHeight);
                 dialog.setScene(dialogScene);
                 dialog.show();
 
@@ -412,7 +761,8 @@ public final class BoffoRegisterGUI extends BoffoFireObject {
 
                         } else {
                             warningLabel.setVisible(false);
-                            //TODO: Implement adding item to inventory.
+                            dialog.close();
+                            //TODO: Implement removing item to inventory.
                         }
                         //TODO: Implement removal of an entry when events are available.
                     }
@@ -458,21 +808,17 @@ public final class BoffoRegisterGUI extends BoffoFireObject {
 
                 //Button settings and configurations.
                 HBox buttonsHbox = new HBox(10);
-                Button btnSearchItem = new Button("Search Inventory");
+                Button btnSearchItem = new Button("Search");
                 Button btnCancel = new Button("Cancel");
-                buttonsHbox.getChildren().addAll(btnSearchItem, btnCancel);
-
                 //Label configurations and settings.
-                final Label warningLabel = new Label("All fields must be valid");
-                warningLabel.setFont(Font.font("Tahoma", FontWeight.NORMAL, 8));
-                warningLabel.setTextFill(Color.RED);
-                buttonsHbox.getChildren().add(warningLabel);
-                warningLabel.setVisible(false);
+                final Label warningLabel = addWarningLabel("*All fields must contain valid data*",
+                        10, Color.RED);
+                buttonsHbox.getChildren().addAll(btnSearchItem, btnCancel, warningLabel);
 
                 searchEntryVbox.getChildren().addAll(title, nameTextField,
                         buttonsHbox);
 
-                Scene dialogScene = new Scene(searchEntryVbox, 325, 150);
+                Scene dialogScene = new Scene(searchEntryVbox, dialogWidth, dialogHeight);
                 dialog.setScene(dialogScene);
                 dialog.show();
 
@@ -486,6 +832,7 @@ public final class BoffoRegisterGUI extends BoffoFireObject {
                             warningLabel.setVisible(true);
                         } else {
                             warningLabel.setVisible(false);
+                            dialog.close();
                         }
 
                         //Clear data on the TableView with search results.
@@ -526,21 +873,17 @@ public final class BoffoRegisterGUI extends BoffoFireObject {
 
                 //Button settings and configurations.
                 HBox buttonsHbox = new HBox(10);
-                Button btnSearchItem = new Button("Search Inventory");
+                Button btnSearchItem = new Button("Search");
                 Button btnCancel = new Button("Cancel");
-                buttonsHbox.getChildren().addAll(btnSearchItem, btnCancel);
-
                 //Label settings and configurations.
-                final Label warningLabel = new Label("All fields must be valid");
-                warningLabel.setFont(Font.font("Tahoma", FontWeight.NORMAL, 8));
-                warningLabel.setTextFill(Color.RED);
-                buttonsHbox.getChildren().add(warningLabel);
-                warningLabel.setVisible(false);
+                final Label warningLabel = addWarningLabel("*All fields must contain valid data*",
+                        10, Color.RED);
+                buttonsHbox.getChildren().addAll(btnSearchItem, btnCancel, warningLabel);
 
                 searchEntryVbox.getChildren().addAll(title, skuTextField,
                         buttonsHbox);
 
-                Scene dialogScene = new Scene(searchEntryVbox, 325, 150);
+                Scene dialogScene = new Scene(searchEntryVbox, dialogWidth, dialogHeight);
                 dialog.setScene(dialogScene);
                 dialog.show();
 
@@ -549,12 +892,13 @@ public final class BoffoRegisterGUI extends BoffoFireObject {
                     public void handle(ActionEvent _e) {
                         String itemToSearch = skuTextField.getText();
                         ArrayList items = new ArrayList();
-                        items = inventory.searchInventoryByName(skuTextField.getText());
+                        //items = inventory.searchInventoryByName(skuTextField.getText());
 
                         if (skuTextField.getText().trim().equals("")) {
                             warningLabel.setVisible(true);
                         } else {
                             warningLabel.setVisible(false);
+                            dialog.close();
                         }
 
                         //Clear data on the TableView with search results.
@@ -595,21 +939,17 @@ public final class BoffoRegisterGUI extends BoffoFireObject {
 
                 //Button settings and configurations.
                 HBox buttonsHbox = new HBox(10);
-                Button btnSearchItem = new Button("Search Inventory");
+                Button btnSearchItem = new Button("Search");
                 Button btnCancel = new Button("Cancel");
-                buttonsHbox.getChildren().addAll(btnSearchItem, btnCancel);
-
                 //Label settings and configurations.
-                final Label warningLabel = new Label("All fields must be valid");
-                warningLabel.setFont(Font.font("Tahoma", FontWeight.NORMAL, 8));
-                warningLabel.setTextFill(Color.RED);
-                buttonsHbox.getChildren().add(warningLabel);
-                warningLabel.setVisible(false);
+                final Label warningLabel = addWarningLabel("*All fields must contain valid data*",
+                        10, Color.RED);
+                buttonsHbox.getChildren().addAll(btnSearchItem, btnCancel, warningLabel);
 
                 searchEntryVbox.getChildren().addAll(title, uuidTextField,
                         buttonsHbox);
 
-                Scene dialogScene = new Scene(searchEntryVbox, 325, 150);
+                Scene dialogScene = new Scene(searchEntryVbox, dialogWidth, dialogHeight);
                 dialog.setScene(dialogScene);
                 dialog.show();
 
@@ -621,6 +961,7 @@ public final class BoffoRegisterGUI extends BoffoFireObject {
                             warningLabel.setVisible(true);
                         } else {
                             warningLabel.setVisible(false);
+                            dialog.close();
                         }
 
                         //Clear data on the TableView with search results.
@@ -661,21 +1002,17 @@ public final class BoffoRegisterGUI extends BoffoFireObject {
 
                 //Button settings and configurations.
                 HBox buttonsHbox = new HBox(10);
-                Button btnSearchItem = new Button("Search Inventory");
+                Button btnSearchItem = new Button("Search");
                 Button btnCancel = new Button("Cancel");
-                buttonsHbox.getChildren().addAll(btnSearchItem, btnCancel);
-
                 //Label settings and configurations.
-                final Label warningLabel = new Label("All fields must be valid");
-                warningLabel.setFont(Font.font("Tahoma", FontWeight.NORMAL, 8));
-                warningLabel.setTextFill(Color.RED);
-                buttonsHbox.getChildren().add(warningLabel);
-                warningLabel.setVisible(false);
+                final Label warningLabel = addWarningLabel("*All fields must contain valid data*",
+                        10, Color.RED);
+                buttonsHbox.getChildren().addAll(btnSearchItem, btnCancel, warningLabel);
 
                 searchEntryVbox.getChildren().addAll(title, priceTextField,
                         buttonsHbox);
 
-                Scene dialogScene = new Scene(searchEntryVbox, 325, 150);
+                Scene dialogScene = new Scene(searchEntryVbox, 350, 150);
                 dialog.setScene(dialogScene);
                 dialog.show();
 
@@ -690,6 +1027,7 @@ public final class BoffoRegisterGUI extends BoffoFireObject {
                             warningLabel.setVisible(true);
                         } else {
                             warningLabel.setVisible(false);
+                            dialog.close();
                         }
 
                         //Clear data on the TableView with search results.
@@ -741,9 +1079,9 @@ public final class BoffoRegisterGUI extends BoffoFireObject {
         PasswordField pwBox = new PasswordField();
         grid.add(pwBox, 1, 2);
 
-        Button signInBtn = new Button("Sign In");
+        final Button signInBtn = this.addButtonWithBackground(this.signInBtnNormalImagePath);
         HBox signInHB = new HBox(10);
-        signInHB.setAlignment(Pos.BOTTOM_RIGHT);
+        signInHB.setAlignment(Pos.TOP_RIGHT);
         signInHB.getChildren().add(signInBtn);
         grid.add(signInHB, 1, 4);
 
@@ -753,7 +1091,7 @@ public final class BoffoRegisterGUI extends BoffoFireObject {
         //Image view properties.
         FileInputStream input = null;
         try {
-            input = new FileInputStream("res/boffo_logo.png");
+            input = new FileInputStream(boffoLogoFilepath);
         } catch (FileNotFoundException ex) {
             Logger.getLogger(BoffoRegisterGUI.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -769,9 +1107,15 @@ public final class BoffoRegisterGUI extends BoffoFireObject {
 
             @Override
             public void handle(ActionEvent _e) {
+                //TODO: Check credentials.
+
+                /* BEGIN EVENTS CODE  */
+//                BoffoEventData evtDataLogIn = new BoffoEventData();
+//                evtDataLogIn.setEventData("LOG IN");
+//                BoffoEvent evtLogIn = new BoffoEvent(this, evtDataLogIn);
+//                messageReceived(evtLogIn);
+                /* END EVENTS CODE  */
                 loadMainPanel();
-                //TODO: Check credentials here.
-                //TODO: Implement event firing.
             }
         });
 
@@ -780,9 +1124,62 @@ public final class BoffoRegisterGUI extends BoffoFireObject {
             @Override
             public void handle(KeyEvent _event) {
                 if (_event.getCode().equals(KeyCode.ENTER)) {
+                    /* BEGIN EVENTS CODE  */
+//                    BoffoLogInEvent evtLogIn = new BoffoLogInEvent();
+//                    fireEvent(evtLogIn);
+                    /* END EVENTS CODE  */
+
+                    // TODO: Check credentials.
                     loadMainPanel();
-                    //Check credentials here.
                 }
+            }
+        });
+
+        signInBtn.setOnMouseClicked(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent _event) {
+                try {
+                    signInBtn.setGraphic(new ImageView(new Image(new FileInputStream(signSinBtnPressedImagePath))));
+                } catch (FileNotFoundException ex) {
+                    Logger.getLogger(BoffoRegisterGUI.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                signInBtn.setStyle(STYLE_NORMAL);
+            }
+        });
+
+        signInBtn.setOnMouseEntered(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent _event) {
+                try {
+                    signInBtn.setGraphic(new ImageView(new Image(new FileInputStream(signInBtnHoverImagePath))));
+                } catch (FileNotFoundException ex) {
+                    Logger.getLogger(BoffoRegisterGUI.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                signInBtn.setStyle(STYLE_PRESSED);
+            }
+        });
+
+        signInBtn.setOnMouseExited(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent _event) {
+                try {
+                    signInBtn.setGraphic(new ImageView(new Image(new FileInputStream(signInBtnNormalImagePath))));
+                } catch (FileNotFoundException ex) {
+                    Logger.getLogger(BoffoRegisterGUI.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                signInBtn.setStyle(STYLE_PRESSED);
+            }
+        });
+
+        signInBtn.setOnMouseReleased(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent _event) {
+                try {
+                    signInBtn.setGraphic(new ImageView(new Image(new FileInputStream(signInBtnNormalImagePath))));
+                } catch (FileNotFoundException ex) {
+                    Logger.getLogger(BoffoRegisterGUI.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                signInBtn.setStyle(STYLE_NORMAL);
             }
         });
 
@@ -790,8 +1187,13 @@ public final class BoffoRegisterGUI extends BoffoFireObject {
             @Override
             public void handle(KeyEvent _event) {
                 if (_event.getCode().equals(KeyCode.ENTER)) {
+                    /* BEGIN EVENTS CODE  */
+//                    BoffoLogInEvent evtLogIn = new BoffoLogInEvent();
+//                    fireEvent(evtLogIn);
+                    /* END EVENTS CODE  */
+
+                    // TODO: Check credentials.
                     loadMainPanel();
-                    //
                 }
             }
         });
@@ -801,9 +1203,13 @@ public final class BoffoRegisterGUI extends BoffoFireObject {
             @Override
             public void handle(KeyEvent _event) {
                 if (_event.getCode().equals(KeyCode.ENTER)) {
+                    /* BEGIN EVENTS CODE  */
+//                    BoffoLogInEvent evtLogIn = new BoffoLogInEvent();
+//                    fireEvent(evtLogIn);
+                    /* END EVENTS CODE  */
+
+                    // TODO: Check credentials.
                     loadMainPanel();
-                    //TODO: Check credentials here.
-                    //TODO: Implement event firing.
                 }
             }
         });
@@ -813,20 +1219,18 @@ public final class BoffoRegisterGUI extends BoffoFireObject {
 
     public Scene buildMainPanel() {
         StackPane root = new StackPane();
+        final Button btnTransaction = this.addButtonWithBackground(transactionBtnNormalImagePath);
+        final Button btnInventory = this.addButtonWithBackground(inventoryBtnNormalImagePath);
+        final Button btnAdministration = this.addButtonWithBackground(administrationBtnNormalImagePath);
+        final Button btnLogout = this.addButtonWithBackground(logoutBtnNormalImagePath);
 
-        //Operations menu configuarations.
-        Button btnTransaction = new Button("Transaction");
-        Button btnInventory = new Button("Inventory");
-        Button btnAdministration = new Button("Administration");
-        Button btnExit = new Button("Logout");
-
-        VBox vbox = this.addVBox("Select Operation", 10, Pos.BASELINE_LEFT);
-        vbox.getChildren().addAll(btnTransaction, btnInventory, btnAdministration, btnExit);
+        VBox vbox = this.addVBox("Select Operation", 10, Pos.CENTER);
+        vbox.getChildren().addAll(btnTransaction, btnInventory, btnAdministration, btnLogout);
 
         //ImageView settigs and configurations.
         FileInputStream input = null;
         try {
-            input = new FileInputStream("res/boffo_logo.png");
+            input = new FileInputStream(boffoLogoFilepath);
         } catch (FileNotFoundException ex) {
             Logger.getLogger(BoffoRegisterGUI.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -840,10 +1244,56 @@ public final class BoffoRegisterGUI extends BoffoFireObject {
         btnTransaction.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent _e) {
+                navigatorEvent(TRANSACTION_PANEL);
                 loadTransactionPanel();
-                //BoffoEvent evtTransaction =
-                //        new BoffoEvent(this, Routing.TRANSACTION_PANEL);
-                //fireEvent(evtTransaction);
+            }
+        });
+
+        btnTransaction.setOnMousePressed(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent _event) {
+                try {
+                    btnTransaction.setGraphic(new ImageView(new Image(new FileInputStream(transactionBtnPressedImagePath))));
+                } catch (FileNotFoundException ex) {
+                    Logger.getLogger(BoffoRegisterGUI.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                btnTransaction.setStyle(STYLE_PRESSED);
+            }
+        });
+
+        btnTransaction.setOnMouseReleased(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent _event) {
+                try {
+                    btnTransaction.setGraphic(new ImageView(new Image(new FileInputStream(transactionBtnNormalImagePath))));
+                } catch (FileNotFoundException ex) {
+                    Logger.getLogger(BoffoRegisterGUI.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                btnTransaction.setStyle(STYLE_NORMAL);
+            }
+        });
+
+        btnTransaction.setOnMouseEntered(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent _event) {
+                try {
+                    btnTransaction.setGraphic(new ImageView(new Image(new FileInputStream(transactionBtnHoverImagePath))));
+                } catch (FileNotFoundException ex) {
+                    Logger.getLogger(BoffoRegisterGUI.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                btnTransaction.setStyle(STYLE_PRESSED);
+            }
+        });
+
+        btnTransaction.setOnMouseExited(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent _event) {
+                try {
+                    btnTransaction.setGraphic(new ImageView(new Image(new FileInputStream(transactionBtnNormalImagePath))));
+                } catch (FileNotFoundException ex) {
+                    Logger.getLogger(BoffoRegisterGUI.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                btnTransaction.setStyle(STYLE_PRESSED);
             }
         });
 
@@ -851,8 +1301,44 @@ public final class BoffoRegisterGUI extends BoffoFireObject {
         btnInventory.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent _e) {
+                navigatorEvent(INVENTORY_PANEL);
                 loadInventoryPanel();
-                //BoffoEvent object declaration for Inventory goes here.
+            }
+        });
+
+        btnInventory.setOnMousePressed(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent _event) {
+                try {
+                    btnInventory.setGraphic(new ImageView(new Image(new FileInputStream(inventoryBtnPressedImagePath))));
+                } catch (FileNotFoundException ex) {
+                    Logger.getLogger(BoffoRegisterGUI.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                btnInventory.setStyle(STYLE_PRESSED);
+            }
+        });
+
+        btnInventory.setOnMouseEntered(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent _event) {
+                try {
+                    btnInventory.setGraphic(new ImageView(new Image(new FileInputStream(inventoryBtnHoverImagePath))));
+                } catch (FileNotFoundException ex) {
+                    Logger.getLogger(BoffoRegisterGUI.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                btnInventory.setStyle(STYLE_NORMAL);
+            }
+        });
+
+        btnInventory.setOnMouseExited(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent _event) {
+                try {
+                    btnInventory.setGraphic(new ImageView(new Image(new FileInputStream(inventoryBtnNormalImagePath))));
+                } catch (FileNotFoundException ex) {
+                    Logger.getLogger(BoffoRegisterGUI.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                btnInventory.setStyle(STYLE_NORMAL);
             }
         });
 
@@ -860,16 +1346,113 @@ public final class BoffoRegisterGUI extends BoffoFireObject {
         btnAdministration.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent _e) {
+                navigatorEvent(INVENTORY_PANEL);
                 loadAdminPanel();
-                //BoffoEvent object declaration for Administration goes here.
+            }
+        });
+
+        btnAdministration.setOnMousePressed(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent _event) {
+                try {
+                    btnAdministration.setGraphic(new ImageView(new Image(new FileInputStream(administrationBtnPressedImagePath))));
+                } catch (FileNotFoundException ex) {
+                    Logger.getLogger(BoffoRegisterGUI.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                btnAdministration.setStyle(STYLE_PRESSED);
+            }
+        });
+
+        btnAdministration.setOnMouseReleased(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent _event) {
+                try {
+                    btnAdministration.setGraphic(new ImageView(new Image(new FileInputStream(administrationBtnNormalImagePath))));
+                } catch (FileNotFoundException ex) {
+                    Logger.getLogger(BoffoRegisterGUI.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                btnAdministration.setStyle(STYLE_NORMAL);
+            }
+        });
+
+        btnAdministration.setOnMouseEntered(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent _event) {
+                try {
+                    btnAdministration.setGraphic(new ImageView(new Image(new FileInputStream(administrationBtnHoverImagePath))));
+                } catch (FileNotFoundException ex) {
+                    Logger.getLogger(BoffoRegisterGUI.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                btnAdministration.setStyle(STYLE_NORMAL);
+            }
+        });
+
+        btnAdministration.setOnMouseExited(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent _event) {
+                try {
+                    btnAdministration.setGraphic(new ImageView(new Image(new FileInputStream(administrationBtnNormalImagePath))));
+                } catch (FileNotFoundException ex) {
+                    Logger.getLogger(BoffoRegisterGUI.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                btnAdministration.setStyle(STYLE_NORMAL);
             }
         });
 
         //Fire an event to sign out.
-        btnExit.setOnAction(new EventHandler<ActionEvent>() {
+        btnLogout.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent _e) {
+                navigatorEvent(EXIT_PANEL);
                 loadLoginPanel();
+            }
+        });
+
+        btnLogout.setOnMousePressed(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent _event) {
+                try {
+                    btnLogout.setGraphic(new ImageView(new Image(new FileInputStream(logoutBtnPressedImagePath))));
+                } catch (FileNotFoundException ex) {
+                    Logger.getLogger(BoffoRegisterGUI.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                btnLogout.setStyle(STYLE_PRESSED);
+            }
+        });
+
+        btnLogout.setOnMouseEntered(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent _event) {
+                try {
+                    btnLogout.setGraphic(new ImageView(new Image(new FileInputStream(logoutBtnHoverImagePath))));
+                } catch (FileNotFoundException ex) {
+                    Logger.getLogger(BoffoRegisterGUI.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                btnLogout.setStyle(STYLE_NORMAL);
+            }
+        });
+
+        btnLogout.setOnMouseExited(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent _event) {
+                try {
+                    btnLogout.setGraphic(new ImageView(new Image(new FileInputStream(logoutBtnNormalImagePath))));
+                } catch (FileNotFoundException ex) {
+                    Logger.getLogger(BoffoRegisterGUI.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                btnLogout.setStyle(STYLE_NORMAL);
+            }
+        });
+
+        btnLogout.setOnMouseReleased(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent _event) {
+                try {
+                    btnLogout.setGraphic(new ImageView(new Image(new FileInputStream(logoutBtnNormalImagePath))));
+                } catch (FileNotFoundException ex) {
+                    Logger.getLogger(BoffoRegisterGUI.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                btnLogout.setStyle(STYLE_NORMAL);
             }
         });
 
@@ -885,7 +1468,7 @@ public final class BoffoRegisterGUI extends BoffoFireObject {
         //Split pane options.
         SplitPane transactionPanel = new SplitPane();
         transactionPanel.setDividerPosition(1, .5);
-        final ObservableList<Item> itemList = FXCollections.observableArrayList();
+        final ObservableList<String> itemList = FXCollections.observableArrayList();
 
         //Transaction options settings and configurations.
         Button btnRemoveItem = new Button("Remove Selected Item");
@@ -901,34 +1484,15 @@ public final class BoffoRegisterGUI extends BoffoFireObject {
         //Creates a new VBox for Transaction options.
         VBox transactionOptions = this.addVBox(
                 "Select Operation", 10, Pos.BASELINE_LEFT);
-        transactionOptions.getChildren().addAll(btnRemoveItem, btnExit, textFieldVbox);
+        transactionOptions.getChildren().addAll(
+                btnRemoveItem, btnExit, textFieldVbox);
 
         //TableView settings and configurations.
-        final TableView ticketTbl = new TableView();
-        ticketTbl.setMinHeight(400);
-        ticketTbl.setMinWidth(250);
-
-        ticketTbl.setEditable(true);
-
-        // Establish the columns and associate them with Item attributes.
-        final TableColumn nameCol = new TableColumn("Name");
-        nameCol.setMinWidth(125);
-        nameCol.setCellValueFactory(
-                new PropertyValueFactory<Item, String>("itemName"));
-
-        final TableColumn SKUCol = new TableColumn("SKU");
-        SKUCol.setMinWidth(125);
-        SKUCol.setCellValueFactory(
-                new PropertyValueFactory<Item, String>("SKU"));
-
-        final TableColumn priceCol = new TableColumn("Price");
-        priceCol.setMinWidth(125);
-        priceCol.setCellValueFactory(
-                new PropertyValueFactory<Item, String>("price"));
+        String[] headers = {"Name", "SKU", "Price"};
+        final TableView ticketTbl = addTableView(headers, 450, 200, 125);
 
         // Add the item list to the table.
         ticketTbl.setItems(itemList);
-        ticketTbl.getColumns().addAll(nameCol, SKUCol, priceCol);
 
         VBox ticketTblOptions = new VBox(ticketTbl);
         ticketTblOptions.setAlignment(Pos.TOP_LEFT);
@@ -940,15 +1504,21 @@ public final class BoffoRegisterGUI extends BoffoFireObject {
         btnExit.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent _e) {
-                displayExitAlert("Confirmation",
-                        "You will lose any entered data.", "Are you sure?");
+                displayExitAlert(
+                        "Confirmation",
+                        "You will lose any entered data.",
+                        "Are you sure?"
+                );
             }
         });
+
         btnRemoveItem.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent _e) {
-                Item selectedItem = (Item) ticketTbl.getSelectionModel().getSelectedItem();
-                ticketTbl.getItems().remove(selectedItem);
+//
+//                Item selectedItem
+//                        = (Item) ticketTbl.getSelectionModel().getSelectedItem();
+//                ticketTbl.getItems().remove(selectedItem);
             }
         });
 
@@ -956,9 +1526,9 @@ public final class BoffoRegisterGUI extends BoffoFireObject {
             @Override
             public void handle(ActionEvent event) {
                 if (skuInputField.getText().isEmpty() != true) {
-                    Item itemSKU = new Item(
-                            "SKU Item", skuInputField.getText(), 0.99);
-                    itemList.add(itemSKU);
+//                    Item itemSKU = new Item(
+//                            "SKU Item", skuInputField.getText(), 0.99);
+//                    itemList.add(itemSKU);
                     skuInputField.clear();
                 }
             }
@@ -968,8 +1538,8 @@ public final class BoffoRegisterGUI extends BoffoFireObject {
             @Override
             public void handle(KeyEvent event) {
                 if (event.getCode().equals(KeyCode.ENTER)) {
-                    Item selectedItem = (Item) ticketTbl.getSelectionModel().getSelectedItem();
-                    ticketTbl.getItems().remove(selectedItem);
+//                    Item selectedItem = (Item) ticketTbl.getSelectionModel().getSelectedItem();
+//                    ticketTbl.getItems().remove(selectedItem);
                 }
             }
         });
@@ -979,9 +1549,9 @@ public final class BoffoRegisterGUI extends BoffoFireObject {
             public void handle(KeyEvent event) {
                 if (event.getCode().equals(KeyCode.ENTER)
                         && skuInputField.getText().isEmpty() != true) {
-                    Item itemSKU = new Item(
-                            "SKU Item", skuInputField.getText(), 0.99);
-                    itemList.add(itemSKU);
+//                    Item itemSKU = new Item(
+//                            "SKU Item", skuInputField.getText(), 0.99);
+//                    itemList.add(itemSKU);
                     skuInputField.clear();
                 }
             }
@@ -992,9 +1562,8 @@ public final class BoffoRegisterGUI extends BoffoFireObject {
             public void handle(KeyEvent event) {
                 if (event.getCode().equals(KeyCode.ENTER)
                         && skuInputField.getText().isEmpty() != true) {
-                    Item itemSKU = new Item(
-                            "SKU Item", skuInputField.getText(), 0.99);
-                    itemList.add(itemSKU);
+
+                    //itemList.add();
                     skuInputField.clear();
                 }
             }
@@ -1022,6 +1591,72 @@ public final class BoffoRegisterGUI extends BoffoFireObject {
     }
 
     /**
+     * This method returns a button with an image as the button.
+     *
+     * @param _imageFilePath
+     * @return btn
+     */
+    private Button addButtonWithBackground(String _imageFilePath) {
+        final String STYLE_NORMAL = "-fx-background-color: transparent; -fx-padding: 5, 5, 5, 5;";
+        final String STYLE_PRESSED = "-fx-background-color: transparent; -fx-padding: 6 4 4 6;";
+        Button btn = new Button();
+
+        //Operations menu configuarations.
+        try {
+            btn.setGraphic(new ImageView(new Image(new FileInputStream(_imageFilePath))));
+            btn.setStyle(STYLE_NORMAL);
+
+        } catch (Exception _e) {
+            System.out.println("Error loading image");
+        }
+
+        return btn;
+    }
+
+    /**
+     *
+     * @param _columnHeaders
+     * @param _minTableHeight
+     * @param _minTableWidth
+     * @param _minHeaderWidth
+     * @return
+     */
+    private TableView addTableView(String[] _columnHeaders,
+            int _minTableHeight, int _minTableWidth, int _minHeaderWidth) {
+
+        final TableView tableView = new TableView();
+        tableView.setMinHeight(_minTableHeight);
+        tableView.setMinWidth(_minTableWidth);
+        tableView.setEditable(true);
+
+        TableColumn tempColumn = null;
+        for (String _columnHeader : _columnHeaders) {
+            tempColumn = new TableColumn(_columnHeader);
+            tableView.getColumns().add(tempColumn);
+            tempColumn.setMinWidth(_minHeaderWidth);
+        }
+        return tableView;
+    }
+
+    /**
+     * This method adds a warning label which we be used in several similar
+     * windows.
+     *
+     * @param text
+     * @param fontSize
+     * @param color
+     * @return warningLabel
+     */
+    private Label addWarningLabel(String _text, int _fontSize, Color _color) {
+        final Label warningLabel = new Label(_text);
+        warningLabel.setFont(Font.font("Tahoma", FontWeight.NORMAL, _fontSize));
+        warningLabel.setTextFill(_color);
+        warningLabel.setVisible(false);
+
+        return warningLabel;
+    }
+
+    /**
      * This is a method returns a VBox object which is later used to build the
      * interface.
      *
@@ -1039,13 +1674,19 @@ public final class BoffoRegisterGUI extends BoffoFireObject {
         return vbox;
     }
 
+    /**
+     * This method clears a TableView that is passed in as a parameter. This was
+     * going to be used if the other modules were implemented fully.
+     *
+     * @param _tableView
+     * @return _tableView
+     */
     private TableView clearTableView(TableView _tableView) {
         if (_tableView.getItems().size() > 0) {
             for (int i = 0; i <= _tableView.getItems().size(); i++) {
                 _tableView.getItems().clear();
             }
         }
-
         return _tableView;
     }
 
@@ -1059,6 +1700,8 @@ public final class BoffoRegisterGUI extends BoffoFireObject {
      */
     private void displayExitAlert(String _title, String _header,
             String _message) {
+
+        //Alert settings and configurations.
         Alert alert = new Alert(AlertType.CONFIRMATION);
         alert.setTitle(_title);
         alert.setHeaderText(_header);
@@ -1074,5 +1717,27 @@ public final class BoffoRegisterGUI extends BoffoFireObject {
         } else {
             alert.close();
         }
+    }
+
+    /**
+     * This navigatorEvent method is used for the events that still don't fully
+     * work. :(
+     *
+     * @param _et
+     */
+    public void navigatorEvent(EventType _et) {
+        BoffoNavigateEventData evtData = new BoffoNavigateEventData(_et);
+        BoffoEvent evt = new BoffoEvent(this, (BoffoEventData) evtData);
+        fireEvent(evt);
+    }
+
+    /**
+     * This is the defined messageReceieved in the BoffoListenerInterface.
+     *
+     * @param _event
+     */
+    @Override
+    public void messageReceived(BoffoEvent _event) {
+        fireEvent(_event);
     }
 }

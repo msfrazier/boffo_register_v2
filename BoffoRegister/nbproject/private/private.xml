@@ -6,6 +6,12 @@
         <group/>
 =======
         <group>
+<<<<<<< HEAD
+=======
+            <file>file:/C:/Users/tey/Desktop/boffo_register_v2/BoffoRegister/src/inventory/Inventory.java</file>
+            <file>file:/C:/Users/tey/Desktop/boffo_register_v2/BoffoRegister/src/inventory/InventoryRecord.java</file>
+            <file>file:/C:/Users/tey/Desktop/boffo_register_v2/BoffoRegister/src/inventory/StateOfInvetory.java</file>
+>>>>>>> master
         </group>
 >>>>>>> master
     </open-files>

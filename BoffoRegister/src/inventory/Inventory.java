@@ -1,9 +1,8 @@
 package inventory;
 
-import authorization.Authorization;
-import authorization.AuthorizationInterface;
-import database.BoffoDbObject;    
+import database.BoffoDbObject;
 import events.BoffoEvent;
+<<<<<<< HEAD
 import events.BoffoFireObject;
 import events.BoffoListenerInterface;
 import events.BoffoMessenger;   
@@ -38,113 +37,173 @@ public class Inventory extends BoffoFireObject implements AuthorizationInterface
 //
 //    }
     //return quantity of specific record 
-    public int getInvRecordCount(String _sku){
-        int count =0;
-        if(this.list.iterator().next().getSku()==_sku){
-        count= this.list.iterator().next().getQuantity();
+=======
+import events.BoffoEventData;
+import events.BoffoFireObject;
+import events.BoffoListenerInterface;
+import java.util.ArrayList; 
+import inventory.InventoryRecord;
+import product.ProductObject; 
+import user.User;
+
+/*
+This class holds a list of InventoryRecord object as ArrayList(dynamic list ).
+It uses the list to manage seaching and updating table in data base.
+authurs: Chad Schmidt, Tey Tang
+last updated 4/29/17
+*/
+
+public class Inventory extends BoffoFireObject{
+
+     private ArrayList<InventoryRecord> list = null;
+     BoffoEventData data = new BoffoEventData("updated");
+     BoffoEvent update = new BoffoEvent(this,data);
+
+    public Inventory(){
+       System.out.println("Inventory loaded");
+                }
+
+
+    public void incrementInventory(String _sku){
+        if(this.list.iterator().next().product.getSku() == _sku){
+        this.list.iterator().next().product.setQuantity(this.list.iterator().next().getQuantity()+1);
+        save(this.list.iterator().next().product);//update table
+        fireEvent(update);
         }
+    }
+
+
+    //decrease quantity by one
+    public void decrementInventory(String _sku){
+        if(this.list.iterator().next().product.getSku() == _sku){
+        this.list.iterator().next().product.setQuantity(this.list.iterator().next().getQuantity()-1);
+        save(this.list.iterator().next().product);
+        fireEvent(update);
+        }
+    }
+
+
+    //return count of specific product with sku value
+>>>>>>> master
+    public int getInvRecordCount(String _sku){
+        int count = 0;
+        if(this.list.iterator().next().product.getSku() == _sku){
+        count= this.list.iterator().next().getQuantity();
+            }
        return count;
         }
-    //delete record 
+
+
+    //delete record
     public void deleteInvRecord(String _sku){
-        if(this.list.iterator().next().getSku()==_sku){
+        if(this.list.iterator().next().product.getSku() == _sku){
         this.list.remove(this.list.iterator().next());
+        delete(this.list.iterator().next().product);
+        fireEvent(update);
+        }else
+      if(this.list.iterator().next().product.getSku() != _sku){
+        System.out.println("record not found");
+            }
         }
-      if(this.list.iterator().next().getSku()!=_sku){
+
+
+    //increase quantity of specific record by specified amount
+    public void increaseRecordQuantity(String _sku,int _quantity){
+        if(this.list.iterator().next().product.getSku() == _sku){
+        this.list.iterator().next().product.setQuantity(this.list.iterator().next().getQuantity()+_quantity);
+         save(this.list.iterator().next().product);//update in table
+         fireEvent(update);
+        }else
+        if(this.list.iterator().next().product.getSku() != _sku){
         System.out.println("record not found");
         }
-        }
-    //increment quantity of specific record by specified amount
-    //resulting quantity should alwasy be above 0 when adding new quantity
-    public void incrementRecordQuantity(String _sku,int _quantity){
-        if(this.list.iterator().next().getSku()==_sku){
-        this.list.iterator().next().setQuantity(this.list.iterator().next().getQuantity()+_quantity);
-        }
-        if(this.list.iterator().next().getSku()!=_sku){
-        System.out.println("record not found");
-        }
-    
+
     }
-    //decrement quantity of specific record by specified amount
-    //if resulting quantity is 0, record is deleted from list
-    public void decrementRecordQuantity(String _sku,int _quantity){
-        if(this.list.iterator().next().getSku()==_sku){
-        this.list.iterator().next().setQuantity(this.list.iterator().next().getQuantity()-_quantity);
-        }
+
+
+    //decrease quantity of specific record by specified amount
+    //if resulting quantity is 0, record is deleted from list/table
+    public void decreaseRecordQuantity(String _sku,int _quantity){
+        if(this.list.iterator().next().product.getSku() == _sku){
+        this.list.iterator().next().product.setQuantity(this.list.iterator().next().getQuantity()-_quantity);
+         save(this.list.iterator().next().product);
+         fireEvent(update);
+        }else
         if((this.list.iterator().next().getQuantity()-_quantity)<0){
                 this.list.remove(this.list.iterator().next());
-         }
-        if(this.list.iterator().next().getSku()!=_sku){
+                delete(this.list.iterator().next().product);
+                fireEvent(update);
+         }else
+        if(this.list.iterator().next().product.getSku() != _sku){
         System.out.println("record not found");
         }
-    
+
     }
+<<<<<<< HEAD
     public void addInventoryRecord(String _uuid,String _sku,String _upc,int _quantity, StateOfInvetory _state,String _location, String _productName,double _price,String _vender){
         //if already on list based on sku,update quantity of inventory 
          if(this.list.iterator().next().getSku()==_sku){
          this.list.iterator().next().setQuantity(this.list.iterator().next().getQuantity()+_quantity);
+=======
+
+
+    //if already on list/table based on sku,update quantity of inventory/table
+    //if NOT already on list/table based on sku,create new Inventory Record and add to list/table
+    public void addInventoryRecord(ProductObject _product,int _quantity, StateOfInvetory _status,String _location,String _vender){
+         if(this.list.iterator().next().product.getSku() == _product.getSku()){
+         this.list.iterator().next().product.setQuantity(this.list.iterator().next().getQuantity()+_quantity);
+         save(this.list.iterator().next().product);//update in table
+         fireEvent(update);
+>>>>>>> master
          System.out.println("inventory added");
-         
-         }
-         //if NOT already on list based on sku,create new Inventory Record and add to list
-         if(this.list.iterator().next().getSku()!=_sku){
-            InventoryRecord r=new InventoryRecord(_uuid,_sku,_upc,_quantity,_state,_location,_productName,_price,_vender);
+         }else
+          if(this.list.iterator().next().product.getSku() != _product.getSku()){
+            InventoryRecord r = new InventoryRecord(_product,_quantity,_status,_location,_vender);
             this.list.add(r);
-            System.out.println("inventory added");
+           save(r.product);
+           fireEvent(update);
          }
         }
-     
-     public void removeInventory(int _quantity,String _sku){ 
-         //if already on list based on ProductSku, update its quantity
-        if(this.list.iterator().next().getSku()==_sku){
-            if(this.list.iterator().next().getQuantity()>0){
-                this.list.iterator().next().setQuantity(this.list.iterator().next().getQuantity()-_quantity);
-            }
-            //if new quantity is negative, remove InventoryRecord from list
-            if((this.list.iterator().next().getQuantity()-_quantity)<0){
-                this.list.remove(this.list.iterator().next());
-            }
-        }
-        //if not on list, message
-         if(this.list.iterator().next().getSku()!=_sku){
-             System.out.println("no inventory with sku: "+_sku+" is found.");
-         }
-         } 
+
+
      //return ArrayList of InventoryRecord(search by productName)
      public ArrayList searchInventoryByName(String _productName){
-         ArrayList<InventoryRecord> l=null;//create empty list to hold invenotry record with specified productName
-         //add inventory found  in this.list(ArrayList) to l(ArrayList) 
-         if(this.list.iterator().next().getProductName()==_productName){
+         ArrayList<InventoryRecord> l = null;
+         if(this.list.iterator().next().product.getName() == _productName){
              l.add(this.list.iterator().next());
         }
          return l;
-        } 
+        }
+
+
      //return ArrayList of InventoryRecord(search by sku)
      public ArrayList searchInventoryBySku(String _sku){
-         ArrayList<InventoryRecord> l=null;//create empty list to hold inventory record with specified sku
-         //add product found  in this.list(ArrayList) to l(ArrayList) 
-         if(this.list.iterator().next().getSku()==_sku){
+         ArrayList<InventoryRecord> l = null;
+         if(this.list.iterator().next().product.getSku() == _sku){
              l.add(this.list.iterator().next());
-        } 
+        }
          return l;
-        } 
+        }
+
+
      //return ArrayList of InventoryRecord(search by uuid)
      public ArrayList searchInventoryByUuid(String _uuid){
-         ArrayList<InventoryRecord> l=null;//create empty list to hold inventory record with specified uuid
-         //add product found  in this.list(ArrayList) to l(ArrayList) 
-         if(this.list.iterator().next().getUuid()==_uuid){
+         ArrayList<InventoryRecord> l = null;
+         if(this.list.iterator().next().product.getUuid() == _uuid){
              l.add(this.list.iterator().next());
         }
          return l;
-        } 
+        }
+
+
      //return ArrayList of InventoryRecord(search by price)
      public ArrayList searchInventoryByPrice(double _price){
-         ArrayList<InventoryRecord> l=null;//create empty list to hold invenotry record with specified price
-         //add product found  in this.list(ArrayList) to l(ArrayList) 
-         if(this.list.iterator().next().getPrice()==_price){
+         ArrayList<InventoryRecord> l = null;
+         if(this.list.iterator().next().product.getPrice() == _price){
              l.add(this.list.iterator().next());
         }
          return l;
+<<<<<<< HEAD
         } 
      //return size of inventory list 
       public int GetListSize(){
@@ -178,11 +237,12 @@ public class Inventory extends BoffoFireObject implements AuthorizationInterface
     public void addBRegisterListener(BoffoListenerInterface _event) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
+=======
+        }
+>>>>>>> master
 
-    public void removeBRegisterListener(BoffoListenerInterface _event) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
 
+<<<<<<< HEAD
     public void fireEvent(BoffoEvent _event) {
         String message="";
         
@@ -192,4 +252,10 @@ public class Inventory extends BoffoFireObject implements AuthorizationInterface
         JOptionPane.showMessageDialog(null, message);
     }
 } 
+=======
+     public int GetListSize(){
+        return this.list.size();
+      } 
+}
+>>>>>>> master
 

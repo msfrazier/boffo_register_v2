@@ -1,107 +1,33 @@
 package inventory;
 
-import database.BoffoDbObject;
+import authorization.Authorization;
+import authorization.AuthorizationInterface;
 import events.BoffoEvent;
 import events.BoffoEventData;
 import events.BoffoFireObject;
-import events.BoffoListenerInterface;
-import java.util.ArrayList; 
-import inventory.InventoryRecord;
-import product.ProductObject; 
-import user.User;
+import java.util.ArrayList;
+import java.util.Arrays;
+import product.ProductObject;
 
 /*
-This class holds a list of InventoryRecord object as ArrayList(dynamic list ).
-It uses the list to manage seaching and updating table in data base.
-authurs: Chad Schmidt, Tey Tang
-last updated 4/29/17
+* This class holds a list of InventoryRecord object as ArrayList(dynamic list ).
+* It uses the list to manage seaching and updating table in data base.
+* authors: Chad Schmidt, Tey Tang
+* last updated: 5/1/2017
 */
 
-public class Inventory extends BoffoFireObject{
+public class Inventory extends BoffoFireObject implements AuthorizationInterface{
 
      private ArrayList<InventoryRecord> list = null;
      BoffoEventData data = new BoffoEventData("updated");
      BoffoEvent update = new BoffoEvent(this,data);
+     protected static HashMap<String, ArrayList<Integer>> inventory_hash = new HashMap<>();
+     protected String tableName = "inventory_tbl";
 
     public Inventory(){
        System.out.println("Inventory loaded");
+         this.buildMap();
                 }
-
-
-    public void incrementInventory(String _sku){
-        if(this.list.iterator().next().product.getSku() == _sku){
-        this.list.iterator().next().product.setQuantity(this.list.iterator().next().getQuantity()+1);
-        save(this.list.iterator().next().product);//update table
-        fireEvent(update);
-        }
-    }
-
-
-    //decrease quantity by one
-    public void decrementInventory(String _sku){
-        if(this.list.iterator().next().product.getSku() == _sku){
-        this.list.iterator().next().product.setQuantity(this.list.iterator().next().getQuantity()-1);
-        save(this.list.iterator().next().product);
-        fireEvent(update);
-        }
-    }
-
-
-    //return count of specific product with sku value
-    public int getInvRecordCount(String _sku){
-        int count = 0;
-        if(this.list.iterator().next().product.getSku() == _sku){
-        count= this.list.iterator().next().getQuantity();
-            }
-       return count;
-        }
-
-
-    //delete record
-    public void deleteInvRecord(String _sku){
-        if(this.list.iterator().next().product.getSku() == _sku){
-        this.list.remove(this.list.iterator().next());
-        delete(this.list.iterator().next().product);
-        fireEvent(update);
-        }else
-      if(this.list.iterator().next().product.getSku() != _sku){
-        System.out.println("record not found");
-            }
-        }
-
-
-    //increase quantity of specific record by specified amount
-    public void increaseRecordQuantity(String _sku,int _quantity){
-        if(this.list.iterator().next().product.getSku() == _sku){
-        this.list.iterator().next().product.setQuantity(this.list.iterator().next().getQuantity()+_quantity);
-         save(this.list.iterator().next().product);//update in table
-         fireEvent(update);
-        }else
-        if(this.list.iterator().next().product.getSku() != _sku){
-        System.out.println("record not found");
-        }
-
-    }
-
-
-    //decrease quantity of specific record by specified amount
-    //if resulting quantity is 0, record is deleted from list/table
-    public void decreaseRecordQuantity(String _sku,int _quantity){
-        if(this.list.iterator().next().product.getSku() == _sku){
-        this.list.iterator().next().product.setQuantity(this.list.iterator().next().getQuantity()-_quantity);
-         save(this.list.iterator().next().product);
-         fireEvent(update);
-        }else
-        if((this.list.iterator().next().getQuantity()-_quantity)<0){
-                this.list.remove(this.list.iterator().next());
-                delete(this.list.iterator().next().product);
-                fireEvent(update);
-         }else
-        if(this.list.iterator().next().product.getSku() != _sku){
-        System.out.println("record not found");
-        }
-
-    }
 
 
     //if already on list/table based on sku,update quantity of inventory/table
@@ -122,10 +48,134 @@ public class Inventory extends BoffoFireObject{
         }
 
 
+    public static void buildMap(){
+         ArrayList<Integer> addInventoryRecord = new ArrayList<>();
+        addInventoryRecord.addAll(Arrays.asList(2, 3));
+        ArrayList<Integer> deleteInventoryRecord = new ArrayList<>();
+        deleteInventoryRecord.addAll(Arrays.asList(2, 3));
+        ArrayList<Integer> increaseRecordQuantity = new ArrayList<>();
+        increaseRecordQuantity.addAll(Arrays.asList(1, 2, 3));
+        ArrayList<Integer> decreaseRecordQuantity = new ArrayList<>();
+        decreaseRecordQuantity.addAll(Arrays.asList(1, 2, 3));
+        ArrayList<Integer> incrementInventory = new ArrayList<>();
+        incrementInventory.addAll(Arrays.asList(1, 2, 3));
+        ArrayList<Integer> decrementInventory = new ArrayList<>();
+        decrementInventory.addAll(Arrays.asList(1, 2, 3));
+        ArrayList<Integer> searchInventoryByName = new ArrayList<>();
+        searchInventoryByName.addAll(Arrays.asList(0, 1, 2, 3));
+        ArrayList<Integer> searchInventoryByPrice = new ArrayList<>();
+        searchInventoryByPrice.addAll(Arrays.asList(0, 1, 2, 3));
+        ArrayList<Integer> searchInventoryBySku = new ArrayList<>();
+        searchInventoryBySku.addAll(Arrays.asList(0, 1, 2, 3));
+        ArrayList<Integer> searchInventoryByUuid = new ArrayList<>();
+        searchInventoryByUuid.addAll(Arrays.asList(0, 1, 2, 3));
+
+        inventory_hash.put("addInventoryRecord", addInventoryRecord);
+        inventory_hash.put("deleteInventoryRecord", deleteInventoryRecord);
+        inventory_hash.put("increaseRecordQuantity", increaseRecordQuantity);
+        inventory_hash.put("decreaseRecordQuantity", decreaseRecordQuantity);
+        inventory_hash.put("incrementInventory", incrementInventory);
+        inventory_hash.put("decrementInventory", decrementInventory);
+        inventory_hash.put("searchInventoryByName", searchInventoryByName);
+        inventory_hash.put("searchInventoryByPrice", searchInventoryByPrice);
+        inventory_hash.put("searchInventoryBySku", searchInventoryBySku);
+        inventory_hash.put("searchInventoryByUuid", searchInventoryByUuid);
+    }
+
+
+//decrease quantity of specific record by specified amount
+    //if resulting quantity is 0, record is deleted from list/table
+    public void decreaseRecordQuantity(String _sku,int _quantity){
+        if(this.list.iterator().next().product.getSku() == _sku){
+        this.list.iterator().next().product.setQuantity(this.list.iterator().next().getQuantity()-_quantity);
+         save(this.list.iterator().next().product);
+         fireEvent(update);
+        }else
+        if((this.list.iterator().next().getQuantity()-_quantity)<0){
+                this.list.remove(this.list.iterator().next());
+                delete(this.list.iterator().next().product);
+                fireEvent(update);
+         }else
+        if(this.list.iterator().next().product.getSku() != _sku){
+            System.out.println("record not found");
+        }
+    }
+
+
+    //decrease quantity by one
+    public void decrementInventory(String _sku){
+        if(this.list.iterator().next().product.getSku() == _sku){
+        this.list.iterator().next().product.setQuantity(this.list.iterator().next().getQuantity()-1);
+        save(this.list.iterator().next().product);
+        fireEvent(update);
+        }
+    }
+
+
+    //delete record
+ public void deleteInventoryRecord(String _sku){
+        if(this.list.iterator().next().product.getSku() == _sku){
+        this.list.remove(this.list.iterator().next());
+        delete(this.list.iterator().next().product);
+        fireEvent(update);
+        }else
+      if(this.list.iterator().next().product.getSku() != _sku){
+        System.out.println("record not found");
+            }
+        }
+
+
+    //return count of specific product with sku value
+    public int getInvRecordCount(String _sku){
+        int count = 0;
+        if(this.list.iterator().next().product.getSku() == _sku){
+        count= this.list.iterator().next().getQuantity();
+            }
+       return count;
+        }
+
+
+    public int GetListSize(){
+        return this.list.size();
+      }
+
+
+    //increase quantity of specific record by specified amount
+    public void increaseRecordQuantity(String _sku,int _quantity){
+        if(this.list.iterator().next().product.getSku() == _sku){
+        this.list.iterator().next().product.setQuantity(this.list.iterator().next().getQuantity()+_quantity);
+         save(this.list.iterator().next().product);//update in table
+         fireEvent(update);
+        }else
+        if(this.list.iterator().next().product.getSku() != _sku){
+        System.out.println("record not found");
+        }
+    }
+
+
+    public void incrementInventory(String _sku){
+        if(this.list.iterator().next().product.getSku() == _sku){
+        this.list.iterator().next().product.setQuantity(this.list.iterator().next().getQuantity()+1);
+        save(this.list.iterator().next().product);//update table
+        fireEvent(update);
+        }
+    }
+
+
      //return ArrayList of InventoryRecord(search by productName)
      public ArrayList searchInventoryByName(String _productName){
          ArrayList<InventoryRecord> l = null;
          if(this.list.iterator().next().product.getName() == _productName){
+             l.add(this.list.iterator().next());
+        }
+         return l;
+        }
+
+
+     //return ArrayList of InventoryRecord(search by price)
+     public ArrayList searchInventoryByPrice(double _price){
+         ArrayList<InventoryRecord> l = null;
+         if(this.list.iterator().next().product.getPrice() == _price){
              l.add(this.list.iterator().next());
         }
          return l;
@@ -152,18 +202,66 @@ public class Inventory extends BoffoFireObject{
         }
 
 
-     //return ArrayList of InventoryRecord(search by price)
-     public ArrayList searchInventoryByPrice(double _price){
-         ArrayList<InventoryRecord> l = null;
-         if(this.list.iterator().next().product.getPrice() == _price){
-             l.add(this.list.iterator().next());
+     public static void testAuthorization () {
+                    if(Authorization.isAuthorized(authTable.get("addInventoryRecord"))){
+            System.out.println("Authorized!");
         }
-         return l;
+        else {
+            System.out.println("Unauthorized!");
         }
-
-
-     public int GetListSize(){
-        return this.list.size();
-      } 
+        if(Authorization.isAuthorized(authTable.get("deleteInventoryRecord"))){
+            System.out.println("Authorized!");
+        }
+        else{
+            System.out.println("Unauthorized!");
+        }
+        if(Authorization.isAuthorized(authTable.get("decreaseRecordQuantity"))){
+            System.out.println("Authorized!");
+        }
+        else{
+            System.out.println("Unauthorized!");
+        }
+        if(Authorization.isAuthorized(authTable.get("increaseRecordQuantity"))){
+            System.out.println("Authorized!");
+        }
+        else{
+            System.out.println("Unauthorized!");
+        }
+        if(Authorization.isAuthorized(authTable.get("incrementInventory"))){
+            System.out.println("Authorized!");
+        }
+        else{
+            System.out.println("Unauthorized!");
+        }
+        if(Authorization.isAuthorized(authTable.get("decrementInventory"))){
+            System.out.println("Authorized!");
+        }
+        else{
+            System.out.println("Unauthorized!");
+        }
+        if(Authorization.isAuthorized(authTable.get("searchInventoryByName"))){
+            System.out.println("Authorized!");
+        }
+        else{
+            System.out.println("Unauthorized!");
+        }
+        if(Authorization.isAuthorized(authTable.get("searchInventoryByPrice"))){
+            System.out.println("Authorized!");
+        }
+        else{
+            System.out.println("Unauthorized!");
+        }
+        if(Authorization.isAuthorized(authTable.get("searchInventoryBySku"))){
+            System.out.println("Authorized!");
+        }
+        else{
+            System.out.println("Unauthorized!");
+        }
+        if(Authorization.isAuthorized(authTable.get("searchInventoryByUuid"))){
+            System.out.println("Authorized!");
+        }
+        else{
+            System.out.println("Unauthorized!");
+        }
+    }
 }
-

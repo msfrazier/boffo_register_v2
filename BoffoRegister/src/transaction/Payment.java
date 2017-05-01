@@ -25,4 +25,8 @@ public class Payment extends Transaction {
         return "Amount: " + amount;
     }
 
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> master

@@ -26,6 +26,7 @@ public class Inventory extends BoffoFireObject implements AuthorizationInterface
 
     public Inventory(){
        System.out.println("Inventory loaded");
+         this.buildMap();
                 }
 
 

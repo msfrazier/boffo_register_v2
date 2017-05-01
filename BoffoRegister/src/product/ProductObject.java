@@ -1,48 +1,56 @@
 package product;
 
+/*
+Last update: 5/1/2017
+
+Description: Class ProductObject constructs the product object and includes
+             find methods that search by attributes.
+
+Author: John Kaiserlik
+*/
+
 import utility.Utility;
 import bundles.*;
 import java.util.HashMap;
 import database.BoffoDbObject;
 
 public class ProductObject extends BoffoDbObject implements TicketElement{
-   //need product object 'factory' 
         protected String name = "";
         protected int quantity = 0;
         protected double price = 0.00;
-        protected int UPC = 0;
+        protected String UPC = "";
         protected String SKU = "";
         protected Rating rat = null;
         protected static String tableName = "product";
         protected String uuid = "";
         protected HashMap map = null;
         protected String description = "";
-        
+
     public ProductObject(){
         BoffoDbObject.create();
     }
 
-    
+
     public ProductObject(String _tableName){
-        this.tableName = _tableName;
+        ProductObject.tableName = _tableName;
     }
 
-    
-    public ProductObject(String _name, int _quant, double _price, int _UPC, String _sk, Rating _rat, String _upc, String _tableName, String _description) {
+
+    public ProductObject(String _name, int _quant, double _price, String _UPC, String _sk, Rating _rat, String _uuid, String _tableName, String _description) {
        this.name = _name;
        this.quantity = _quant;
        this.price = _price;
        this.UPC = _UPC;
        this.SKU = _sk;
        this.rat = _rat;
-       this.uuid = _upc;
-       this.tableName = _tableName;
+       this.uuid = _uuid;
+       ProductObject.tableName = _tableName;
        this.description = _description;
     }
 
     @Override
     public ProductObject clone(){
-        return new ProductObject();
+        return new ProductObject(this.name, this.quantity, this.price, this.UPC, this.SKU, this.rat, this.uuid, tableName, this.description);
     }
 
 
@@ -79,12 +87,12 @@ public class ProductObject extends BoffoDbObject implements TicketElement{
 
 
     public ProductObject getProduct() {
-        return new ProductObject(this.name, this.quantity, this.price, this.UPC, this.SKU, this.rat, this.uuid, this.tableName, this.description);
+        return new ProductObject(this.name, this.quantity, this.price, this.UPC, this.SKU, this.rat, this.uuid, tableName, this.description);
     }
 
- 
+
     public void setQuantity(int _quant) {
-        this.quantity = _quant; 
+        this.quantity = _quant;
     }
 
 
@@ -103,12 +111,12 @@ public class ProductObject extends BoffoDbObject implements TicketElement{
     }
 
 
-    public void setUPC(int _upc) {
+    public void setUPC(String _upc) {
         this.UPC = _upc;
     }
 
 
-    public int getUPC() {
+    public String getUPC() {
         return this.UPC;
     }
 
@@ -123,7 +131,6 @@ public class ProductObject extends BoffoDbObject implements TicketElement{
     }
 
 
-    //ProductObject.load() is a BoffoDbObject so still cast as ProductObject
     public static ProductObject loadBySKU(String _sku) {
         return (ProductObject)ProductObject.load("sku", _sku, new ProductObject(tableName));
     }
@@ -154,32 +161,33 @@ public class ProductObject extends BoffoDbObject implements TicketElement{
     }
 
 
-    public HashMap printProductLine(){
-        if(!this.map.isEmpty()){
+    public HashMap getProductMap(){
         this.map.clear();
-    }
-        else if (this.map.isEmpty()){
+
+        if (this.map.isEmpty()){
             this.map.put("name", this.name);
             this.map.put("quantity", this.quantity);
-            this.map.put("price", this.price);
+            this.map.put("price", Utility.formatPrice(this.getPrice()));
             this.map.put("upc", this.UPC);
             this.map.put("sku", this.SKU);
             this.map.put("rating", this.rat);
+
+            return this.map;
         }
-        return this.map;
+        return null;
     }
 
 
     @Override
     public String toString() {
-        String str = "Name: " + this.getName() + "\n" + 
-                     "Quantity: " + this.getQuantity() + "\n" + 
-                     "Price: " + Utility.formatPrice(this.getPrice()) + "\n" + 
-                     "UPC: " + this.getUPC() + "\n" + 
-                     "SKU: " + this.getSku() + "\n" + 
-                     "Rating: " + this.getRating() + "\n" + 
-                     "UUID: " + this.uuid + "\n" + 
+        String str = "Name: " + this.getName() + "\n" +
+                     "Quantity: " + this.getQuantity() + "\n" +
+                     "Price: " + Utility.formatPrice(this.getPrice()) + "\n" +
+                     "UPC: " + this.getUPC() + "\n" +
+                     "SKU: " + this.getSku() + "\n" +
+                     "Rating: " + this.getRating() + "\n" +
+                     "UUID: " + this.uuid + "\n" +
                      "Description: " + this.description + "\n";
         return str;
     }
-} 
+}

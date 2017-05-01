@@ -18,7 +18,7 @@ public class ProductObject extends BoffoDbObject implements TicketElement{
         protected String name = "";
         protected int quantity = 0;
         protected double price = 0.00;
-        protected int UPC = 0;
+        protected String UPC = "";
         protected String SKU = "";
         protected Rating rat = null;
         protected static String tableName = "product";
@@ -36,14 +36,14 @@ public class ProductObject extends BoffoDbObject implements TicketElement{
     }
 
 
-    public ProductObject(String _name, int _quant, double _price, int _UPC, String _sk, Rating _rat, String _upc, String _tableName, String _description) {
+    public ProductObject(String _name, int _quant, double _price, String _UPC, String _sk, Rating _rat, String _uuid, String _tableName, String _description) {
        this.name = _name;
        this.quantity = _quant;
        this.price = _price;
        this.UPC = _UPC;
        this.SKU = _sk;
        this.rat = _rat;
-       this.uuid = _upc;
+       this.uuid = _uuid;
        ProductObject.tableName = _tableName;
        this.description = _description;
     }
@@ -111,12 +111,12 @@ public class ProductObject extends BoffoDbObject implements TicketElement{
     }
 
 
-    public void setUPC(int _upc) {
+    public void setUPC(String _upc) {
         this.UPC = _upc;
     }
 
 
-    public int getUPC() {
+    public String getUPC() {
         return this.UPC;
     }
 

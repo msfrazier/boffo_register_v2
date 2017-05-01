@@ -13,6 +13,8 @@ import utility.Utility;
 import bundles.*;
 import java.util.HashMap;
 import database.BoffoDbObject;
+import java.util.ArrayList;
+import java.util.List;
 
 public class ProductObject extends BoffoDbObject implements TicketElement{
         protected String name = "";
@@ -171,6 +173,9 @@ public class ProductObject extends BoffoDbObject implements TicketElement{
             this.map.put("upc", this.UPC);
             this.map.put("sku", this.SKU);
             this.map.put("rating", this.rat);
+            this.map.put("uuid", this.uuid);
+            this.map.put("table name", tableName);
+            this.map.put("description", description);
 
             return this.map;
         }
@@ -189,5 +194,13 @@ public class ProductObject extends BoffoDbObject implements TicketElement{
                      "UUID: " + this.uuid + "\n" +
                      "Description: " + this.description + "\n";
         return str;
+    }
+
+
+    public Object generator(){
+        for (Object o : this.map.values()){
+            return o.toString();
+        }
+        return null;
     }
 }

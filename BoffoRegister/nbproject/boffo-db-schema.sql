@@ -21,7 +21,8 @@ CREATE TABLE IF NOT EXISTS boffo_register_schema.product_tbl (
   price DOUBLE NOT NULL,
   upc INT NULL,
   sku INT NULL,
-  rating INT NULL,
+  rat INT NULL,
+  uuid VARCHAR(45) NULL,
   description VARCHAR(200) NULL,
   PRIMARY KEY (product_id),
   UNIQUE INDEX product_id_UNIQUE (product_id ASC))
@@ -66,6 +67,9 @@ CREATE TABLE IF NOT EXISTS boffo_register_schema.ticket_tbl (
   ticket_id INT UNSIGNED NOT NULL,
   `date` DATETIME NULL,
   sale_type VARCHAR(45) NULL,
+  total INT NULL,
+  upc int NOT NULL,
+  name VARCHAR(45) NULL,
   user_id INT UNSIGNED NOT NULL,
 	FOREIGN KEY fk_user_id(user_id)
     REFERENCES user_tbl(user_id),

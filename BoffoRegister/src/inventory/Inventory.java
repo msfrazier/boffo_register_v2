@@ -21,6 +21,7 @@ public class Inventory extends BoffoFireObject implements AuthorizationInterface
      private ArrayList<InventoryRecord> list = null;
      BoffoEventData data = new BoffoEventData("updated");
      BoffoEvent update = new BoffoEvent(this,data);
+     protected static HashMap<String, ArrayList<Integer>> inventory_hash = new HashMap<>();
 
     public Inventory(){
        System.out.println("Inventory loaded");
@@ -67,16 +68,16 @@ public class Inventory extends BoffoFireObject implements AuthorizationInterface
         ArrayList<Integer> searchInventoryByUuid = new ArrayList<>();
         searchInventoryByUuid.addAll(Arrays.asList(0, 1, 2, 3));
 
-        authTable.put("addInventoryRecord", addInventoryRecord);
-        authTable.put("deleteInventoryRecord", deleteInventoryRecord);
-        authTable.put("increaseRecordQuantity", increaseRecordQuantity);
-        authTable.put("decreaseRecordQuantity", decreaseRecordQuantity);
-        authTable.put("incrementInventory", incrementInventory);
-        authTable.put("decrementInventory", decrementInventory);
-        authTable.put("searchInventoryByName", searchInventoryByName);
-        authTable.put("searchInventoryByPrice", searchInventoryByPrice);
-        authTable.put("searchInventoryBySku", searchInventoryBySku);
-        authTable.put("searchInventoryByUuid", searchInventoryByUuid);
+        inventory_hash.put("addInventoryRecord", addInventoryRecord);
+        inventory_hash.put("deleteInventoryRecord", deleteInventoryRecord);
+        inventory_hash.put("increaseRecordQuantity", increaseRecordQuantity);
+        inventory_hash.put("decreaseRecordQuantity", decreaseRecordQuantity);
+        inventory_hash.put("incrementInventory", incrementInventory);
+        inventory_hash.put("decrementInventory", decrementInventory);
+        inventory_hash.put("searchInventoryByName", searchInventoryByName);
+        inventory_hash.put("searchInventoryByPrice", searchInventoryByPrice);
+        inventory_hash.put("searchInventoryBySku", searchInventoryBySku);
+        inventory_hash.put("searchInventoryByUuid", searchInventoryByUuid);
     }
 
 

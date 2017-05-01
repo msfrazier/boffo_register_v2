@@ -1,7 +1,6 @@
 package bundles;
 
-import java.util.ArrayList;
-import java.util.List;
+import product.ProductObject;
 
 /**
  * A wrapper class for representing bundles along with the specific product
@@ -17,7 +16,7 @@ public class BundleWrapper implements TicketElement {
     // Bundle stores static product objects
     private final Bundle bundle;
     // Actual product objects
-    private final GroupList<Product_Test> products;
+    private final GroupList<ProductObject> products;
 
 
     /**
@@ -27,7 +26,7 @@ public class BundleWrapper implements TicketElement {
      * @param _products A GroupList of specific products to wrap with the
      * bundle.
      */
-    public BundleWrapper(Bundle _bundle, GroupList<Product_Test> _products) {
+    public BundleWrapper(Bundle _bundle, GroupList<ProductObject> _products) {
         this.bundle = _bundle;
         this.products = _products;
     }
@@ -93,7 +92,7 @@ public class BundleWrapper implements TicketElement {
      *
      * @return The GroupList of products.
      */
-    public GroupList<Product_Test> getProducts() {
+    public GroupList<ProductObject> getProducts() {
         return this.products.clone();
     }
 

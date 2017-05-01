@@ -42,7 +42,7 @@ public class ProductObject extends BoffoDbObject implements TicketElement{
 
     @Override
     public ProductObject clone(){
-        return new ProductObject();
+        return new ProductObject(name, quantity, price, UPC, SKU, rat, UPC + "", tableName, description);
     }
 
 

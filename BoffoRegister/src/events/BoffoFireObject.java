@@ -33,7 +33,7 @@ public class BoffoFireObject extends BoffoDbObject {
     public synchronized void removeAllListeners() {
         listeners.clear();
     }
-    
+
     public void removeAllExcept(BoffoListenerInterface _listener) {
         listeners.clear();
         listeners.add(_listener);

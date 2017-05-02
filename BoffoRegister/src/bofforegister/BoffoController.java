@@ -17,10 +17,10 @@ import administration.Administration;
 import events.BoffoEvent;
 import events.*;
 import events.BoffoFireObject;
-import gui.BoffoRegisterGUI;
-import javafx.stage.Stage;
 import events.BoffoListenerInterface;
+import gui.BoffoRegisterGUI;
 import inventory.Inventory;
+import javafx.stage.Stage;
 import printer.Printer;
 import transaction.Transaction;
 import user.User;
@@ -29,36 +29,30 @@ public class BoffoController extends BoffoFireObject implements BoffoListenerInt
 
     public static User CURRENT_USER = null;
 
-    protected Transaction transaction = new Transaction();
-    protected Inventory inventory = new Inventory();
     protected Administration admin = new Administration();
-    protected Printer printer = new Printer();
     protected BoffoRegisterGUI gui = null;
+    protected Inventory inventory = new Inventory();
+    protected Printer printer = new Printer();
+    protected Transaction transaction = new Transaction();
+
 
     BoffoController(Stage _primaryStage) {
         this.gui = new BoffoRegisterGUI(_primaryStage);
     }
 
-    /**
-     *
-     */
+
     public void initilize() {
         this.gui.addListener(this);
         this.addListener(gui);
     }
 
-    /**
-     * Changes the active module, changes the GUI panel, and calls out to
-     * registerPanelListener change the current listener.
-     *
-     * @param _event
-     */
+
     @Override
     public void messageReceived(BoffoEvent _event) {
         // Need a login event.
         // Need a logout event.
         // Need a print event, can be a generic event if needed.
-        if(_event.getMessage().getCode() instanceof BoffoNavigateEventData) {
+        if (_event.getMessage().getCode() instanceof BoffoNavigateEventData) {
             changePanel(_event);
             return;
         }
@@ -66,13 +60,10 @@ public class BoffoController extends BoffoFireObject implements BoffoListenerInt
         fireEvent(_event);
     }
 
-    /**
-     *
-     * @param _event
-     */
+
     private void changePanel(BoffoEvent _event) {
         // Get the event data as a seperate object.
-        BoffoNavigateEventData eventData = (BoffoNavigateEventData)_event.getMessage().getCode();
+        BoffoNavigateEventData eventData = (BoffoNavigateEventData) _event.getMessage().getCode();
         switch (eventData.getEventType()) {
             case LOGIN_PANEL:
                 CURRENT_USER = null;
@@ -104,19 +95,15 @@ public class BoffoController extends BoffoFireObject implements BoffoListenerInt
         }
     }
 
-    /**
-     *
-     * @param _listener
-     */
+
     private void changeTo(BoffoListenerInterface _listener) {
-        this.removeAllExcept(gui);
-        this.addListener(_listener);
+    this.removeAllExcept(gui);
+    this.addListener(_listener);
     }
 
-    /**
-     *
-     */
+
+    // Pass in all relevent objects into the printer and let it sort them out.
     private void printReceipt() {
-        // Pass in all relevent objects into the printer and let it sort them out.
+
     }
 }

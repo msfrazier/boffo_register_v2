@@ -13,17 +13,19 @@ import utility.Utility;
 import bundles.*;
 import java.util.HashMap;
 import database.BoffoDbObject;
+import java.util.ArrayList;
+import java.util.List;
 
 public class ProductObject extends BoffoDbObject implements TicketElement{
         protected String name = "";
         protected int quantity = 0;
         protected double price = 0.00;
-        protected String UPC = "";
+        protected int UPC = 0;
         protected String SKU = "";
         protected Rating rat = null;
         protected static String tableName = "product";
         protected String uuid = "";
-        protected HashMap map = null;
+        protected HashMap map = new HashMap();
         protected String description = "";
 
     public ProductObject(){
@@ -36,7 +38,7 @@ public class ProductObject extends BoffoDbObject implements TicketElement{
     }
 
 
-    public ProductObject(String _name, int _quant, double _price, String _UPC, String _sk, Rating _rat, String _uuid, String _tableName, String _description) {
+    public ProductObject(String _name, int _quant, double _price, int _UPC, String _sk, Rating _rat, String _uuid, String _tableName, String _description) {
        this.name = _name;
        this.quantity = _quant;
        this.price = _price;
@@ -111,12 +113,12 @@ public class ProductObject extends BoffoDbObject implements TicketElement{
     }
 
 
-    public void setUPC(String _upc) {
+    public void setUPC(int _upc) {
         this.UPC = _upc;
     }
 
 
-    public String getUPC() {
+    public int getUPC() {
         return this.UPC;
     }
 
@@ -171,6 +173,9 @@ public class ProductObject extends BoffoDbObject implements TicketElement{
             this.map.put("upc", this.UPC);
             this.map.put("sku", this.SKU);
             this.map.put("rating", this.rat);
+            this.map.put("uuid", this.uuid);
+            this.map.put("table name", tableName);
+            this.map.put("description", description);
 
             return this.map;
         }
@@ -189,5 +194,10 @@ public class ProductObject extends BoffoDbObject implements TicketElement{
                      "UUID: " + this.uuid + "\n" +
                      "Description: " + this.description + "\n";
         return str;
+    }
+
+
+    public ProductObject generator(String _name, int _quant, double _price, int _UPC, String _sku, Rating _rat, String _uuid, String _tableName, String _description) {
+        return new ProductObject(_name, _quant, _price, _UPC, _sku, _rat, _uuid, _tableName, _description);
     }
 }

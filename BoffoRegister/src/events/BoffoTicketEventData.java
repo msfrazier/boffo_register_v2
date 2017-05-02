@@ -23,7 +23,7 @@ public class BoffoTicketEventData<T> extends BoffoEventData {
         this.eventType = _newType;
     }
 
-    
+
     /**
      * Constructor for passing a basic data type.
      *
@@ -35,7 +35,7 @@ public class BoffoTicketEventData<T> extends BoffoEventData {
         this.eventData = _data;
     }
 
-    
+
     /**
      * Constructor for passing a BoffoDbObject.
      *
@@ -47,12 +47,12 @@ public class BoffoTicketEventData<T> extends BoffoEventData {
         this.eventObj = _obj;
     }
 
-    
+
     public EventType getEventType() {
         return this.eventType;
     }
 
-    
+
     public void setEventType(EventType _newType) {
         this.eventType = _newType;
     }

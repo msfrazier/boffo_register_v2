@@ -1,14 +1,16 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
+
 package events;
 
 /**
+ *Last updated: 4-27-17
  *
- * @author msf10_000
+ *This class extends the generic BoffoEvent and is used for anyone who fires
+ * events that handle logging in
+ *
+ * @author Maclean Frazier
  */
-public class BoffoLogInEvent {
-    
+public class BoffoLogInEvent extends BoffoEvent {
+    BoffoLogInEvent(Object source, BoffoEventData messageString){
+        super(source, messageString);
+    }
 }

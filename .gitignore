@@ -1,4 +1,6 @@
+BoffoRegister/nbproject/private/private.properties
 /BoffoRegister/build/
+<<<<<<< HEAD
 BoffoRegister/src/inventory/InventoryRecord.java
 *.java
 !/BoffoRegister/src/events/BoffoEventData.java
@@ -6,3 +8,9 @@ BoffoRegister/src/inventory/InventoryRecord.java
 !/BoffoRegister/src/events/BoffoUpcEventData.java
 !/BoffoRegister/src/events/BoffoTicketEventData.java
 !/BoffoRegister/src/events/BoffoUserEventData.java
+=======
+*.properties
+BoffoRegister/nbproject/private/configs/Run_in_Browser.properties
+BoffoRegister/nbproject/project.properties
+BoffoRegister/nbproject/project.properties
+>>>>>>> refs/remotes/origin/master

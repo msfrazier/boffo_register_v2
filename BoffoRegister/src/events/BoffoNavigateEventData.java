@@ -1,7 +1,7 @@
 package events;
 
 /**
- * Last Edited: 4/25 
+ * Last Edited: 5/4
  * This class is for passing data within navigation events.
  * @author Ray
  */
@@ -22,8 +22,8 @@ public class BoffoNavigateEventData<T> extends BoffoEventData {
    public BoffoNavigateEventData(EventType _newType){
         this.eventType = _newType;
     }
-    
-   
+
+
     /**
      * Constructor to call when you need to pass a basic data type.
      * @param _newType The type of event you wish to create.
@@ -34,7 +34,7 @@ public class BoffoNavigateEventData<T> extends BoffoEventData {
         this.eventType = _newType;
     }
 
-    
+
     /**
      * Constructor to call when you need to pass a BoffoDbObject.
      * @param _newType The type of event you wish to create.
@@ -45,9 +45,9 @@ public class BoffoNavigateEventData<T> extends BoffoEventData {
         this.eventObj = _obj;
     }
 
-    
+
     public void setEventType(EventType _newType){
         this.eventType = _newType;
     }
-    
+
 }

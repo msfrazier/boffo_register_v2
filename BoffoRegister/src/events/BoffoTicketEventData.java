@@ -1,7 +1,8 @@
 package events;
 
 /**
- * Last Edited: 4/25 This class is for passing data between Ticket events.
+ * Last Edited: 5/4
+ * This class is for passing data between Ticket events.
  *
  * @author Ray
  */
@@ -21,7 +22,7 @@ public class BoffoTicketEventData<T> extends BoffoEventData {
         this.eventType = _newType;
     }
 
-    
+
     /**
      * Constructor for passing a basic data type.
      *
@@ -33,7 +34,7 @@ public class BoffoTicketEventData<T> extends BoffoEventData {
         this.eventData = _data;
     }
 
-    
+
     /**
      * Constructor for passing a BoffoDbObject.
      *
@@ -45,7 +46,7 @@ public class BoffoTicketEventData<T> extends BoffoEventData {
         this.eventObj = _obj;
     }
 
-    
+
     public void setEventType(EventType _newType) {
         this.eventType = _newType;
     }

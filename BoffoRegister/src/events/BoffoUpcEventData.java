@@ -1,7 +1,7 @@
 package events;
 
 /**
- * Last Edited: 4/25 
+ * Last Edited: 5/4
  * This class is for passing data within UPC events.
  * @author Ray
  */
@@ -9,8 +9,9 @@ package events;
 import database.BoffoDbObject;
 
 public class BoffoUpcEventData<T> extends BoffoEventData {
-    
-     public enum EventType {FIND_UPC, NEW_UPC, ADD_UPC};
+
+
+    public enum EventType {FIND_UPC, NEW_UPC, ADD_UPC};
     EventType eventType;
 
     /**
@@ -20,8 +21,8 @@ public class BoffoUpcEventData<T> extends BoffoEventData {
   public BoffoUpcEventData(EventType _newType){
         this.eventType = _newType;
     }
-    
-  
+
+
     /**
      * Constructor to call when you need to pass a basic data type.
      * @param _newType The type of event you wish to create.
@@ -32,7 +33,7 @@ public class BoffoUpcEventData<T> extends BoffoEventData {
         this.eventType = _newType;
     }
 
-    
+
     /**
      * Constructor to call when you want to pass a BoffoDbObject.
      * @param _newType The type of event you wish to create.
@@ -42,10 +43,10 @@ public class BoffoUpcEventData<T> extends BoffoEventData {
         this.eventType = _newType;
         this.eventObj = _obj;
     }
-    
-    
+
+
     public void setEventType(EventType _newType){
         this.eventType = _newType;
     }
-    
+
 }

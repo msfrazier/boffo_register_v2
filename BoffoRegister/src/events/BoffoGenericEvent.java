@@ -14,5 +14,4 @@ public class BoffoGenericEvent extends BoffoEvent{
     public BoffoGenericEvent(Object source, BoffoEventData messageString) {
         super(source, messageString);
     }
-
 }

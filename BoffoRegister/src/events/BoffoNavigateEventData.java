@@ -1,11 +1,12 @@
-
 package events;
-import database.BoffoDbObject;
+
 /**
  * Last Edited: 4/25 
  * This class is for passing data within navigation events.
  * @author Ray
  */
+import database.BoffoDbObject;
+
 public class BoffoNavigateEventData<T> extends BoffoEventData {
 
     public enum EventType {

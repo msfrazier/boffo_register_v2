@@ -1,16 +1,15 @@
-
 package events;
-import database.BoffoDbObject;
+
 /**
- *Last Edited: 4/26
+ *Last Edited: 5/4
  * This class is for passing data within User events.
  * @author Ray
  */
+import database.BoffoDbObject;
+
 public class BoffoUserEventData<T> extends BoffoEventData {
     
-    public enum EventType {
-        NEW_USER, DELETE_USER,
-    };
+    public enum EventType {NEW_USER, DELETE_USER};
     EventType eventType;
     
     /**
@@ -21,6 +20,7 @@ public class BoffoUserEventData<T> extends BoffoEventData {
         this.eventType = _newType;
     }
     
+    
     /**
      * Constructor to call when you need to pass a basic data type.
      * @param _newType The new type of event you wish to create.
@@ -30,6 +30,7 @@ public class BoffoUserEventData<T> extends BoffoEventData {
         this.eventType = _newType;
         this.eventData = _data;
     }
+    
     
     /**
      * Constructor to call when you want to pass an entire BoffoDbObject.

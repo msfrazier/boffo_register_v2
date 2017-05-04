@@ -5,6 +5,7 @@ package events;
  * This class is for passing data between generic events.
  * @author Ray
  */
+
 import database.BoffoDbObject;
 import java.util.*;
 
@@ -46,8 +47,13 @@ public class BoffoEventData<T> {
     public BoffoDbObject getEventObj() {
         return this.eventObj;
     }
+ 
+    
+    public EventType getEventType(){
+        return this.eventType;
+    }
 
-
+    
     public void setEventData(T _data) {
         this.eventData = _data;
     }
@@ -56,10 +62,7 @@ public class BoffoEventData<T> {
     public void setEventObj(BoffoDbObject _obj) {
         this.eventObj = _obj;
     }
-    
-    public EventType getEventType(){
-        return this.eventType;
-    }
+   
     
     public void setEventType( EventType _newType){
         this.eventType = _newType;

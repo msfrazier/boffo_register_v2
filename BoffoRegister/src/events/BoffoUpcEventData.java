@@ -1,17 +1,16 @@
-
 package events;
-import database.BoffoDbObject;
 
 /**
  * Last Edited: 4/25 
  * This class is for passing data within UPC events.
  * @author Ray
  */
+
+import database.BoffoDbObject;
+
 public class BoffoUpcEventData<T> extends BoffoEventData {
     
-     public enum EventType {
-        FIND_UPC, NEW_UPC, ADD_UPC
-    };
+     public enum EventType {FIND_UPC, NEW_UPC, ADD_UPC};
     EventType eventType;
 
     /**

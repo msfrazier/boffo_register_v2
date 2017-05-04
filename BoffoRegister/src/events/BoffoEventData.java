@@ -12,11 +12,11 @@ public class BoffoEventData<T> {
 
     T eventData;
     BoffoDbObject eventObj;
-    
+
    public BoffoEventData() {
-        
+
     }
-    
+
     /**
      * Constructor to pass a basic data type.
      * @param _data The basic data type you wish to pass.
@@ -25,16 +25,16 @@ public class BoffoEventData<T> {
         this.eventData = _data;
     }
 
-   
+
 /**
- *  Constructor to pass entire BoffoDbObjects in an event.  
+ *  Constructor to pass entire BoffoDbObjects in an event.
  * @param _obj BoffoDbObject you wish to pass.
  */
     public BoffoEventData(BoffoDbObject _obj) {
         this.eventObj = _obj;
     }
 
-    
+
     //getters and setters
    public T getEventData() {
         return this.eventData;

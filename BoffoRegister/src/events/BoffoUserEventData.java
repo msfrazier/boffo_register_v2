@@ -9,10 +9,10 @@ import database.BoffoDbObject;
 
 public class BoffoUserEventData<T> extends BoffoEventData {
     
-    protected enum EventType {NEW_USER, DELETE_USER};
-    protected EventType eventType;
-    protected T userPass;
-    protected T userName;
+    public enum EventType {NEW_USER, DELETE_USER};
+    public EventType eventType;
+    public T userPass;
+    public T userName;
     
     /**
      * Constructor to call when you do not need to pass any data.

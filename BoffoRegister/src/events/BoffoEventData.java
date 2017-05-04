@@ -11,10 +11,10 @@ import java.util.*;
 
 public class BoffoEventData<T> {
 
-    protected T eventData;
-    protected BoffoDbObject eventObj;
-    protected enum EventType{PRINT, SAVE, LOAD};
-    protected EventType eventType;
+    public T eventData;
+    public BoffoDbObject eventObj;
+    public enum EventType{PRINT, SAVE, LOAD};
+    public EventType eventType;
     
 
    public BoffoEventData() {

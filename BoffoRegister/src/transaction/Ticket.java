@@ -1,12 +1,13 @@
 package transaction;
 
 /*
- * Last updated: 4-25-17
+ * Last updated: 5-3-17
  *
  * This class create a product list and allow to add or remove item 
  * from the list
  *
  * @author Fan Yang
+ * @author Mabelyn Espinoza
  */
 import bundles.Bundle;
 import bundles.GroupList;
@@ -35,48 +36,23 @@ public class Ticket extends Transaction {
         this.total = 0.00;
         this.upc = 0;
     }
-    
-//    public ProductObject addProductbyUPC(String _upc) {
-//        ProductObject product = (ProductObject) ProductObject.loadByUpc(_upc);
-//        this.products.add(product);
-//        this.productbundles = Bundle.updateBundles(products);
-//        return product;
-//    }
-//
-//    public ProductObject addProductbyName(String _name) {
-//        ProductObject product = (ProductObject) ProductObject.loadByName(_name);
-//        this.products.add(product);
-//        this.productbundles = Bundle.updateBundles(products);
-//        return product;
-//    }
 
-    public void removeProductbyUPC(String _upc) {
-        ProductObject product = (ProductObject) ProductObject.loadByUpc(_upc);
-        this.products.remove(product);
-        this.productbundles = Bundle.updateBundles(products);
-    }
-
-    public void removeProductbyName(String _name) {
-        ProductObject product = (ProductObject) ProductObject.loadByName(_name);
-        this.products.remove(product);
-        this.productbundles = Bundle.updateBundles(products);
-
-    public ProductObject addProductbyUPC(String UPC, List<ProductObject> _products) {
-        ProductObject product = (ProductObject) ProductObject.loadByUpc(UPC);
+    public ProductObject addProductByUPC(String _upc, List<ProductObject> _products){
+           ProductObject product = (ProductObject) ProductObject.loadByUpc(_upc);
         this.products.add(product);
         this.productbundles = Bundle.updateBundles(_products);
         return product;
     }
 
-    public ProductObject addProductbyName(String name, List<ProductObject> _products) {
-        ProductObject product = (ProductObject) ProductObject.loadByName(name);
+    public ProductObject addProductbyName(String _name, List<ProductObject> _products) {
+        ProductObject product = (ProductObject) ProductObject.loadByName(_name);
         this.products.add(product);
         this.productbundles = Bundle.updateBundles(_products);
         return product;
     }
 
     public void removeProductbyUPC(String UPC, List<ProductObject> _products) {
-        ProductObject product = (ProductObject) ProductObject.loadByUpc(UPC);1
+        ProductObject product = (ProductObject) ProductObject.loadByUpc(UPC);
         this.products.remove(product);
         this.productbundles = Bundle.updateBundles(_products);
     }

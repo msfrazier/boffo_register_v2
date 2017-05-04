@@ -24,9 +24,4 @@ public class Payment extends Transaction {
     public String toString() {
         return "Amount: " + amount;
     }
-
-<<<<<<< HEAD
 }
-=======
-}
->>>>>>> master

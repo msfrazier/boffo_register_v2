@@ -8,51 +8,57 @@ package transaction;
  *
  * @author Fan Yang
  */
-import database.BoffoDbObject;
+import bundles.Bundle;
+import bundles.Product_Test;
+import bundles.TicketElement;
 import events.BoffoEvent;
 import events.BoffoListenerInterface;
 import java.util.List;
 import product.ProductObject;
 
-
 public class Ticket extends Transaction {
+
     //Declare the variables.
     protected double total;
     protected int upc;
     protected String name, sku;
 
 //public class Ticket extends BoffoDbObject implements BoffoListenerInterface
-
     private List<ProductObject> products;
+    private List<TicketElement> productbundles;
 
     public Ticket() {
         //Initiate the variables.
         this.name = " ";
         this.sku = " ";
-        this.total= 0.00;
+        this.total = 0.00;
         this.upc = 0;
     }
-    
-    public ProductObject addProductbyUPC(String UPC) {
+
+    public ProductObject addProductbyUPC(String UPC, List<Product_Test> _products) {
         ProductObject product = (ProductObject) ProductObject.loadByUpc(UPC);
         this.products.add(product);
+        this.productbundles = Bundle.updateBundles(_products);
         return product;
-    }
-    
-    public ProductObject addProductbyName(String name) {
-        ProductObject product = (ProductObject) ProductObject.loadByName(name);
-        this.products.add(product);
-        return product;
-    }
-    
-    public void removeProductbyUPC(String UPC) {
-        ProductObject product = (ProductObject) ProductObject.loadByUpc(UPC);
-        this.products.remove(product);
     }
 
-    public void removeProductbyName(String name) {
+    public ProductObject addProductbyName(String name, List<Product_Test> _products) {
+        ProductObject product = (ProductObject) ProductObject.loadByName(name);
+        this.products.add(product);
+        this.productbundles = Bundle.updateBundles(_products);
+        return product;
+    }
+
+    public void removeProductbyUPC(String UPC, List<Product_Test> _products) {
+        ProductObject product = (ProductObject) ProductObject.loadByUpc(UPC);
+        this.products.remove(product);
+        this.productbundles = Bundle.updateBundles(_products);
+    }
+
+    public void removeProductbyName(String name, List<Product_Test> _products) {
         ProductObject product = (ProductObject) ProductObject.loadByName(name);
         this.products.remove(product);
+        this.productbundles = Bundle.updateBundles(_products);
     }
 
     public double getTotalPrice(String String_price) {

@@ -96,6 +96,8 @@ public class BoffoController extends BoffoFireObject implements BoffoListenerInt
         CURRENT_USER = null;
         this.removeAllListeners();
         // Remove all our modules.
+        this.addListener(gui);
+        this.gui.addListener(this);
         this.gui.loadLoginPanel();
     }
 

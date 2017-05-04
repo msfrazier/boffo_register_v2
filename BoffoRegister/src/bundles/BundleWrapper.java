@@ -1,5 +1,7 @@
 package bundles;
 
+import product.ProductObject;
+
 /**
  * A wrapper class for representing bundles along with the specific product
  * objects that it contains (rather than the general products that are used to
@@ -7,14 +9,14 @@ package bundles;
  *
  * @author Michael Resnik
  * @author Travis Cox
- * @lastEdited: 4/18/2017
+ * @lastEdited: 05/01/2017
  */
 public class BundleWrapper implements TicketElement {
 
     // Bundle stores static product objects
     private final Bundle bundle;
     // Actual product objects
-    private final GroupList<Product_Test> products;
+    private final GroupList<ProductObject> products;
 
 
     /**
@@ -24,7 +26,7 @@ public class BundleWrapper implements TicketElement {
      * @param _products A GroupList of specific products to wrap with the
      * bundle.
      */
-    public BundleWrapper(Bundle _bundle, GroupList<Product_Test> _products) {
+    public BundleWrapper(Bundle _bundle, GroupList<ProductObject> _products) {
         this.bundle = _bundle;
         this.products = _products;
     }
@@ -58,7 +60,7 @@ public class BundleWrapper implements TicketElement {
      */
     @Override
     public String getDescription() {
-        return bundle.getDescription();
+        return this.bundle.getDescription();
     }
 
 
@@ -69,7 +71,7 @@ public class BundleWrapper implements TicketElement {
      */
     @Override
     public String getName() {
-        return bundle.getName();
+        return this.bundle.getName();
     }
 
 
@@ -80,7 +82,7 @@ public class BundleWrapper implements TicketElement {
      */
     @Override
     public double getPrice() {
-        return bundle.getPrice();
+        return this.bundle.getPrice();
     }
 
 
@@ -90,7 +92,7 @@ public class BundleWrapper implements TicketElement {
      *
      * @return The GroupList of products.
      */
-    public GroupList<Product_Test> getProducts() {
+    public GroupList<ProductObject> getProducts() {
         return this.products.clone();
     }
 
@@ -113,7 +115,7 @@ public class BundleWrapper implements TicketElement {
      */
     @Override
     public String toString() {
-        return bundle.toString();
+        return this.bundle.toString();
     }
 
 }

@@ -40,7 +40,7 @@ public class BoffoIO extends BoffoFireObject implements BoffoListenerInterface{
         }
     }
 
-        // Reads in two strings, puts them in an array, and fires an event with the array
+    // Reads in two strings, puts them in an array, and fires an event with the array
     public void scanLogin(){
         String name = input.next();
         String pass = input.next();

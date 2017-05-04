@@ -14,6 +14,7 @@ package bofforegister;
  * @author Joshua Brown & Josh Milligan
  */
 import administration.Administration;
+import administration.AdministrationObject;
 import events.BoffoEvent;
 import events.*;
 import events.BoffoFireObject;
@@ -29,7 +30,7 @@ public class BoffoController extends BoffoFireObject implements BoffoListenerInt
 
     public static User CURRENT_USER = null;
 
-    protected Administration admin = new Administration();
+    protected AdministrationObject admin = new AdministrationObject();
     protected BoffoRegisterGUI gui = null;
     protected Inventory inventory = new Inventory();
     protected Printer printer = new Printer();
@@ -50,9 +51,13 @@ public class BoffoController extends BoffoFireObject implements BoffoListenerInt
     @Override
     public void messageReceived(BoffoEvent _event) {
         // Need a login event.
+        if (_event.getMessage().getCode() instanceof BoffoLogInEventData) {
+            userEvents(_event);
+            return;
+        }
         // Need a logout event.
         // Need a print event, can be a generic event if needed.
-        if (_event.getMessage().getCode() instanceof BoffoNavigateEventData) {
+        else if (_event.getMessage().getCode() instanceof BoffoNavigateEventData) {
             changePanel(_event);
             return;
         }
@@ -96,6 +101,15 @@ public class BoffoController extends BoffoFireObject implements BoffoListenerInt
     }
 
 
+    private void userEvent(BoffoEvent _event) {
+        BoffoLogInEventData loginEvent = (BoffoLogInEventData) _event.getMessage().getCode();
+        switch (loginEvent.getEventType()) {
+            case LOGIN_EVENT:
+
+        }
+    }
+
+
     private void changeTo(BoffoListenerInterface _listener) {
     this.removeAllExcept(gui);
     this.addListener(_listener);
@@ -104,6 +118,6 @@ public class BoffoController extends BoffoFireObject implements BoffoListenerInt
 
     // Pass in all relevent objects into the printer and let it sort them out.
     private void printReceipt() {
-
+        
     }
 }

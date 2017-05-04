@@ -3,10 +3,11 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/C:/ClassRepo/boffo_register_v2/BoffoRegister/src/events/BoffoEventData.java</file>
+            <file>file:/C:/ClassRepo/boffo_register_v2/BoffoRegister/src/administration/AdministrationObject.java</file>
+            <file>file:/C:/ClassRepo/boffo_register_v2/BoffoRegister/src/events/BoffoNavigateEventData.java</file>
             <file>file:/C:/ClassRepo/boffo_register_v2/BoffoRegister/src/printer/Printer.java</file>
             <file>file:/C:/ClassRepo/boffo_register_v2/BoffoRegister/src/administration/Administration.java</file>
-            <file>file:/C:/ClassRepo/boffo_register_v2/BoffoRegister/src/events/BoffoFireObject.java</file>
+            <file>file:/C:/ClassRepo/boffo_register_v2/BoffoRegister/src/inventory/Inventory.java</file>
             <file>file:/C:/ClassRepo/boffo_register_v2/BoffoRegister/src/bofforegister/BoffoController.java</file>
         </group>
     </open-files>

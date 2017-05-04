@@ -34,10 +34,6 @@ public class BoffoIO extends BoffoFireObject implements BoffoListenerInterface{
         if(product.ProductObject.loadByQuantity(String.valueOf(tempInt)) != null){
             fireEvent(new BoffoEvent(this,new BoffoEventData(tempInt)));
         }
-        else if(product.ProductObject.loadByUpc(String.valueOf(tempInt)) != null){
-            fireEvent(new BoffoUPCEvent(this,
-                    new BoffoUpcEventData(BoffoUpcEventData.EventType.NEW_UPC, tempInt)));
-        }
     }
 
     // Reads in two strings, puts them in an array, and fires an event with the array
@@ -60,6 +56,10 @@ public class BoffoIO extends BoffoFireObject implements BoffoListenerInterface{
         }
         else if(product.ProductObject.loadBySKU(tempString) != null){
             fireEvent(new BoffoEvent(this,new BoffoEventData(tempString)));
+        }
+        else if(product.ProductObject.loadByUpc(tempString) != null){
+            fireEvent(new BoffoUPCEvent(this,
+                new BoffoUpcEventData(BoffoUpcEventData.EventType.NEW_UPC, tempString)));
         }
     }
 

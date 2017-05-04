@@ -9,11 +9,11 @@ import database.BoffoDbObject;
 
 public class BoffoNavigateEventData<T> extends BoffoEventData {
 
-    public enum EventType {
+    protected enum EventType {
         EXIT_PANEL, LOGIN_PANEL, MAIN_PANEL, TRANSACTION_PANEL,
         INVENTORY_PANEL, ADMIN_PANEL
     };
-    EventType eventType;
+    protected EventType eventType;
 
     /**
      * Constructor to call when you do not need to pass any data.

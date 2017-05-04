@@ -11,8 +11,8 @@ import database.BoffoDbObject;
 public class BoffoUpcEventData<T> extends BoffoEventData {
 
 
-    public enum EventType {FIND_UPC, NEW_UPC, ADD_UPC};
-    EventType eventType;
+    protected enum EventType {FIND_UPC, NEW_UPC, ADD_UPC};
+    protected EventType eventType;
 
     /**
      * Constructor to call when you do not need to pass any data.

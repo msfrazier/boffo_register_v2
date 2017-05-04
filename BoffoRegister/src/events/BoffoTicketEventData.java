@@ -10,8 +10,8 @@ import database.BoffoDbObject;
 
 public class BoffoTicketEventData<T> extends BoffoEventData {
 
-    public enum EventType {NEW_TICKET, CLOSED_TICKET, LOAD_TICKET};
-    EventType eventType;
+    protected enum EventType {NEW_TICKET, CLOSED_TICKET, LOAD_TICKET};
+    protected EventType eventType;
 
     /**
      * Constructor to call when you do not need to pass any data.

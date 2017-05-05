@@ -168,7 +168,7 @@ public class CreditCardPayment extends Transaction {
      * @param _address2
      */
     public void setAddressLine2(String _address2) {
-        this.addressLine2 = _address2;
+        this.address2 = _address2;
     }
 
     /**

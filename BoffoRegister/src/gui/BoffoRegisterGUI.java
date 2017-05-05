@@ -10,7 +10,7 @@ package gui;
  * structured where the load methods are first, the build methods second, and
  * helper methods at the very bottom of the file.
  *
- * @author Logan Stanfield and Kevin Keomalaythong
+ * @author Logan Stanfield and Kevin Keomalaythong.
  * @updated 2017-05-01
  */
 import events.*;
@@ -64,7 +64,7 @@ public final class BoffoRegisterGUI extends BoffoFireObject implements BoffoList
     //Window properties.
     private final int screenWidth = 800;
     private final int screenHeight = 600;
-    private final boolean resizable = false;
+    private final boolean isResizable = false;
 
     //Dialog size properties.
     private final int dialogWidth = 400;
@@ -72,7 +72,7 @@ public final class BoffoRegisterGUI extends BoffoFireObject implements BoffoList
     private final int addEntryDialogWidth = 400;
     private final int addEntryDialogHeight = 250;
 
-    //Filepaths for images
+    //Filepaths for images used for various buttons.
     private final String boffoLogoFilepath = "res/boffo_logo/boffo_logo.png";
     private final String administrationBtnNormalImagePath = "res/administration/button_main.png";
     private final String administrationBtnHoverImagePath = "res/administration/button_hover.png";
@@ -91,21 +91,17 @@ public final class BoffoRegisterGUI extends BoffoFireObject implements BoffoList
     private final String signSinBtnPressedImagePath = "res/signin/button_click.png";
 
     //Styling for buttons properties.
-    final String STYLE_NORMAL = "-fx-background-color: transparent; -fx-padding: 5, 5, 5, 5;";
-    final String STYLE_PRESSED = "-fx-background-color: transparent; -fx-padding: 6 4 4 6;";
-
-    //VARIABLES FOR TESTING PURPOSES ONLY//
-    int counter = 0;
-    //VARIABLES FOR TESTING PURPOSES ONLY//
+    private final String STYLE_NORMAL = "-fx-background-color: transparent; -fx-padding: 5, 5, 5, 5;";
+    private final String STYLE_PRESSED = "-fx-background-color: transparent; -fx-padding: 6 4 4 6;";
 
     /**
-     * This constructor sets up the stage and loads the main panel.
+     * This constructor sets up the stage and loads the login panel.
      *
      * @param _stage
      */
     public BoffoRegisterGUI(Stage _stage) {
         this.boffoStage = _stage;
-        this.boffoStage.setResizable(resizable);
+        this.boffoStage.setResizable(this.isResizable);
         this.loadLoginPanel();
     }
 
@@ -115,10 +111,10 @@ public final class BoffoRegisterGUI extends BoffoFireObject implements BoffoList
      */
     public void loadAdminPanel() {
         System.out.println("Loading Administration Panel");
-        boffoStage.setTitle("Administration");
-        Scene sceneAdmin = buildAdminPanel();
-        boffoStage.setScene(sceneAdmin);
-        boffoStage.show();
+        this.boffoStage.setTitle("Administration");
+        Scene sceneAdmin = this.buildAdminPanel();
+        this.boffoStage.setScene(sceneAdmin);
+        this.boffoStage.show();
     }
 
     /**
@@ -127,10 +123,10 @@ public final class BoffoRegisterGUI extends BoffoFireObject implements BoffoList
      */
     public void loadInventoryPanel() {
         System.out.println("Loading Inventory Panel");
-        boffoStage.setTitle("Inventory");
-        Scene sceneInventory = buildInventoryPanel();
-        boffoStage.setScene(sceneInventory);
-        boffoStage.show();
+        this.boffoStage.setTitle("Inventory");
+        Scene sceneInventory = this.buildInventoryPanel();
+        this.boffoStage.setScene(sceneInventory);
+        this.boffoStage.show();
     }
 
     /**
@@ -139,7 +135,7 @@ public final class BoffoRegisterGUI extends BoffoFireObject implements BoffoList
      */
     public void loadLoginPanel() {
         System.out.println("Loading Login Panel");
-        boffoStage.setTitle("BoffoRegister Login");
+        this.boffoStage.setTitle("BoffoRegister Login");
         Scene sceneLogin = this.buildLoginPanel();
         this.boffoStage.setScene(sceneLogin);
 
@@ -153,11 +149,11 @@ public final class BoffoRegisterGUI extends BoffoFireObject implements BoffoList
      */
     public void loadMainPanel() {
         System.out.println("Loading Main Panel");
-        boffoStage.setTitle("Boffo Register Main Menu");
+        this.boffoStage.setTitle("Boffo Register Main Menu");
         Scene sceneMain = this.buildMainPanel();
 
         //Set up the main stage.
-        boffoStage.setScene(sceneMain);
+        this.boffoStage.setScene(sceneMain);
         this.boffoStage.show();
     }
 
@@ -167,10 +163,114 @@ public final class BoffoRegisterGUI extends BoffoFireObject implements BoffoList
      */
     public void loadTransactionPanel() {
         System.out.println("Loading Transaction Panel");
-        boffoStage.setTitle("Transaction");
-        Scene sceneTransaction = buildTransactionPanel();
-        boffoStage.setScene(sceneTransaction);
+        this.boffoStage.setTitle("Transaction");
+        Scene sceneTransaction = this.buildTransactionPanel();
+        this.boffoStage.setScene(sceneTransaction);
         boffoStage.show();
+    }
+
+    /**
+     * This is the defined messageReceieved in the BoffoListenerInterface.
+     *
+     * @param _event
+     */
+    @Override
+    public void messageReceived(BoffoEvent _event) {
+        fireEvent(_event);
+    }
+
+    /**
+     * This navigatorEvent method is used for the events that still don't fully
+     * work. :(
+     *
+     * @param _et
+     */
+    public void navigatorEvent(EventType _et) {
+        BoffoNavigateEventData evtData = new BoffoNavigateEventData(_et);
+        BoffoEvent evt = new BoffoEvent(this, (BoffoEventData) evtData);
+        fireEvent(evt);
+    }
+
+    /**
+     * This method returns a button with an image as the button.
+     *
+     * @param _imageFilePath
+     * @return btn
+     */
+    private Button addButtonWithBackground(String _imageFilePath) {
+        Button btn = new Button();
+
+        //Operations menu configuarations.
+        try {
+            btn.setGraphic(new ImageView(new Image(new FileInputStream(_imageFilePath))));
+            btn.setStyle(STYLE_NORMAL);
+
+        } catch (Exception _e) {
+            System.out.println("Error loading image");
+        }
+
+        return btn;
+    }
+
+    /**
+     *
+     * @param _columnHeaders
+     * @param _minTableHeight
+     * @param _minTableWidth
+     * @param _minHeaderWidth
+     * @return
+     */
+    private TableView addTableView(String[] _columnHeaders,
+            int _minTableHeight, int _minTableWidth, int _minHeaderWidth) {
+
+        final TableView tableView = new TableView();
+        tableView.setMinHeight(_minTableHeight);
+        tableView.setMinWidth(_minTableWidth);
+        tableView.setEditable(true);
+
+        TableColumn tempColumn = null;
+        for (String _columnHeader : _columnHeaders) {
+            tempColumn = new TableColumn(_columnHeader);
+            tableView.getColumns().add(tempColumn);
+            tempColumn.setMinWidth(_minHeaderWidth);
+        }
+        return tableView;
+    }
+
+    /**
+     * This is a method returns a VBox object which is later used to build the
+     * interface.
+     *
+     * @param _header The title set at the top of the VBox.
+     * @param _insets The number of pixels away from the edges.
+     */
+    private VBox addVBox(String _header, int _insets, Pos _value) {
+        VBox vbox = new VBox();
+        vbox.setPadding(new Insets(_insets));
+        vbox.setSpacing(8);
+        vbox.setAlignment(_value);
+        Text title = new Text(_header);
+        title.setFont(Font.font("Tahoma", FontWeight.BOLD, 20));
+        vbox.getChildren().add(title);
+        return vbox;
+    }
+
+    /**
+     * This method adds a warning label which we be used in several similar
+     * windows.
+     *
+     * @param text
+     * @param fontSize
+     * @param color
+     * @return warningLabel
+     */
+    private Label addWarningLabel(String _text, int _fontSize, Color _color) {
+        final Label warningLabel = new Label(_text);
+        warningLabel.setFont(Font.font("Tahoma", FontWeight.NORMAL, _fontSize));
+        warningLabel.setTextFill(_color);
+        warningLabel.setVisible(false);
+
+        return warningLabel;
     }
 
     /**
@@ -179,7 +279,7 @@ public final class BoffoRegisterGUI extends BoffoFireObject implements BoffoList
      *
      * @return new Scene
      */
-    public Scene buildAdminPanel() {
+    private Scene buildAdminPanel() {
         StackPane root = new StackPane();
 
         //Button settings and configurations.
@@ -191,6 +291,7 @@ public final class BoffoRegisterGUI extends BoffoFireObject implements BoffoList
         Button btnSetStoreName = new Button("Change Store Name");
         Button btnSetTaxRate = new Button("Change Tax Rate");
 
+        //VBox settings and configurations.
         VBox adminBtnVbox = this.addVBox("Select Operation", 10, Pos.BASELINE_LEFT);
         adminBtnVbox.getChildren().addAll(btnSetPhoneNumber, btnSetStoreHrs,
                 btnSetStoreId, btnSetReceiptMsg, btnSetStoreName,
@@ -198,11 +299,14 @@ public final class BoffoRegisterGUI extends BoffoFireObject implements BoffoList
 
         //ImageView settigs and configurations.
         FileInputStream input = null;
+
+        //Check to see if the file path for the images will successfully load.
         try {
             input = new FileInputStream(boffoLogoFilepath);
-        } catch (FileNotFoundException ex) {
-            Logger.getLogger(BoffoRegisterGUI.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (FileNotFoundException _ex) {
+            Logger.getLogger(BoffoRegisterGUI.class.getName()).log(Level.SEVERE, null, _ex);
         }
+        //Load the image into the imageView
         ImageView imageView = new ImageView(new Image(input));
         VBox imageVbox = this.addVBox("", 15, Pos.BOTTOM_RIGHT);
         imageVbox.getChildren().add(imageView);
@@ -581,10 +685,16 @@ public final class BoffoRegisterGUI extends BoffoFireObject implements BoffoList
         });
 
         //Set up the Admin panel.
-        return new Scene(root, screenWidth, screenHeight);
+        return new Scene(root, this.screenWidth, this.screenHeight);
     }
 
-    public Scene buildInventoryPanel() {
+    /**
+     * This method builds the entire Inventory panel. The root pane of the stage
+     * is a SplitPane and has several layers added on top of it.
+     *
+     * @return Scene
+     */
+    private Scene buildInventoryPanel() {
         SplitPane inventoryPanel = new SplitPane();
         inventoryPanel.setDividerPositions(.25);
         final ObservableList<String> itemList = FXCollections.observableArrayList();
@@ -1048,12 +1158,12 @@ public final class BoffoRegisterGUI extends BoffoFireObject implements BoffoList
         });
 
         //Set up the Inventory panel.
-        return new Scene(inventoryPanel, screenWidth, screenHeight);
+        return new Scene(inventoryPanel, this.screenWidth, this.screenHeight);
     }
 
     //Login screen with username & password text fields, plus a sign-in button.
     //TODO: Add event-firing code to the Sign In button.
-    public Scene buildLoginPanel() {
+    private Scene buildLoginPanel() {
         StackPane root = new StackPane();
 
         GridPane grid = new GridPane();
@@ -1214,10 +1324,10 @@ public final class BoffoRegisterGUI extends BoffoFireObject implements BoffoList
             }
         });
 
-        return new Scene(root, screenWidth, screenHeight);
+        return new Scene(root, this.screenWidth, this.screenHeight);
     }
 
-    public Scene buildMainPanel() {
+    private Scene buildMainPanel() {
         StackPane root = new StackPane();
         final Button btnTransaction = this.addButtonWithBackground(transactionBtnNormalImagePath);
         final Button btnInventory = this.addButtonWithBackground(inventoryBtnNormalImagePath);
@@ -1457,14 +1567,14 @@ public final class BoffoRegisterGUI extends BoffoFireObject implements BoffoList
         });
 
         // Create the scene and return.
-        return new Scene(root, screenWidth, screenHeight);
+        return new Scene(root, this.screenWidth, this.screenHeight);
     }
 
     /*
      * TODO: Display ticket items in a TableView or list.
      *       Create event handlers for the buttons.
      */
-    public Scene buildTransactionPanel() {
+    private Scene buildTransactionPanel() {
         //Split pane options.
         SplitPane transactionPanel = new SplitPane();
         transactionPanel.setDividerPosition(1, .5);
@@ -1569,109 +1679,7 @@ public final class BoffoRegisterGUI extends BoffoFireObject implements BoffoList
             }
         });
 
-        return new Scene(transactionPanel, screenWidth, screenHeight);
-    }
-
-    //TODO: Stubbed in method that checks to see if user is logged in.
-    private boolean isLoggedIn(/*User object*/) {
-        return true;
-    }
-
-    //TODO: Stubbed in method to check if entered credentials are valid
-    /**
-     * @param _username The username obtained from the login panel.
-     * @param _password The password obtained from the login panel.
-     * @return Boolean
-     */
-    private boolean isValidUser(String _username, String _password) {
-        //Compare String objects to those in the database.
-        //If credentials exist then return true.
-        //If credentials do not exist then prompt user to reenter credentials.
-        return true;
-    }
-
-    /**
-     * This method returns a button with an image as the button.
-     *
-     * @param _imageFilePath
-     * @return btn
-     */
-    private Button addButtonWithBackground(String _imageFilePath) {
-        final String STYLE_NORMAL = "-fx-background-color: transparent; -fx-padding: 5, 5, 5, 5;";
-        final String STYLE_PRESSED = "-fx-background-color: transparent; -fx-padding: 6 4 4 6;";
-        Button btn = new Button();
-
-        //Operations menu configuarations.
-        try {
-            btn.setGraphic(new ImageView(new Image(new FileInputStream(_imageFilePath))));
-            btn.setStyle(STYLE_NORMAL);
-
-        } catch (Exception _e) {
-            System.out.println("Error loading image");
-        }
-
-        return btn;
-    }
-
-    /**
-     *
-     * @param _columnHeaders
-     * @param _minTableHeight
-     * @param _minTableWidth
-     * @param _minHeaderWidth
-     * @return
-     */
-    private TableView addTableView(String[] _columnHeaders,
-            int _minTableHeight, int _minTableWidth, int _minHeaderWidth) {
-
-        final TableView tableView = new TableView();
-        tableView.setMinHeight(_minTableHeight);
-        tableView.setMinWidth(_minTableWidth);
-        tableView.setEditable(true);
-
-        TableColumn tempColumn = null;
-        for (String _columnHeader : _columnHeaders) {
-            tempColumn = new TableColumn(_columnHeader);
-            tableView.getColumns().add(tempColumn);
-            tempColumn.setMinWidth(_minHeaderWidth);
-        }
-        return tableView;
-    }
-
-    /**
-     * This method adds a warning label which we be used in several similar
-     * windows.
-     *
-     * @param text
-     * @param fontSize
-     * @param color
-     * @return warningLabel
-     */
-    private Label addWarningLabel(String _text, int _fontSize, Color _color) {
-        final Label warningLabel = new Label(_text);
-        warningLabel.setFont(Font.font("Tahoma", FontWeight.NORMAL, _fontSize));
-        warningLabel.setTextFill(_color);
-        warningLabel.setVisible(false);
-
-        return warningLabel;
-    }
-
-    /**
-     * This is a method returns a VBox object which is later used to build the
-     * interface.
-     *
-     * @param _header The title set at the top of the VBox.
-     * @param _insets The number of pixels away from the edges.
-     */
-    private VBox addVBox(String _header, int _insets, Pos _value) {
-        VBox vbox = new VBox();
-        vbox.setPadding(new Insets(_insets));
-        vbox.setSpacing(8);
-        vbox.setAlignment(_value);
-        Text title = new Text(_header);
-        title.setFont(Font.font("Tahoma", FontWeight.BOLD, 20));
-        vbox.getChildren().add(title);
-        return vbox;
+        return new Scene(transactionPanel, this.screenWidth, this.screenHeight);
     }
 
     /**
@@ -1720,24 +1728,27 @@ public final class BoffoRegisterGUI extends BoffoFireObject implements BoffoList
     }
 
     /**
-     * This navigatorEvent method is used for the events that still don't fully
-     * work. :(
+     * This method is used to determine if the user is logged in.
      *
-     * @param _et
+     * @param user
+     * @return true
      */
-    public void navigatorEvent(EventType _et) {
-        BoffoNavigateEventData evtData = new BoffoNavigateEventData(_et);
-        BoffoEvent evt = new BoffoEvent(this, (BoffoEventData) evtData);
-        fireEvent(evt);
+    private boolean isLoggedIn(/*User object*/) {
+        return true;
     }
 
     /**
-     * This is the defined messageReceieved in the BoffoListenerInterface.
+     * This method would have been used to check to see if the user is a valid
+     * login and determines if the Administration button will be grayed out.
      *
-     * @param _event
+     * @param _username The username obtained from the login panel.
+     * @param _password The password obtained from the login panel.
+     * @return Boolean
      */
-    @Override
-    public void messageReceived(BoffoEvent _event) {
-        fireEvent(_event);
+    private boolean isValidUser(String _username, String _password) {
+        //Compare String objects to those in the database.
+        //If credentials exist then return true.
+        //If credentials do not exist then prompt user to reenter credentials.
+        return true;
     }
 }

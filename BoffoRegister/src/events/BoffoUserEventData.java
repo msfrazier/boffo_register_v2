@@ -8,12 +8,12 @@ package events;
 import database.BoffoDbObject;
 
 public class BoffoUserEventData<T> extends BoffoEventData {
-    
+
     public enum EventType {NEW_USER, DELETE_USER};
     public EventType eventType;
     public T userPass;
     public T userName;
-    
+
     /**
      * Constructor to call when you do not need to pass any data.
      * @param _newType The new type of event you wish to create.
@@ -21,8 +21,8 @@ public class BoffoUserEventData<T> extends BoffoEventData {
     public BoffoUserEventData(EventType _newType) {
         this.eventType = _newType;
     }
-    
-    
+
+
     /**
      * Constructor to call when you need to pass a basic data type.
      * @param _newType The new type of event you wish to create.
@@ -32,8 +32,8 @@ public class BoffoUserEventData<T> extends BoffoEventData {
         this.eventType = _newType;
         this.eventData = _data;
     }
-    
-    
+
+
     /**
      * Constructor to call for passing both a username and password.
      * @param _newType The type of event you wish to create.
@@ -45,8 +45,8 @@ public class BoffoUserEventData<T> extends BoffoEventData {
         this.userName = _newName;
         this.userPass = _newPass;
     }
-    
-    
+
+
     /**
      * Constructor to call when you want to pass an entire BoffoDbObject.
      * @param _newType The type of event you wish to create.
@@ -57,26 +57,32 @@ public class BoffoUserEventData<T> extends BoffoEventData {
         this.eventObj = _obj;
     }
     
-    public T getUserName() {
-    return this.userName;    
+    
+    public EventType getUserEventType() {
+        return this.eventType;
     }
     
     
+    public T getUserName() {
+    return this.userName;
+    }
+
+
     public T getUserPass() {
         return this.userPass;
     }
-    
-    
+
+
     public void setEventType(EventType _newType) {
         this.eventType = _newType;
     }
-    
-    
+
+
     public void setUserName(T _newName) {
         this.userName = _newName;
     }
-    
-    
+
+
     public void setUserPass(T _newPass) {
         this.userPass = _newPass;
     }

@@ -22,10 +22,10 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
+import transaction.Transaction;
 
 public class Printer extends AdministrationObject {
 
-    protected double total = 0;
     protected JTable jTable1;
 
     public static void print(final String receipt) {
@@ -33,22 +33,23 @@ public class Printer extends AdministrationObject {
 
             // Set the Font type, font size and page layout of receipt.
             @Override
-            public int print(Graphics graphics, PageFormat pageFormat, int page)
+            public int print(Graphics _graphics, PageFormat _pageFormat,
+                    int _page)
                     throws PrinterException {
 
-                if (page > 0) {
+                if (_page > 0) {
                     return NO_SUCH_PAGE;
                 }
-                pageFormat.setOrientation(PageFormat.LANDSCAPE);
-                Graphics2D g2d = (Graphics2D) graphics.create();
+                _pageFormat.setOrientation(PageFormat.LANDSCAPE);
+                Graphics2D g2d = (Graphics2D) _graphics.create();
 
                 // Set color of font.
                 g2d.setPaint(Color.black);
 
                 // Set the font type and size.
                 g2d.setFont(new Font("Monospace", Font.BOLD, 11));
-                g2d.translate(pageFormat.getImageableX(),
-                        pageFormat.getImageableX());
+                g2d.translate(_pageFormat.getImageableX(),
+                        _pageFormat.getImageableX());
 
                 g2d.drawString(receipt, 0, 0);
 
@@ -65,16 +66,11 @@ public class Printer extends AdministrationObject {
             System.err.println(e.getMessage());
         }
     }
-   // Constructor to get data from Admin.
-    public Printer(String currency, String store_name, String receipt_msg,
-            double store_hours, int phone_num, float tax_rate,
-            String transactionKey, String loginID, int store_id,
-            String secretKey) {
-        super(currency, store_name, receipt_msg, store_hours, phone_num,
-                tax_rate, transactionKey, loginID, store_id, secretKey);
-    }
-   // Format the whole receipt.
-    public void printReceipt() throws Exception {
+
+    // Takes int Transaction and Admin objects.
+    // Formats the data receved from controller.
+    public void receiveData(Transaction _transaction,
+            AdministrationObject _admin) throws Exception {
         // Format date and time.
         DefaultTableModel mod = (DefaultTableModel) jTable1.getModel();
         DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
@@ -86,17 +82,18 @@ public class Printer extends AdministrationObject {
         String Time = timeFormat.format(time);
         // Format the receip with all needed data.
         String Header
-                = "   ****" + store_name + "****       \n"
-                + "       " + store_hours + "          \n"
-                + "        " + phone_num + "            \n"
+                = "   ****" + getStoreName() + "****       \n"
+                + "       " + getStoreHours() + "          \n"
+                + "       " + getPhoneNumber() + "            \n"
                 + "Date: " + Date + "     Time: " + Time + "\n"
                 + "---------------------------------\n"
                 + "Name          Qty    Rate     Amt\n"
                 + "---------------------------------\n";
+//        double total = 0.00;
 
         String amt
-                = "\n \n \nTotal Amount = " + total + "\n"
-                + "Tax =" + tax_rate + "\n"
+                = "\n \n \nTotal Amount = " + _tranaction.Total + "\n"
+                + "Tax =" + getTaxRate() + "\n"
                 + "*********************************\n"
                 + "Thank you. \n";
 
@@ -134,9 +131,11 @@ public class Printer extends AdministrationObject {
 
         } while (i <= mod.getRowCount() - 1);
 
-        bill = bill + amt;
+        bill = bill + _transaction.Total;
         System.out.println(bill);
         print(bill);
         dispose();
+
     }
+
 }

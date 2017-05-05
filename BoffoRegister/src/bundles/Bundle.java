@@ -10,18 +10,16 @@ import database.BoffoDbObject;
  * Bundle class for storing and using bundles and discounts, contains methods
  * for processing products into lists including discounts.
  *
- * @TODO Use utility format price for toString().
- * @TODO Add updateBundles to receive and return a ArrayList of TicketElements
  * @TODO loadBySKU, loadAll
  *
  * @author Michael Resnik
  * @author Travis Cox
- * @lastEdited: 05/01/2017
+ * @lastEdited: 05/05/2017
  */
 public class Bundle extends BoffoDbObject implements TicketElement {
 
     // List of all bundles, will be removed and be replaced by database call.
-    public static List<Bundle> allBundles = new ArrayList();
+    private static List<Bundle> allBundles = new ArrayList();
     // List of the products that comprise a bundle or discount.
     private final GroupList<ProductObject> products;
     private final DiscountType discountType;
@@ -32,13 +30,19 @@ public class Bundle extends BoffoDbObject implements TicketElement {
     private final String name;
     private final String description;
     private final String sku;
-    private final boolean active;
     private final Calendar startDate;
     private final Calendar endDate;
 
     protected static String tableName = "bundle_tbl";
 
 
+    /**
+     * Constructor for a Bundle object, needed to be a BoffoDbObject, syntax
+     * mirrored from Product().
+     *
+     * @see Product()
+     * @see BoffoDbObject.create()
+     */
     public Bundle() {
         BoffoDbObject.create();
         this.name = "";
@@ -55,7 +59,7 @@ public class Bundle extends BoffoDbObject implements TicketElement {
 
 
     /**
-     * Constructor for a bundle
+     * Constructor for a Bundle object.
      *
      * @param _name The name of the bundle.
      * @param _description The bundle description.
@@ -66,25 +70,25 @@ public class Bundle extends BoffoDbObject implements TicketElement {
      * by the discount type. Percentages are represented such that 75% = 75.0
      * @param _maxAllowed The maximum number of this bundle that can be on one
      * transaction. For no limit use 0.
-     * @param _sku The bundle SKU
+     * @param _sku The bundle object's SKU.
      */
     public Bundle(String _name, String _description,
             GroupList<ProductObject> _products, DiscountType _discountType,
             double _discountAmount, int _maxAllowed, String _sku, boolean _active, Calendar _startDate, Calendar _endDate) {
-        // TODO Validate input and throw exceptions.
         this.name = _name;
         this.description = _description;
         this.products = _products;
-        // BOGO only uses a single item and is created as a bundle of 2 of that item
+        // BOGO only uses a single item and is created as a bundle of 2 of that item.
         if (_discountType == DiscountType.BOGO) {
             ProductObject first = _products.get(0).getElement();
             this.products.clear();
             this.products.add(first, 2);
         }
         this.discountType = _discountType;
-
-        // Ensure that the discount amount is at least 0, and less than 100 if
-        // a percentage or BOGO.
+        /*
+         * Ensure that the discount amount is between 0 and 100.
+         * If discountType is percentage or BOGO.
+         */
         double tempDoubleAmount = Math.max(0, _discountAmount);
         if (_discountType == DiscountType.BOGO || _discountType == DiscountType.PERCENT) {
             tempDoubleAmount = Math.min(tempDoubleAmount, 100);
@@ -100,7 +104,7 @@ public class Bundle extends BoffoDbObject implements TicketElement {
 
 
     /**
-     * Clones the Bundle.
+     * Returns a clone of the Bundle object.
      *
      * @return The cloned Bundle
      */
@@ -112,7 +116,8 @@ public class Bundle extends BoffoDbObject implements TicketElement {
 
 
     /**
-     * Generator for a bundle
+     * Generator for a bundle, which adds the Bundle to the database and returns
+     * the new object. For when startDate and endDate is known.
      *
      * @param _name The name of the bundle.
      * @param _description The bundle description.
@@ -123,7 +128,12 @@ public class Bundle extends BoffoDbObject implements TicketElement {
      * by the discount type. Percentages are represented such that 75% = 75.0
      * @param _maxAllowed The maximum number of this bundle that can be on one
      * transaction. For no limit use 0.
-     * @param _sku The bundle SKU
+     * @param _sku The bundle SKU.
+     * @param _active Boolean telling whether the Bundle object is active in the
+     * database.
+     * @param _startDate String formatted as YYYY-MM-DD to determine date
+     * started.
+     * @param _endDate String formatted as YYYY-MM-DD to determine date ended.
      * @return The generated Bundle.
      */
     public static Bundle generator(String _name, String _description,
@@ -141,6 +151,26 @@ public class Bundle extends BoffoDbObject implements TicketElement {
     }
 
 
+    /**
+     * Generator for a bundle, which adds the Bundle to the database and returns
+     * the new object. For when endDate is known. startDate is implied to be
+     * today's date.
+     *
+     * @param _name The name of the bundle.
+     * @param _description The bundle description.
+     * @param _products The GroupList of products in the bundle, a single item
+     * for just a discount.
+     * @param _discountType The type of discount.
+     * @param _discountAmount The amount of the discount, context is determined
+     * by the discount type. Percentages are represented such that 75% = 75.0
+     * @param _maxAllowed The maximum number of this bundle that can be on one
+     * transaction. For no limit use 0.
+     * @param _sku The bundle SKU.
+     * @param _active Boolean telling whether the Bundle object is active in the
+     * database.
+     * @param _endDate String formatted as YYYY-MM-DD to determine date ended.
+     * @return The generated Bundle.
+     */
     public static Bundle generator(String _name, String _description,
             GroupList<ProductObject> _products, DiscountType _discountType,
             double _discountAmount, int _maxAllowed, String _sku, boolean _active,
@@ -156,6 +186,25 @@ public class Bundle extends BoffoDbObject implements TicketElement {
     }
 
 
+    /**
+     * Generator for a bundle, which adds the Bundle to the database and returns
+     * the new object. Creates a Bundle that will last an indefinite amount of
+     * time, starting from today's date.
+     *
+     * @param _name The name of the bundle.
+     * @param _description The bundle description.
+     * @param _products The GroupList of products in the bundle, a single item
+     * for just a discount.
+     * @param _discountType The type of discount.
+     * @param _discountAmount The amount of the discount, context is determined
+     * by the discount type. Percentages are represented such that 75% = 75.0
+     * @param _maxAllowed The maximum number of this bundle that can be on one
+     * transaction. For no limit use 0.
+     * @param _sku The bundle SKU.
+     * @param _active Boolean telling whether the Bundle object is active in the
+     * database.
+     * @return The generated Bundle.
+     */
     public static Bundle generator(String _name, String _description,
             GroupList<ProductObject> _products, DiscountType _discountType,
             double _discountAmount, int _maxAllowed, String _sku, boolean _active) {
@@ -180,6 +229,11 @@ public class Bundle extends BoffoDbObject implements TicketElement {
     }
 
 
+    /**
+     * Indexes the database and returns an array of Bundles which are active.
+     *
+     * @return An array of Bundle objects
+     */
     public static Bundle[] getActiveBundles() {
         ArrayList<Bundle> bundles = new ArrayList();
         for (Bundle bundle : allBundles) {
@@ -191,6 +245,17 @@ public class Bundle extends BoffoDbObject implements TicketElement {
     }
 
 
+    /**
+     * Indexes the database, returning an array of Bundles which match the
+     * variable list. Values that don't matter when indexing are specified to be
+     * null.
+     *
+     * @param _active Whether a Bundle object in the database is active.
+     * @param _name The name identifier of a Bundle object in the database.
+     * @param _description The database description of a Bundle.
+     * @param _sku The database SKU of a Bundle.
+     * @return
+     */
     public static Bundle[] getBundlesBy(Boolean _active, String _name, String _description, String _sku) {
         ArrayList<Bundle> bundles = new ArrayList();
         boolean[] truthValues = new boolean[4];
@@ -282,7 +347,14 @@ public class Bundle extends BoffoDbObject implements TicketElement {
     }
 
 
-    public boolean inRange() {
+    /**
+     * Returns whether today's date is within the Bundle object's startDate and
+     * endDate.
+     *
+     * @return A boolean representation of whether a Bundle is within the
+     * specified Calendar range.
+     */
+    public boolean inDate() {
         if (startDate == null) {
             return true;
         }

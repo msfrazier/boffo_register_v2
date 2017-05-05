@@ -14,8 +14,8 @@ package events;
  * @author Maclean Frazier
  */
 public class BoffoTicketEvent extends BoffoEvent{
-      public BoffoTicketEvent(Object source, BoffoEventData messageString){
-          super(source, messageString);
+      public BoffoTicketEvent(Object _source, BoffoEventData _messageString){
+          super(_source, _messageString);
 }
 }
 

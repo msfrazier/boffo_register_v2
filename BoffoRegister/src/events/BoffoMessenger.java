@@ -11,8 +11,8 @@ package events;
 
 public class BoffoMessenger {
     private final BoffoEventData THIS_MESSAGE;
-    public BoffoMessenger(BoffoEventData message) {
-        this.THIS_MESSAGE = message;
+    public BoffoMessenger(BoffoEventData _message) {
+        this.THIS_MESSAGE = _message;
     }
 
     public BoffoEventData getCode() {

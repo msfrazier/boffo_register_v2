@@ -29,6 +29,7 @@ class BoffoPayment {
     }
 }
 
+
 class TakePayment {
 
     public static Payment receivePayment(double amount, String ticketID, Payment p) {
@@ -63,7 +64,7 @@ class TakePayment {
     }
 }
 
-class Payment{
+class Payment {
     /* This declares a payment object where a payment's information is stored
     in one data structure.
     */

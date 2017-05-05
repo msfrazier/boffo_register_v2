@@ -5,7 +5,7 @@ import administration.Administration;
 
 /*@author DaneHasnen
 
- Updated: 05/04/17
+ Updated: 05/05/17
 
  This (would) allow for credit cards to be charged. This takes data entered by
 transaction and creates a payment object which is then returned to transaction
@@ -64,9 +64,11 @@ class TakePayment {
     }
 }
 
-class Payment {
+
+class Payment extends administration.Administration {
     /* This declares a payment object where a payment's information is stored
-    in one data structure.
+    in one data structure. By extending adminsitration, the variables for the
+    secret key and transaction key are able to be accessed.
     */
     String cardNumber;
     double chargeAmt;

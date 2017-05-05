@@ -14,11 +14,7 @@ import java.util.Iterator;
  */
 
 public class Authorization {
-    
-    
-    protected static int failedAttempts = 0;
-    
-    
+    public static int failedAttempts = 0;
     public static boolean isAuthorized (ArrayList<Integer> authorizedGroups) {
         if(authorizedGroups.isEmpty()){
             return false;
@@ -33,7 +29,7 @@ public class Authorization {
         failedAttempts++;
         return false;
     }
-    
+
     public static String getFailedAttempts()
     {
         if(BoffoController.CURRENT_USER.getAuthlevel() >= 2)
@@ -45,7 +41,7 @@ public class Authorization {
             return "Not authorized for this action.";
         }
     }
-    
+
     public static String resetFailedAttempts()
     {
         if(BoffoController.CURRENT_USER.getAuthlevel() >= 2)

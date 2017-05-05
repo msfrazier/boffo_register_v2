@@ -11,7 +11,7 @@ package transaction;
 import bundles.Bundle;
 import bundles.TicketElement;
 import events.BoffoEvent;
-import events.BoffoTicketEventData;
+import events.BoffoEventData;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -26,9 +26,10 @@ public class Ticket extends Transaction {
     protected String name, sku;
     protected static HashMap<String, ArrayList<Integer>> ticket_hash = new HashMap<>();
 
-//public class Ticket extends BoffoDbObject implements BoffoListenerInterface
     private List<ProductObject> products;
     private List<TicketElement> productbundles;
+     BoffoEventData data = new BoffoEventData();
+     BoffoEvent update = new BoffoEvent(this,data);
 
     //Initiate the variables.
     public Ticket() {
@@ -43,6 +44,7 @@ public class Ticket extends Transaction {
         ProductObject product = (ProductObject) ProductObject.loadByUpc(_UPC);
         this.products.add(product);
         this.productbundles = Bundle.updateBundles(_products);
+        this.fireEvent(update);
         return product;
     }
 
@@ -51,6 +53,7 @@ public class Ticket extends Transaction {
         ProductObject product = (ProductObject) ProductObject.loadByName(_name);
         this.products.add(product);
         this.productbundles = Bundle.updateBundles(_products);
+        this.fireEvent(update);
         return product;
     }
 
@@ -59,6 +62,7 @@ public class Ticket extends Transaction {
         ProductObject product = (ProductObject) ProductObject.loadByUpc(_UPC);
         this.products.remove(product);
         this.productbundles = Bundle.updateBundles(_products);
+        this.fireEvent(update);
     }
 
 
@@ -66,6 +70,7 @@ public class Ticket extends Transaction {
         ProductObject product = (ProductObject) ProductObject.loadByName(_name);
         this.products.remove(product);
         this.productbundles = Bundle.updateBundles(_products);
+        this.fireEvent(update);
     }
 
 
@@ -107,8 +112,6 @@ public class Ticket extends Transaction {
 
 
     public void messageReceived(BoffoEvent _event) {
-        if (_event.getMessage().getCode() instanceof BoffoTicketEventData) {
-            return;
-        }
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 }

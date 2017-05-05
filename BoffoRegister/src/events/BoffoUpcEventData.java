@@ -45,11 +45,11 @@ public class BoffoUpcEventData<T> extends BoffoEventData {
     }
 
 
-    public EventType getUpcEventData() {
+    public EventType getUpcEventType() {
         return this.eventType;
     }
-
-
+    
+    
     public void setEventType(EventType _newType){
         this.eventType = _newType;
     }

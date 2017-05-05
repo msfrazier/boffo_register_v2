@@ -56,7 +56,13 @@ public class BoffoUserEventData<T> extends BoffoEventData {
         this.eventType = _newType;
         this.eventObj = _obj;
     }
-
+    
+    
+    public EventType getUserEventType() {
+        return this.eventType;
+    }
+    
+    
     public T getUserName() {
     return this.userName;
     }
@@ -64,11 +70,6 @@ public class BoffoUserEventData<T> extends BoffoEventData {
 
     public T getUserPass() {
         return this.userPass;
-    }
-
-
-    public EventType getUserEventType() {
-        return this.eventType;
     }
 
 

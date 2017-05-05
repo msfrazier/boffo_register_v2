@@ -1,7 +1,7 @@
 package bofforegister;
 
 /*
- * Last Updated: 05/01/2017
+ * Last Updated: 05/05/2017
  *
  * This class is the controller for the BoffoRegister.
  * The controller 'controls' the BoffoRegisters actions.
@@ -13,7 +13,7 @@ package bofforegister;
  *
  * @author Joshua Brown & Josh Milligan
  */
-import administration.Administration;
+
 import administration.AdministrationObject;
 import events.BoffoEvent;
 import events.*;
@@ -33,7 +33,7 @@ public class BoffoController extends BoffoFireObject implements BoffoListenerInt
     protected AdministrationObject admin = new AdministrationObject();
     protected BoffoRegisterGUI gui = null;
     protected Inventory inventory = new Inventory();
-    protected Printer printer = new Printer();
+    protected Printer printer = null;
     protected Transaction transaction = new Transaction();
 
 
@@ -42,21 +42,33 @@ public class BoffoController extends BoffoFireObject implements BoffoListenerInt
     }
 
 
+    /**
+     * This method adds the gui to our list of listeners and then adds us
+     * to the gui's list of listeners.  This must be called from BoffoRegister
+     * class immediately after constructing the BoffoController object.
+     */
     public void initilize() {
         this.gui.addListener(this);
         this.addListener(gui);
     }
 
 
+    /**
+     * This method overrides the BoffoListenerInterface method used
+     * to identify the incoming event types.
+     * @param _event This represents any BoffoEventData object
+     */
     @Override
     public void messageReceived(BoffoEvent _event) {
-        // Need a login event.
-        if (_event.getMessage().getCode() instanceof BoffoLogInEventData) {
-            userEvents(_event);
+        // Need a logout event?
+        if(_event.getMessage().getCode().getEventType() == BoffoEventData.EventType.PRINT) {
+            printReceipt();
             return;
         }
-        // Need a logout event.
-        // Need a print event, can be a generic event if needed.
+        if (_event.getMessage().getCode() instanceof BoffoUserEventData) {
+            userEvent(_event);
+            return;
+        }
         else if (_event.getMessage().getCode() instanceof BoffoNavigateEventData) {
             changePanel(_event);
             return;
@@ -66,10 +78,15 @@ public class BoffoController extends BoffoFireObject implements BoffoListenerInt
     }
 
 
+    /**
+     * This method takes panel related events. The gui class is called
+     * to change panels based on the event object passed.
+     * @param _event This represents a BoffoNavigateEventData object for panel changing.
+     */
     private void changePanel(BoffoEvent _event) {
         // Get the event data as a seperate object.
         BoffoNavigateEventData eventData = (BoffoNavigateEventData) _event.getMessage().getCode();
-        switch (eventData.getEventType()) {
+        switch (eventData.getNavigateEventType()) {
             case LOGIN_PANEL:
                 CURRENT_USER = null;
                 this.removeAllExcept(gui);
@@ -101,23 +118,36 @@ public class BoffoController extends BoffoFireObject implements BoffoListenerInt
     }
 
 
-    private void userEvent(BoffoEvent _event) {
-        BoffoLogInEventData loginEvent = (BoffoLogInEventData) _event.getMessage().getCode();
-        switch (loginEvent.getEventType()) {
-            case LOGIN_EVENT:
+    /**
+     * This method removes all listeners except the gui and
+     * attaches the relevant module as a listener.
+     * @param _listener This takes any possible BoffoListenerInterface module.
+     */
+    private void changeTo(BoffoListenerInterface _listener) {
+        this.removeAllExcept(gui);
+        this.addListener(_listener);
+    }
 
+
+    /**
+     * This method prints a receipt by passing in a Transaction and
+     * AdministrationObject.
+     */
+    private void printReceipt() {
+        try{
+            this.printer.printReceipt();
+        }
+        catch(Exception e) {
         }
     }
 
-
-    private void changeTo(BoffoListenerInterface _listener) {
-    this.removeAllExcept(gui);
-    this.addListener(_listener);
-    }
-
-
-    // Pass in all relevent objects into the printer and let it sort them out.
-    private void printReceipt() {
-        
+    /**
+     * Takes an event object to for logging the user into the system
+     * @param _event This represents a UserEventData object.
+     */
+    private void userEvent(BoffoEvent _event) {
+        BoffoUserEventData loginEvent = (BoffoUserEventData) _event.getMessage().getCode();
+        CURRENT_USER = new User(loginEvent.getUserName().toString(), loginEvent.getUserPass().toString());
+        this.gui.loadMainPanel();
     }
 }

@@ -5,7 +5,7 @@ package database;
  *
  * @author Thien Le
  * @author Thomas Cole
- * @lastEdited: 4/25/2017
+ * @lastEdited: 5/5/2017
  */
 import java.sql.Connection;
 import java.sql.Statement;
@@ -19,29 +19,31 @@ public class Query {
     private final Statement statement;
 
 
-    /*
-    * Initialize with the current connection
+    public Query(Connection _dbConnection) throws SQLException {
+        statement = _dbConnection.createStatement();
+    }
+
+
+    public ResultSet executeQuery(String _query) throws SQLException {
+        return statement.executeQuery(_query);
+    }
+
+
+    public ResultSetMetaData getMetaData(ResultSet _rs) throws SQLException {
+        return _rs.getMetaData();
+    }
+
+
+    /**
+     * Method to get the column names from the a database table.
+     *
+     * @return ArrayList<String> with all the column names.
      */
-    public Query(Connection dbConnection) throws SQLException {
-        statement = dbConnection.createStatement();
-    }
-
-
-    public ResultSet executeQuery(String query) throws SQLException {
-        return statement.executeQuery(query);
-    }
-
-
-    public ResultSetMetaData getMetaData(ResultSet rs) throws SQLException {
-        return rs.getMetaData();
-    }
-
-
-    public ArrayList<String> getTableColumns(String tName) {
+    public ArrayList<String> getTableColumns(String _tName) {
         ArrayList<String> retList = new ArrayList<String>();
 
         try {
-            ResultSetMetaData rsmd = getMetaData(executeQuery("SELECT * FROM " + tName));
+            ResultSetMetaData rsmd = getMetaData(executeQuery("SELECT * FROM " + _tName));
 
             for (int i = 1; i <= rsmd.getColumnCount(); i++) {
                 retList.add(rsmd.getColumnName(i));
@@ -54,50 +56,94 @@ public class Query {
     }
 
 
-    public void executeUpdate(String query) throws SQLException {
-        statement.executeUpdate(query);
+    public void executeUpdate(String _query) throws SQLException {
+        statement.executeUpdate(_query);
     }
 
 
-    /*
-    * For use by dbAPI class allowing for select statements to be easily executed.
+    /**
+     * A method that selecting information from the table without a filter.
+     *
+     * @param _tField
+     * @param _tName
+     * @return ArrayList with all the values.
+     * @throws java.sql.SQLException
      */
-    public String selectFromTable(String tField, String tName, String tFilterField, String operator, String tFilter) throws SQLException {
-        //System.out.println("Executing: SELECT " + tField + " FROM " + tName + " WHERE " + tFilterField + " " + operator + " '" + tFilter + "'");
+    public ArrayList<String> selectFromTable(String _tField, String _tName) throws SQLException {
 
-        ResultSet rs;
-        ResultSetMetaData rsmd;
+        ResultSet rs = statement.executeQuery("SELECT " + _tField + " FROM " + _tName);
+        ResultSetMetaData rsmd = this.getMetaData(rs);
 
-        String retString = "";
+        ArrayList<String> retString = new ArrayList<String>();
+        String tableEntry = "";
 
-        if (tFilterField != null || operator != null || tFilter != null) {
-            rs = this.executeQuery("SELECT " + tField + " FROM " + tName + " WHERE '" + tFilterField + "' " + operator + " '" + tFilter + "'");
-            rsmd = this.getMetaData(rs);
-
-            while (rs.next()) {
-                for (int i = 1; i <= rsmd.getColumnCount(); i++) {
-                    retString += rs.getString(i) + " ";
+        while (rs.next()) {
+            for (int i = 1; i <= rsmd.getColumnCount(); i++) {
+                if (i != rsmd.getColumnCount()) {
+                    tableEntry += rs.getString(i) + ",";
+                } else {
+                    tableEntry += rs.getString(i);
                 }
+
             }
 
-        } else {
-            rs = this.executeQuery("SELECT " + tField + " FROM " + tName);
-            rsmd = this.getMetaData(rs);
-
-            while (rs.next()) {
-                for (int i = 1; i <= rsmd.getColumnCount(); i++) {
-                    retString += rs.getString(i) + " ";
-                }
-            }
+            retString.add(tableEntry);
+            tableEntry = "";
         }
-
         return retString;
     }
 
 
-    public boolean insertIntoTable(String tName, String[] tValues) throws SQLException {
+    /**
+     * A overloaded method that select from the table with a filter.
+     *
+     * @param _tField
+     * @param _tName
+     * @param _tFilterField
+     * @param _operator
+     * @param _tFilter
+     * @return ArrayList<String> with the values from the database.
+     * @throws java.sql.SQLException
+     */
+    public ArrayList<String> selectFromTable(String _tField, String _tName, String _tFilterField,
+            String _operator, String _tFilter) throws SQLException {
+        System.out.println("Executing: SELECT " + _tField + " FROM " + _tName + " WHERE "
+                + _tFilterField + " " + _operator + " '" + _tFilter + "'");
 
-        ResultSetMetaData tableInfo = this.executeQuery("SELECT * FROM " + tName).getMetaData();
+        ResultSet rs = statement.executeQuery("SELECT " + _tField + " FROM "
+                + _tName + " WHERE " + _tFilterField + " " + _operator + " '" + _tFilter + "'");;
+        ResultSetMetaData rsmd = this.getMetaData(rs);
+
+        ArrayList<String> retString = new ArrayList<String>();
+        String tableEntry = "";
+
+        while (rs.next()) {
+            for (int i = 1; i <= rsmd.getColumnCount(); i++) {
+                if (i != rsmd.getColumnCount()) {
+                    tableEntry += rs.getString(i) + ",";
+                } else {
+                    tableEntry += rs.getString(i);
+                }
+
+            }
+
+            retString.add(tableEntry);
+            tableEntry = "";
+        }
+        return retString;
+    }
+
+
+    /**
+     * A method that insert an object into the SQL Database.
+     * @param _tName
+     * @param _tValues
+     * @return boolean true if inserted, false otherwise.
+     * @throws java.sql.SQLException
+     */
+    public boolean insertIntoTable(String _tName, String[] _tValues) throws SQLException {
+
+        ResultSetMetaData tableInfo = this.executeQuery("SELECT * FROM " + _tName).getMetaData();
         int tableColumnCount = tableInfo.getColumnCount();
 
         String columns = "";
@@ -110,50 +156,64 @@ public class Query {
         }
 
         String values = "";
-        for (int i = 0; i < tValues.length; i++) {
-            if (i != tValues.length - 1) {
-                values += "'" + tValues[i] + "', ";
+        for (int i = 0; i < _tValues.length; i++) {
+            if (i != _tValues.length - 1) {
+                values += "'" + _tValues[i] + "', ";
             } else {
-                values += "'" + tValues[i] + "'";
+                values += "'" + _tValues[i] + "'";
             }
         }
 
         //System.out.println(columns);
         //System.out.println(values);
-        //System.out.println("INSERT INTO " + tName + "(" + columns + ") VALUES(" + values + ")");
-        this.executeUpdate("INSERT INTO " + tName + " VALUES(" + values + ")");
+        this.executeUpdate("INSERT INTO " + _tName + " VALUES(" + values + ")");
         return true;
     }
 
 
-    public boolean updateTable(String tName, String[] tFields, String tFilterField, String operator, String tFilter) throws SQLException {
+    /**
+     * A method that update an object in the data to the database.
+     *
+     * @param _tName
+     * @param _tFields
+     * @param _tFilterField
+     * @param _operator
+     * @param _tFilter
+     * @return boolean, true if updated successfully, false other wise.
+     * @throws java.sql.SQLException
+     */
+    public boolean updateTable(String _tName, String[] _tFields, String _tFilterField,
+            String _operator, String _tFilter) throws SQLException {
         String setString = "";
-        ArrayList<String> columns = this.getTableColumns(tName);
+        ArrayList<String> columns = this.getTableColumns(_tName);
 
         for (int i = 0; i < columns.size(); i++) {
             if (i != columns.size() - 1) {
-                setString += " " + columns.get(i) + " = '" + tFields[i] + "',";
+                setString += " " + columns.get(i) + " = '" + _tFields[i] + "',";
             } else {
-                setString += " " + columns.get(i) + " = '" + tFields[i] + "'";
+                setString += " " + columns.get(i) + " = '" + _tFields[i] + "'";
             }
         }
 
-        //System.out.println("UPDATE " + tName + " SET " + setString + " WHERE " + tFilterField + " " + operator + " '" + tFilter + "'");
-        this.executeUpdate("UPDATE " + tName + " SET " + setString + " WHERE " + tFilterField + " " + operator + " '" + tFilter + "'");
+        this.executeUpdate("UPDATE " + _tName + " SET " + setString + " WHERE "
+                + _tFilterField + " " + _operator + " '" + _tFilter + "'");
         return true;
     }
 
 
-    /*
-    * This will print the table name, column names, and all rows in the table.
+    /**
+     * A method that print the table out in a proper format.
+     *
+     * @param _tName
+     * @throws java.sql.SQLException
      */
-    public void printTable(String tName) throws SQLException {
+    public void printTable(String _tName) throws SQLException {
         //System.out.println("Executing SELECT * FROM " + tName);
 
-        ResultSet rs = statement.executeQuery("SELECT * FROM " + tName);
+        ResultSet rs = statement.executeQuery("SELECT * FROM " + _tName);
         ResultSetMetaData rsmd = this.getMetaData(rs);
 
-        System.out.println("Table Name: " + tName + "\n");
+        System.out.println("Table Name: " + _tName + "\n");
 
         System.out.println("Columns: ");
         for (int i = 1; i <= rsmd.getColumnCount(); i++) {

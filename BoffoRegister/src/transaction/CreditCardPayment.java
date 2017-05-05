@@ -8,10 +8,10 @@ package transaction;
  * @author Mabelyn Espinoza
  * @author Fan Yang
  */
+
 import a.net.BoffoPayment;
 
-public class CreditCardPayment extends Transaction 
-extends a.net.chargeCreditCard{
+public class CreditCardPayment extends Transaction extends a.net.BoffoPayment{
 //
 //    public static final String AMERICANEXPRESS = "American Express";
 //    public static final String DISCOVER = "Discover";
@@ -33,11 +33,13 @@ extends a.net.chargeCreditCard{
 //    public static final int AMEX_MAXLENGTH = 15;
 
     //Other variables.
+    protected double amount;
     protected String number, cvc;
     protected int expMonth, expYear;
     protected String name, address1, address2, city, state,
             zip, country;
     protected String currency;
+    protected String ticketID;
 
     /**
      *
@@ -53,11 +55,12 @@ extends a.net.chargeCreditCard{
      * @param _zip Zip Code of Billing Address
      * @param _country Country of Billing Address
      * @param _currency Type of Currency
+     * @param _amount Amount Charged to the Card
      */
     public CreditCardPayment(String _number, int _expMonth, int _expYear,
             String _cvc, String _name, String _address1, String _address2,
             String _city, String _state, String _zip, String _country, 
-            String _currency) {
+            String _currency, double _amount, String _ticketID) {
         this.number = _number;
         this.expMonth = _expMonth;
         this.expYear = _expYear;
@@ -70,6 +73,8 @@ extends a.net.chargeCreditCard{
         this.zip = _zip;
         this.country = _country;
         this.currency = _currency;
+        this.amount = _amount;
+        this.ticketID = _ticketID;
     }
 
     /**
@@ -244,11 +249,16 @@ extends a.net.chargeCreditCard{
         this.currency = _currency;
     }
 
-    public BoffoPayment processCreditPayment(double _amount, String _creditCardNumber,
-            String ticketID){
-        BoffoPayment card = ()
-        return;
+    public boolean paymentAccepted(){
+        Payment response  = processPayment(this.amount, this.number,
+                this.ticketID);
+        if(response._confirmationResNum == 1){
+            return true;
+        }
+        return false;
     }
+    
+    
 }
 
 

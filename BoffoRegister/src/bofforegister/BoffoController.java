@@ -60,17 +60,19 @@ public class BoffoController extends BoffoFireObject implements BoffoListenerInt
      */
     @Override
     public void messageReceived(BoffoEvent _event) {
-        System.out.println("Controller received some boffo event.");
         if(_event.getMessage().getCode().getEventType() == 
                 BoffoEventData.EventType.PRINT) {
+            System.out.println("Controller received a print event.");
             printReceipt();
             return;
         }
         if (_event.getMessage().getCode() instanceof BoffoUserEventData) {
+            System.out.println("Controller received a login event.");
             userEvent(_event);
             return;
         }
         else if (_event.getMessage().getCode() instanceof BoffoNavigateEventData) {
+            System.out.println("Controller received a change panel event.");
             changePanel(_event);
             return;
         }
@@ -86,7 +88,6 @@ public class BoffoController extends BoffoFireObject implements BoffoListenerInt
      */
     private void changePanel(BoffoEvent _event) {
         BoffoNavigateEventData eventData = (BoffoNavigateEventData) _event.getMessage().getCode();
-        System.out.println("Controller received the change panel event.");
         switch (eventData.getNavigateEventType()) {
             case LOGIN_PANEL:
                 CURRENT_USER = null;
@@ -144,9 +145,11 @@ public class BoffoController extends BoffoFireObject implements BoffoListenerInt
      * @param _event This represents a UserEventData object.
      */
     private void userEvent(BoffoEvent _event) {
-        BoffoUserEventData loginEvent = (BoffoUserEventData) _event.getMessage().getCode();
+        BoffoUserEventData loginEvent = 
+                (BoffoUserEventData) _event.getMessage().getCode();
         System.out.println("Controller received the user event.");
-        CURRENT_USER = new User((String)loginEvent.getUserName(), (String)loginEvent.getUserPass());
+        CURRENT_USER = new User((String)loginEvent.getUserName(), 
+                (String)loginEvent.getUserPass());
         this.gui.loadMainPanel();
     }
 }

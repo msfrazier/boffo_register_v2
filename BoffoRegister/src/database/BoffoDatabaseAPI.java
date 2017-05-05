@@ -1,5 +1,12 @@
 package database;
 
+/**
+ * A main class that will initialize the main connections.
+ *
+ * @author Thien Le
+ * @author Thomas Cole
+ * @lastEdited: 5/5/2017
+ */
 import java.sql.SQLException;
 
 public class BoffoDatabaseAPI {
@@ -10,20 +17,23 @@ public class BoffoDatabaseAPI {
 
     private static BoffoDatabaseAPI instance;
 
+
     private BoffoDatabaseAPI() {
         dbConnection = new ConnectionManager();
         instance = this;
     }
 
-    public static BoffoDatabaseAPI getInstance(){
-        if(instance == null){
+
+    public static BoffoDatabaseAPI getInstance() {
+        if (instance == null) {
             instance = new BoffoDatabaseAPI();
         }
         return instance;
     }
 
-    public boolean dbLogin(String uName, String uPass) {
-        if(dbConnection.connectToDB(dbUrl, "admin", "password")){
+
+    public boolean dbLogin(String _uName, String _uPass) {
+        if (dbConnection.connectToDB(dbUrl, "admin", "password")) {
             try {
                 dbQuery = new Query(dbConnection.getConnection());
             } catch (SQLException ex) {
@@ -35,11 +45,13 @@ public class BoffoDatabaseAPI {
         }
     }
 
+
     public void dbLogout() {
         dbConnection.closeConnection();
     }
 
-    public Query getQuery(){
+
+    public Query getQuery() {
         return dbQuery;
     }
 }

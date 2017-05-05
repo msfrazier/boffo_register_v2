@@ -44,15 +44,14 @@ public class BoffoNavigateEventData<T> extends BoffoEventData {
         this.eventType = _newType;
         this.eventObj = _obj;
     }
-
+    
     
     public EventType getNavigateEventType() {
         return this.eventType;
     }
     
-    
+
     public void setEventType(EventType _newType){
         this.eventType = _newType;
     }
-
 }

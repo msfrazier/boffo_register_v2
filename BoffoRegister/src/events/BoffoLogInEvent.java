@@ -10,7 +10,7 @@ package events;
  * @author Maclean Frazier
  */
 public class BoffoLogInEvent extends BoffoEvent {
-    BoffoLogInEvent(Object source, BoffoEventData messageString){
-        super(source, messageString);
+    BoffoLogInEvent(Object _source, BoffoEventData _messageString){
+        super(_source, _messageString);
     }
 }

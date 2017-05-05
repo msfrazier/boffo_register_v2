@@ -15,9 +15,9 @@ public class BoffoEvent extends EventObject {
 
     private final BoffoMessenger message;
 
-    public BoffoEvent(Object source, BoffoEventData messageString) {
-        super(source);
-        this.message = new BoffoMessenger(messageString);
+    public BoffoEvent(Object _source, BoffoEventData _messageString) {
+        super(_source);
+        this.message = new BoffoMessenger(_messageString);
     }
 
     public BoffoMessenger getMessage() {

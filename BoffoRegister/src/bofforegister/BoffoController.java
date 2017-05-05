@@ -17,8 +17,6 @@ package bofforegister;
 import administration.AdministrationObject;
 import events.BoffoEvent;
 import events.*;
-import events.BoffoFireObject;
-import events.BoffoListenerInterface;
 import gui.BoffoRegisterGUI;
 import inventory.Inventory;
 import javafx.stage.Stage;
@@ -60,7 +58,7 @@ public class BoffoController extends BoffoFireObject implements BoffoListenerInt
      */
     @Override
     public void messageReceived(BoffoEvent _event) {
-        if(_event.getMessage().getCode().getEventType() == 
+        if(_event.getMessage().getCode().getEventType() ==
                 BoffoEventData.EventType.PRINT) {
             System.out.println("Controller received a print event.");
             printReceipt();
@@ -130,7 +128,7 @@ public class BoffoController extends BoffoFireObject implements BoffoListenerInt
         this.addListener(_listener);
     }
 
-    
+
     /**
      * This method prints a receipt by passing in a Transaction and
      * AdministrationObject.
@@ -144,16 +142,15 @@ public class BoffoController extends BoffoFireObject implements BoffoListenerInt
         }
     }
 
-    
+
     /**
      * Takes an event object to for logging the user into the system
      * @param _event This represents a UserEventData object.
      */
     private void userEvent(BoffoEvent _event) {
-        BoffoUserEventData loginEvent = 
+        BoffoUserEventData loginEvent =
                 (BoffoUserEventData) _event.getMessage().getCode();
-        System.out.println("Controller received the user event.");
-        CURRENT_USER = new User((String)loginEvent.getUserName(), 
+        CURRENT_USER = new User((String)loginEvent.getUserName(),
                 (String)loginEvent.getUserPass());
         this.gui.loadMainPanel();
     }

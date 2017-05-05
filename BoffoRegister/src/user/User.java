@@ -38,9 +38,9 @@ public User(String _username, String _pass){
 }
 
 
-public static boolean login(String _uPass, String Password){
+public static boolean login(String _uPass, String _Password){
 
-    if (_uPass.equals(Password)){
+    if (_uPass.equals(_Password)){
         return true;
 }
     return false;

@@ -7,12 +7,12 @@ package gui;
  * BoffoRegister application. The GUI consists of a login panel to start and
  * then after logging in the user is presented with the main panel. The main
  * panel consists of Transaction, Inventory, and Administration. This class is
- * structured where the load methods are first, the build methods second, and
- * helper methods at the very bottom of the file.
+ * organized as defined by the style guide handout.
  *
  * @author Logan Stanfield and Kevin Keomalaythong.
  * @updated 2017-05-01
  */
+
 import events.*;
 import events.BoffoNavigateEventData.EventType;
 import static events.BoffoNavigateEventData.EventType.*;
@@ -105,6 +105,7 @@ public final class BoffoRegisterGUI extends BoffoFireObject implements BoffoList
         this.loadLoginPanel();
     }
 
+
     /**
      * This method loads the admin panel to the stage and is built by calling
      * the buildAdminPanel() method.
@@ -117,6 +118,7 @@ public final class BoffoRegisterGUI extends BoffoFireObject implements BoffoList
         this.boffoStage.show();
     }
 
+
     /**
      * This method loads the inventory panel to the stage and is built by
      * calling the buildInventoryPanel() method.
@@ -128,6 +130,7 @@ public final class BoffoRegisterGUI extends BoffoFireObject implements BoffoList
         this.boffoStage.setScene(sceneInventory);
         this.boffoStage.show();
     }
+
 
     /**
      * This method loads the login panel to the stage and is built by calling
@@ -143,6 +146,7 @@ public final class BoffoRegisterGUI extends BoffoFireObject implements BoffoList
         this.boffoStage.show();
     }
 
+
     /**
      * This method loads the main panel to the stage and is built by calling the
      * buildMainPanel() method.
@@ -157,6 +161,7 @@ public final class BoffoRegisterGUI extends BoffoFireObject implements BoffoList
         this.boffoStage.show();
     }
 
+
     /**
      * This method loads the transaction panel to the stage and is built by
      * calling the buildTransactionPanel() method.
@@ -169,6 +174,7 @@ public final class BoffoRegisterGUI extends BoffoFireObject implements BoffoList
         boffoStage.show();
     }
 
+
     /**
      * This is the defined messageReceieved in the BoffoListenerInterface.
      *
@@ -178,6 +184,7 @@ public final class BoffoRegisterGUI extends BoffoFireObject implements BoffoList
     public void messageReceived(BoffoEvent _event) {
         fireEvent(_event);
     }
+
 
     /**
      * This navigatorEvent method is used for the events that still don't fully
@@ -190,6 +197,7 @@ public final class BoffoRegisterGUI extends BoffoFireObject implements BoffoList
         BoffoEvent evt = new BoffoEvent(this, (BoffoEventData) evtData);
         fireEvent(evt);
     }
+
 
     /**
      * This method returns a button with an image as the button.
@@ -211,6 +219,7 @@ public final class BoffoRegisterGUI extends BoffoFireObject implements BoffoList
 
         return btn;
     }
+
 
     /**
      *
@@ -237,6 +246,7 @@ public final class BoffoRegisterGUI extends BoffoFireObject implements BoffoList
         return tableView;
     }
 
+
     /**
      * This is a method returns a VBox object which is later used to build the
      * interface.
@@ -255,6 +265,7 @@ public final class BoffoRegisterGUI extends BoffoFireObject implements BoffoList
         return vbox;
     }
 
+
     /**
      * This method adds a warning label which we be used in several similar
      * windows.
@@ -272,6 +283,7 @@ public final class BoffoRegisterGUI extends BoffoFireObject implements BoffoList
 
         return warningLabel;
     }
+
 
     /**
      * This method builds the entire Administration panel. The root of the stage
@@ -687,6 +699,7 @@ public final class BoffoRegisterGUI extends BoffoFireObject implements BoffoList
         //Set up the Admin panel.
         return new Scene(root, this.screenWidth, this.screenHeight);
     }
+
 
     /**
      * This method builds the entire Inventory panel. The root pane of the stage
@@ -1161,8 +1174,14 @@ public final class BoffoRegisterGUI extends BoffoFireObject implements BoffoList
         return new Scene(inventoryPanel, this.screenWidth, this.screenHeight);
     }
 
-    //Login screen with username & password text fields, plus a sign-in button.
-    //TODO: Add event-firing code to the Sign In button.
+
+    /**
+     * This method builds the entire Login panel. The root pane of the stage is
+     * a GridPane and has several layers added on top of it. The login panel also
+     * has custom buttons that are images.
+     *
+     * @return Scene
+     */
     private Scene buildLoginPanel() {
         StackPane root = new StackPane();
 
@@ -1326,6 +1345,7 @@ public final class BoffoRegisterGUI extends BoffoFireObject implements BoffoList
 
         return new Scene(root, this.screenWidth, this.screenHeight);
     }
+
 
     private Scene buildMainPanel() {
         StackPane root = new StackPane();
@@ -1570,6 +1590,7 @@ public final class BoffoRegisterGUI extends BoffoFireObject implements BoffoList
         return new Scene(root, this.screenWidth, this.screenHeight);
     }
 
+
     /*
      * TODO: Display ticket items in a TableView or list.
      *       Create event handlers for the buttons.
@@ -1682,6 +1703,7 @@ public final class BoffoRegisterGUI extends BoffoFireObject implements BoffoList
         return new Scene(transactionPanel, this.screenWidth, this.screenHeight);
     }
 
+
     /**
      * This method clears a TableView that is passed in as a parameter. This was
      * going to be used if the other modules were implemented fully.
@@ -1697,6 +1719,7 @@ public final class BoffoRegisterGUI extends BoffoFireObject implements BoffoList
         }
         return _tableView;
     }
+
 
     /**
      * This method is used to display an alert box when called. If okay is
@@ -1727,6 +1750,7 @@ public final class BoffoRegisterGUI extends BoffoFireObject implements BoffoList
         }
     }
 
+
     /**
      * This method is used to determine if the user is logged in.
      *
@@ -1736,6 +1760,7 @@ public final class BoffoRegisterGUI extends BoffoFireObject implements BoffoList
     private boolean isLoggedIn(/*User object*/) {
         return true;
     }
+
 
     /**
      * This method would have been used to check to see if the user is a valid

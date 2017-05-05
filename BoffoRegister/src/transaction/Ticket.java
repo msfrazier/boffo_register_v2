@@ -107,8 +107,5 @@ public class Ticket extends Transaction {
 
 
     public void messageReceived(BoffoEvent _event) {
-        if (_event.getMessage().getCode() instanceof BoffoTicketEventData) {
-            return;
-        }
     }
 }

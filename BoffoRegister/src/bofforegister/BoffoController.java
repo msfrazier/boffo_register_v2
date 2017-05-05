@@ -149,7 +149,7 @@ public class BoffoController extends BoffoFireObject implements BoffoListenerInt
     private void userEvent(BoffoEvent _event) {
         BoffoUserEventData loginEvent = (BoffoUserEventData) _event.getMessage().getCode();
         System.out.println("Controller received the user event.");
-        CURRENT_USER = new User(loginEvent.getUserName().toString(), loginEvent.getUserPass().toString());
+        CURRENT_USER = new User((String)loginEvent.getUserName(), (String)loginEvent.getUserPass());
         this.gui.loadMainPanel();
     }
 }

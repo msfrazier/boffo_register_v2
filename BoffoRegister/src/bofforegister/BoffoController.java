@@ -1,7 +1,7 @@
 package bofforegister;
 
 /*
- * Last Updated: 05/01/2017
+ * Last Updated: 05/05/2017
  *
  * This class is the controller for the BoffoRegister.
  * The controller 'controls' the BoffoRegisters actions.
@@ -42,28 +42,33 @@ public class BoffoController extends BoffoFireObject implements BoffoListenerInt
     }
 
 
+    /**
+     * This method adds the gui to our list of listeners and then adds us
+     * to the gui's list of listeners.  This must be called from BoffoRegister
+     * class immediately after constructing the BoffoController object.
+     */
     public void initilize() {
         this.gui.addListener(this);
         this.addListener(gui);
     }
 
 
+    /**
+     * This method overrides the BoffoListenerInterface method used
+     * to identify the incoming event types.
+     * @param _event This represents any BoffoEventData object
+     */
     @Override
     public void messageReceived(BoffoEvent _event) {
-        // Need a login event.
-        switch (_event.getMessage().getCode().getEventType()) {
-            case PRINT:
-                printReceipt();
-                return;
-            default:
-                break;
+        // Need a logout event?
+        if(_event.getMessage().getCode().getEventType() == BoffoEventData.EventType.PRINT) {
+            printReceipt();
+            return;
         }
         if (_event.getMessage().getCode() instanceof BoffoUserEventData) {
             userEvent(_event);
             return;
         }
-        // Need a logout event.
-        // Need a print event, can be a generic event if needed.
         else if (_event.getMessage().getCode() instanceof BoffoNavigateEventData) {
             changePanel(_event);
             return;
@@ -73,6 +78,11 @@ public class BoffoController extends BoffoFireObject implements BoffoListenerInt
     }
 
 
+    /**
+     * This method takes panel related events. The gui class is called
+     * to change panels based on the event object passed.
+     * @param _event This represents a BoffoNavigateEventData object for panel changing.
+     */
     private void changePanel(BoffoEvent _event) {
         // Get the event data as a seperate object.
         BoffoNavigateEventData eventData = (BoffoNavigateEventData) _event.getMessage().getCode();
@@ -108,28 +118,36 @@ public class BoffoController extends BoffoFireObject implements BoffoListenerInt
     }
 
 
-        private void changeTo(BoffoListenerInterface _listener) {
-    this.removeAllExcept(gui);
-    this.addListener(_listener);
+    /**
+     * This method removes all listeners except the gui and
+     * attaches the relevant module as a listener.
+     * @param _listener This takes any possible BoffoListenerInterface module.
+     */
+    private void changeTo(BoffoListenerInterface _listener) {
+        this.removeAllExcept(gui);
+        this.addListener(_listener);
     }
 
-    // Pass in all relevent objects into the printer and let it sort them out.
+
+    /**
+     * This method prints a receipt by passing in a Transaction and
+     * AdministrationObject.
+     */
     private void printReceipt() {
-        //this.printer.receiveData(transaction, admin);
-    }
-
-
-    private void userEvent(BoffoEvent _event) {
-        BoffoUserEventData loginEvent = (BoffoUserEventData) _event.getMessage().getCode();
-        switch (loginEvent.getUserEventType()) {
-            case NEW_USER:
-                CURRENT_USER.User(loginEvent.getUserName().toString(), loginEvent.getUserPass().toString());
-                break;
-            default:
-                break;
+        try{
+            this.printer.printReceipt();
+        }
+        catch(Exception e) {
         }
     }
 
-
-
+    /**
+     * Takes an event object to for logging the user into the system
+     * @param _event This represents a UserEventData object.
+     */
+    private void userEvent(BoffoEvent _event) {
+        BoffoUserEventData loginEvent = (BoffoUserEventData) _event.getMessage().getCode();
+        CURRENT_USER = new User(loginEvent.getUserName().toString(), loginEvent.getUserPass().toString());
+        this.gui.loadMainPanel();
+    }
 }

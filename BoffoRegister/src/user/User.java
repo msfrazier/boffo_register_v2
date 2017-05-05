@@ -30,7 +30,9 @@ public class User extends BoffoFireObject{
     private String username = "";
 
 
+
 public User(String _username, String _pass){
+
     this.username = _username;
     this.pass = _pass;
 }

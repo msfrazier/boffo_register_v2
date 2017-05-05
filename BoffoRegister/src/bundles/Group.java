@@ -34,34 +34,6 @@ public class Group<T extends TicketElement> {
 
 
     /**
-     * Constructor initializes the head element and populates the contents list
-     * using clones.
-     *
-     * @param _element The head element of a list which represents its contents.
-     * @param _number The number of _element clones to populate the contents
-     * list.
-     */
-    public Group(T _element, int _number) {
-        this.element = _element;
-        this.contents = new ArrayList();
-        add(_number);
-    }
-
-
-    /**
-     *
-     * Constructor initializes the head element and sets the contents list.
-     *
-     * @param _element The head element of a list which represents its contents.
-     * @param _contents The elements that match with the head element.
-     */
-    public Group(T _element, List<T> _contents) {
-        this.element = _element;
-        this.contents = _contents;
-    }
-
-
-    /**
      * Adds clones of the first element to the contents list.
      *
      * @param _numberToAdd The number of head elements to clone and add to the
@@ -103,6 +75,34 @@ public class Group<T extends TicketElement> {
 
 
     /**
+     * Constructor initializes the head element and populates the contents list
+     * using clones.
+     *
+     * @param _element The head element of a list which represents its contents.
+     * @param _number The number of _element clones to populate the contents
+     * list.
+     */
+    public Group(T _element, int _number) {
+        this.element = _element;
+        this.contents = new ArrayList();
+        add(_number);
+    }
+
+
+    /**
+     *
+     * Constructor initializes the head element and sets the contents list.
+     *
+     * @param _element The head element of a list which represents its contents.
+     * @param _contents The elements that match with the head element.
+     */
+    public Group(T _element, List<T> _contents) {
+        this.element = _element;
+        this.contents = _contents;
+    }
+
+
+    /**
      * Clones the current object so that Groups can be immutable in different
      * contexts.
      *
@@ -115,13 +115,6 @@ public class Group<T extends TicketElement> {
             cloneContents.add(obj);
         }
         return new Group(this.element.clone(), cloneContents);
-    }
-
-
-    // TODO
-    @Override
-    public boolean equals(Object _obj) {
-        return false;
     }
 
 
@@ -221,6 +214,7 @@ public class Group<T extends TicketElement> {
         return "(" + this.element + ", " + size() + ')';
     }
 
+
     // A private subclass that contains Group-based comparators.
     private static class Comparators {
 
@@ -232,6 +226,7 @@ public class Group<T extends TicketElement> {
                 return TicketElement.BYNAME.compare(_p1.getElement(), _p2.getElement());
             }
 
+
         }
 
         //  Compares TicketElements based on the non case-sensitive skus of groups.
@@ -242,6 +237,7 @@ public class Group<T extends TicketElement> {
                 return TicketElement.BYSKU.compare(_p1.getElement(), _p2.getElement());
             }
 
+
         }
 
         // Compares TicketElements based on prices of the groups.
@@ -251,6 +247,7 @@ public class Group<T extends TicketElement> {
             public int compare(Group<TicketElement> _p1, Group<TicketElement> _p2) {
                 return Double.compare(_p1.getPrice(), _p2.getPrice());
             }
+
 
         }
     }

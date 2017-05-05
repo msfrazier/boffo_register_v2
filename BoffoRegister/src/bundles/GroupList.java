@@ -263,13 +263,6 @@ public class GroupList<T extends TicketElement> implements Iterable {
     // </editor-fold>
 
 
-    //TODO
-    @Override
-    public boolean equals(Object _object) {
-        return false;
-    }
-
-
     /**
      * Returns the Group which is held at the passed index.
      *

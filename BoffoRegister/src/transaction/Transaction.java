@@ -8,8 +8,9 @@ public class Transaction extends BoffoFireObject implements BoffoListenerInterfa
 
     public Transaction() {
         System.out.println("Transaction Module Loaded");
+     
     }
-
+    
     /**
      * gets called when an item has been added to the ticket
      */

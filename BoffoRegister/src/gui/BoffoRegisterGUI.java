@@ -56,6 +56,7 @@ import javafx.scene.text.Text;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 
+
 public final class BoffoRegisterGUI extends BoffoFireObject implements BoffoListenerInterface {
 
     // List of items added in the table.

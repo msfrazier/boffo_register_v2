@@ -11,8 +11,7 @@ package events;
  */
 public class BoffoGenericEvent extends BoffoEvent{
 
-    public BoffoGenericEvent(Object source, BoffoEventData messageString) {
-        super(source, messageString);
+    public BoffoGenericEvent(Object _source, BoffoEventData _messageString) {
+        super(_source, _messageString);
     }
-
 }

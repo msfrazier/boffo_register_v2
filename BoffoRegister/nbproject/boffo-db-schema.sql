@@ -18,8 +18,8 @@ CREATE TABLE IF NOT EXISTS boffo_register_schema.product_tbl (
   product_id INT UNSIGNED NOT NULL,
   uuid VARCHAR(45) NOT NULL,
   `name` VARCHAR(45) NULL,
-  quantity INT NULL,
-  price DOUBLE NULL,
+  quantity INT UNSIGNED NOT NULL,
+  price DOUBLE NOT NULL,
   upc INT NULL,
   sku INT NULL,
   rat INT NULL,  -- rating
@@ -49,24 +49,14 @@ ENGINE = InnoDB;
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS boffo_register_schema.transaction_tbl (
   transaction_id INT UNSIGNED NOT NULL,
-<<<<<<< HEAD
-  product_id INT UNSIGNED NOT NULL,
-	FOREIGN KEY fk_product_id(product_id)
-    REFERENCES product_tbl(product_id),
-  quantity INT NOT NULL,
-=======
   uuid VARCHAR(45) NOT NULL,
   element_id INT UNSIGNED NOT NULL,
   is_bundle BOOLEAN NULL,
   quantity INT UNSIGNED NOT NULL,
->>>>>>> master
   ticket_id INT UNSIGNED NOT NULL,
 	FOREIGN KEY fk_ticket_id(ticket_id)
     REFERENCES ticket_tbl(ticket_id),
-  bundle_id INT UNSIGNED NOT NULL,
-	FOREIGN KEY fk_bundle_id(bundle_id)
-    REFERENCES bundle_tbl(bundle_id),
-  price DOUBLE NULL,
+  price DOUBLE NOT NULL,
   PRIMARY KEY (transaction_id),
   UNIQUE INDEX transaction_id_UNIQUE (transaction_id ASC))
 ENGINE = InnoDB;
@@ -98,13 +88,8 @@ CREATE TABLE IF NOT EXISTS boffo_register_schema.store_info_tbl (
   receipt_msg VARCHAR(200) NULL,
   store_hours VARCHAR(45) NULL,
   phone_num VARCHAR(45) NULL,
-<<<<<<< HEAD
-  tax_rate DOUBLE NULL,
-  trans_key VARCHAR(45) NULL,
-=======
   tax_rate DOUBLE UNSIGNED NOT NULL,
   transactionKey VARCHAR(45) NULL,
->>>>>>> master
   login VARCHAR(45) NULL,
   secretKey VARCHAR(45) NULL,
   PRIMARY KEY (store_id),
@@ -143,7 +128,7 @@ CREATE TABLE IF NOT EXISTS boffo_register_schema.bundle_items_tbl (
   product_id INT UNSIGNED NOT NULL,
 	FOREIGN KEY fk_product_id(product_id)
     REFERENCES product_tbl(product_id),
-  quantity INT NULL,
+  quantity INT UNSIGNED NOT NULL,
   PRIMARY KEY (bundle_items_id),
   UNIQUE INDEX bundle_items_id_UNIQUE (bundle_items_id ASC))
 ENGINE = InnoDB;

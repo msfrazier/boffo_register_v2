@@ -28,10 +28,6 @@ public class Ticket extends Transaction {
     protected static HashMap<String, ArrayList<Integer>> ticket_hash
             = new HashMap<>();
 
-    protected static HashMap<String, ArrayList<Integer>> ticket_hash = 
-            new HashMap<>();
-
-
 //public class Ticket extends BoffoDbObject implements BoffoListenerInterface
     private List<ProductObject> products;
     private List<TicketElement> productbundles;
@@ -43,11 +39,6 @@ public class Ticket extends Transaction {
         this.total = 0.00;
         this.upc = 0;
     }
-
-
-    public ProductObject addProductByUPC(String _upc, List<ProductObject> _products) {
-        ProductObject product = (ProductObject) ProductObject.loadByUpc(_upc);
-
 
     public ProductObject addProductbyUPC(String _UPC, List<ProductObject> _products) {
         ProductObject product = (ProductObject) ProductObject.loadByUpc(_UPC);
@@ -64,21 +55,12 @@ public class Ticket extends Transaction {
         return product;
     }
 
-    public void removeProductbyUPC(String UPC, List<ProductObject> _products) {
-        ProductObject product = (ProductObject) ProductObject.loadByUpc(UPC);
-
-
     public void removeProductbyUPC(String _UPC, List<ProductObject> _products) {
         ProductObject product = (ProductObject) ProductObject.loadByUpc(_UPC);
 
         this.products.remove(product);
         this.productbundles = Bundle.updateBundles(_products);
     }
-
-
-    public void removeProductbyName(String name, List<ProductObject> _products) {
-        ProductObject product = (ProductObject) ProductObject.loadByName(name);
-
 
     public void removeProductbyName(String _name, List<ProductObject> _products) {
         ProductObject product = (ProductObject) ProductObject.loadByName(_name);
@@ -91,17 +73,10 @@ public class Ticket extends Transaction {
 
     //Return total price.
     public double getTotalPrice(String String_price) {
-
-        for (int i = 0; i < products.size(); i++) {
-            Object obj = ProductObject.loadByPrice(String_price);
-            ProductObject p = (ProductObject) obj;
-            this.total = this.total + p.getPrice();
-
-        double totalPrice = 0;
         for (int i = 0; i < productbundles.size(); i++) {
             Object object = ProductObject.loadByPrice(String_price);
             ProductObject price = (ProductObject) object;
-            totalPrice = totalPrice + price.getPrice();
+            this.total = this.total + price.getPrice();
 
         }
         return this.total;

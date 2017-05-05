@@ -1,40 +1,65 @@
 package bundles;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
+import product.ProductObject;
+import database.BoffoDbObject;
 
 /**
  * Bundle class for storing and using bundles and discounts, contains methods
  * for processing products into lists including discounts.
  *
- * @TODO Use utility format price for toString().
- * @TODO Add updateBundles to receive and return a ArrayList of TicketElements
  * @TODO loadBySKU, loadAll
  *
  * @author Michael Resnik
  * @author Travis Cox
- * @lastEdited: 4/18/2017
+ * @lastEdited: 05/05/2017
  */
-public class Bundle extends database.BoffoDbObject implements TicketElement {
+public class Bundle extends BoffoDbObject implements TicketElement {
 
     // List of all bundles, will be removed and be replaced by database call.
-    public static List<Bundle> allBundles = new ArrayList();
+    private static List<Bundle> allBundles = new ArrayList();
     // List of the products that comprise a bundle or discount.
-    private final GroupList<Product_Test> products;
+    private final GroupList<ProductObject> products;
     private final DiscountType discountType;
     // Discount amount (based on discountType).
     private final double discountAmount;
     // The max number of the bundle or discount that can be on one transaction.
     private final int maxAllowed;
-    private String name;
-    private String description;
-    private String sku;
+    private final String name;
+    private final String description;
+    private final String sku;
+    private final Calendar startDate;
+    private final Calendar endDate;
 
     protected static String tableName = "bundle_tbl";
 
 
     /**
-     * Constructor for a bundle
+     * Constructor for a Bundle object, needed to be a BoffoDbObject, syntax
+     * mirrored from Product().
+     *
+     * @see Product()
+     * @see BoffoDbObject.create()
+     */
+    public Bundle() {
+        BoffoDbObject.create();
+        this.name = "";
+        this.description = "";
+        this.products = null;
+        this.endDate = null;
+        this.startDate = null;
+        this.discountType = null;
+        this.sku = "";
+        this.discountAmount = 0.00;
+        this.maxAllowed = 0;
+        this.active = false;
+    }
+
+
+    /**
+     * Constructor for a Bundle object.
      *
      * @param _name The name of the bundle.
      * @param _description The bundle description.
@@ -45,25 +70,25 @@ public class Bundle extends database.BoffoDbObject implements TicketElement {
      * by the discount type. Percentages are represented such that 75% = 75.0
      * @param _maxAllowed The maximum number of this bundle that can be on one
      * transaction. For no limit use 0.
-     * @param _sku The bundle SKU
+     * @param _sku The bundle object's SKU.
      */
     public Bundle(String _name, String _description,
-            GroupList<Product_Test> _products, DiscountType _discountType,
-            double _discountAmount, int _maxAllowed, String _sku, boolean _active) {
-        // TODO Validate input and throw exceptions.
+            GroupList<ProductObject> _products, DiscountType _discountType,
+            double _discountAmount, int _maxAllowed, String _sku, boolean _active, Calendar _startDate, Calendar _endDate) {
         this.name = _name;
         this.description = _description;
         this.products = _products;
-        // BOGO only uses a single item and is created as a bundle of 2 of that item
+        // BOGO only uses a single item and is created as a bundle of 2 of that item.
         if (_discountType == DiscountType.BOGO) {
-            Product_Test first = _products.get(0).getElement();
+            ProductObject first = _products.get(0).getElement();
             this.products.clear();
             this.products.add(first, 2);
         }
         this.discountType = _discountType;
-
-        // Ensure that the discount amount is at least 0, and less than 100 if
-        // a percentage or BOGO.
+        /*
+         * Ensure that the discount amount is between 0 and 100.
+         * If discountType is percentage or BOGO.
+         */
         double tempDoubleAmount = Math.max(0, _discountAmount);
         if (_discountType == DiscountType.BOGO || _discountType == DiscountType.PERCENT) {
             tempDoubleAmount = Math.min(tempDoubleAmount, 100);
@@ -73,23 +98,26 @@ public class Bundle extends database.BoffoDbObject implements TicketElement {
         this.maxAllowed = _maxAllowed;
         this.sku = _sku;
         this.active = _active;
+        this.startDate = _startDate;
+        this.endDate = _endDate;
     }
 
 
     /**
-     * Clones the Bundle.
+     * Returns a clone of the Bundle object.
      *
      * @return The cloned Bundle
      */
     @Override
     public Bundle clone() {
         return new Bundle(this.name, this.description, this.products.clone(),
-                this.discountType, this.discountAmount, this.maxAllowed, this.sku, this.active);
+                this.discountType, this.discountAmount, this.maxAllowed, this.sku, this.active, this.startDate, this.endDate);
     }
 
 
     /**
-     * Generator for a bundle
+     * Generator for a bundle, which adds the Bundle to the database and returns
+     * the new object. For when startDate and endDate is known.
      *
      * @param _name The name of the bundle.
      * @param _description The bundle description.
@@ -100,14 +128,91 @@ public class Bundle extends database.BoffoDbObject implements TicketElement {
      * by the discount type. Percentages are represented such that 75% = 75.0
      * @param _maxAllowed The maximum number of this bundle that can be on one
      * transaction. For no limit use 0.
-     * @param _sku The bundle SKU
+     * @param _sku The bundle SKU.
+     * @param _active Boolean telling whether the Bundle object is active in the
+     * database.
+     * @param _startDate String formatted as YYYY-MM-DD to determine date
+     * started.
+     * @param _endDate String formatted as YYYY-MM-DD to determine date ended.
      * @return The generated Bundle.
      */
     public static Bundle generator(String _name, String _description,
-            GroupList<Product_Test> _products, DiscountType _discountType,
-            double _discountAmount, int _maxAllowed, String _sku, boolean _active) {
+            GroupList<ProductObject> _products, DiscountType _discountType,
+            double _discountAmount, int _maxAllowed, String _sku, boolean _active,
+            String _startDate, String _endDate) {
+
+        Calendar startDate = CalendarUtilities.stringToCalendar(_startDate);
+        Calendar endDate = CalendarUtilities.stringToCalendar(_endDate);
+
         Bundle b = new Bundle(_name, _description, _products, _discountType,
-                _discountAmount, _maxAllowed, _sku, _active);
+                _discountAmount, _maxAllowed, _sku, _active, startDate, endDate);
+        add(b);
+        return b.clone();
+    }
+
+
+    /**
+     * Generator for a bundle, which adds the Bundle to the database and returns
+     * the new object. For when endDate is known. startDate is implied to be
+     * today's date.
+     *
+     * @param _name The name of the bundle.
+     * @param _description The bundle description.
+     * @param _products The GroupList of products in the bundle, a single item
+     * for just a discount.
+     * @param _discountType The type of discount.
+     * @param _discountAmount The amount of the discount, context is determined
+     * by the discount type. Percentages are represented such that 75% = 75.0
+     * @param _maxAllowed The maximum number of this bundle that can be on one
+     * transaction. For no limit use 0.
+     * @param _sku The bundle SKU.
+     * @param _active Boolean telling whether the Bundle object is active in the
+     * database.
+     * @param _endDate String formatted as YYYY-MM-DD to determine date ended.
+     * @return The generated Bundle.
+     */
+    public static Bundle generator(String _name, String _description,
+            GroupList<ProductObject> _products, DiscountType _discountType,
+            double _discountAmount, int _maxAllowed, String _sku, boolean _active,
+            String _endDate) {
+        Calendar current = CalendarUtilities.currentDate();
+        Calendar startDate = current;
+        Calendar endDate = CalendarUtilities.stringToCalendar(_endDate);
+
+        Bundle b = new Bundle(_name, _description, _products, _discountType,
+                _discountAmount, _maxAllowed, _sku, _active, startDate, endDate);
+        add(b);
+        return b.clone();
+    }
+
+
+    /**
+     * Generator for a bundle, which adds the Bundle to the database and returns
+     * the new object. Creates a Bundle that will last an indefinite amount of
+     * time, starting from today's date.
+     *
+     * @param _name The name of the bundle.
+     * @param _description The bundle description.
+     * @param _products The GroupList of products in the bundle, a single item
+     * for just a discount.
+     * @param _discountType The type of discount.
+     * @param _discountAmount The amount of the discount, context is determined
+     * by the discount type. Percentages are represented such that 75% = 75.0
+     * @param _maxAllowed The maximum number of this bundle that can be on one
+     * transaction. For no limit use 0.
+     * @param _sku The bundle SKU.
+     * @param _active Boolean telling whether the Bundle object is active in the
+     * database.
+     * @return The generated Bundle.
+     */
+    public static Bundle generator(String _name, String _description,
+            GroupList<ProductObject> _products, DiscountType _discountType,
+            double _discountAmount, int _maxAllowed, String _sku, boolean _active) {
+        Calendar current = CalendarUtilities.currentDate();
+        Calendar startDate = current;
+        Calendar endDate = null;
+        Bundle b = new Bundle(_name, _description, _products, _discountType,
+                _discountAmount, _maxAllowed, _sku, _active, startDate, endDate);
         add(b);
         return b.clone();
     }
@@ -124,12 +229,50 @@ public class Bundle extends database.BoffoDbObject implements TicketElement {
     }
 
 
+    /**
+     * Indexes the database and returns an array of Bundles which are active.
+     *
+     * @return An array of Bundle objects
+     */
     public static Bundle[] getActiveBundles() {
         ArrayList<Bundle> bundles = new ArrayList();
         for (Bundle bundle : allBundles) {
             if (bundle.active) {
                 bundles.add(bundle);
             }
+        }
+        return bundles.toArray(new Bundle[bundles.size()]);
+    }
+
+
+    /**
+     * Indexes the database, returning an array of Bundles which match the
+     * variable list. Values that don't matter when indexing are specified to be
+     * null.
+     *
+     * @param _active Whether a Bundle object in the database is active.
+     * @param _name The name identifier of a Bundle object in the database.
+     * @param _description The database description of a Bundle.
+     * @param _sku The database SKU of a Bundle.
+     * @return
+     */
+    public static Bundle[] getBundlesBy(Boolean _active, String _name, String _description, String _sku) {
+        ArrayList<Bundle> bundles = new ArrayList();
+        boolean[] truthValues = new boolean[4];
+        for (Bundle bundle : allBundles) {
+            if (_active != null && _active != bundle.active) {
+                continue;
+            }
+            if (_name != null && _name.equals(bundle.getName())) {
+                continue;
+            }
+            if (_description != null && _description.equals(bundle.getDescription())) {
+                continue;
+            }
+            if (_sku != null && _sku.equals(bundle.getSku())) {
+                continue;
+            }
+            bundles.add(bundle);
         }
         return bundles.toArray(new Bundle[bundles.size()]);
     }
@@ -183,7 +326,7 @@ public class Bundle extends database.BoffoDbObject implements TicketElement {
      *
      * @return GroupList of products.
      */
-    public GroupList<Product_Test> getProducts() {
+    public GroupList<ProductObject> getProducts() {
         return this.products.clone();
     }
 
@@ -204,6 +347,31 @@ public class Bundle extends database.BoffoDbObject implements TicketElement {
     }
 
 
+    /**
+     * Returns whether today's date is within the Bundle object's startDate and
+     * endDate.
+     *
+     * @return A boolean representation of whether a Bundle is within the
+     * specified Calendar range.
+     */
+    public boolean inDate() {
+        if (startDate == null) {
+            return true;
+        }
+        Calendar current = CalendarUtilities.currentDate();
+        if (startDate.compareTo(current) > 0) {
+            return false;
+        }
+        if (endDate == null) {
+            return true;
+        }
+        if (current.compareTo(endDate) <= 0) {
+            return true;
+        }
+        return false;
+    }
+
+
     @Override
     public String toString() {
         return "Bundle:" + "[" + this.name + this.description + "]" + " "
@@ -221,9 +389,9 @@ public class Bundle extends database.BoffoDbObject implements TicketElement {
      * @param _products A List of Products.
      * @return A List of TicketElements containing Bundles and Products.
      */
-    public static List<TicketElement> updateBundles(List<Product_Test> _products) {
-        GroupList<Product_Test> products = new GroupList(BYSKU);
-        for (Product_Test product : _products) {
+    public static List<TicketElement> updateBundles(List<ProductObject> _products) {
+        GroupList<ProductObject> products = new GroupList(BYSKU);
+        for (ProductObject product : _products) {
             products.add(product);
         }
         return updateBundles(products).toAbsoluteList();
@@ -240,19 +408,19 @@ public class Bundle extends database.BoffoDbObject implements TicketElement {
      * @param _fromBundles The list of Bundles to add from.
      * @return A GroupList of Bundles containing all applicable Bundles.
      */
-    private static GroupList<Bundle> getApplicable(GroupList<Product_Test> _allProducts,
+    private static GroupList<Bundle> getApplicable(GroupList<ProductObject> _allProducts,
             Bundle[] _fromBundles) {
         GroupList<Bundle> applicable = new GroupList(BYSKU);
         // Iterate over all the bundles and see if there are matching products.
         for (Bundle bundle : _fromBundles) {
-            GroupList<Product_Test> bundleProducts = bundle.getProducts();
+            GroupList<ProductObject> bundleProducts = bundle.getProducts();
             int num = 0;
             // If _allProducts contains the products in bundle, then loop adding
             // to the count of bundle until the max number that the products can
             // support or max allowed is reached.
             if (_allProducts.contains(bundle.getProducts())) {
                 while (_allProducts.contains(bundleProducts)) {
-                    for (Group<Product_Test> p : bundle.getProducts().toList()) {
+                    for (Group<ProductObject> p : bundle.getProducts().toList()) {
                         bundleProducts.add(p.getContents());
                     }
                     num++;
@@ -276,10 +444,10 @@ public class Bundle extends database.BoffoDbObject implements TicketElement {
      * @param _allProducts The list of Products to check.
      * @return A GroupList of Bundles containing all applicable Bundles.
      */
-    private static GroupList<Bundle> getApplicable(GroupList<Product_Test> _allProducts) {
+    private static GroupList<Bundle> getApplicable(GroupList<ProductObject> _allProducts) {
         // Call getApplicable with allBundles. Will be replaced by DB call
         // loading all bundles.
-        return getApplicable(_allProducts, getActiveBundles());
+        return getApplicable(_allProducts, getBundlesBy(true, null, null, null));
     }
 
 
@@ -295,13 +463,13 @@ public class Bundle extends database.BoffoDbObject implements TicketElement {
      * @return A GroupList of Bundles that no longer includes invalidated
      * bundles
      */
-    private static GroupList<Bundle> pruneBundles(GroupList<Product_Test> _products, GroupList<Bundle> _bundles) {
+    private static GroupList<Bundle> pruneBundles(GroupList<ProductObject> _products, GroupList<Bundle> _bundles) {
         GroupList<Bundle> retList = new GroupList(BYSKU);
         // for each bundle in _bundles get the max number that is possible with
         // _products and add that many of the bundle to retList
         for (Group<Bundle> group : _bundles.toList()) {
             int num = group.size();
-            for (Group<Product_Test> prod : group.getElement().getProducts().toList()) {
+            for (Group<ProductObject> prod : group.getElement().getProducts().toList()) {
                 num = Math.min(num, _products.numberOf(prod.getElement()) / prod.size());
             }
             if (num > 0) {
@@ -324,14 +492,14 @@ public class Bundle extends database.BoffoDbObject implements TicketElement {
      * @return A GroupList of Bundles that no longer includes invalidated
      * bundles
      */
-    private static GroupList<TicketElement> recursiveUpdateBundles(GroupList<Product_Test> _products,
+    private static GroupList<TicketElement> recursiveUpdateBundles(GroupList<ProductObject> _products,
             GroupList<Bundle> _bundles,
             GroupList<TicketElement> _elements) {
         // If the bundle list being referenced is empty, add remaining products
         // to elements and return elements.
         if (_bundles.isEmpty()) {
-            for (Group<Product_Test> group : _products.toList()) {
-                for (Product_Test product : group.getContents()) {
+            for (Group<ProductObject> group : _products.toList()) {
+                for (ProductObject product : group.getContents()) {
                     _elements.add(product);
                 }
             }
@@ -347,9 +515,9 @@ public class Bundle extends database.BoffoDbObject implements TicketElement {
 
         // Remove products from _products and add them to a GroupList to create
         // a BundleWrapper containing the bundle and products it contains.
-        GroupList<Product_Test> productsToAdd = new GroupList(_products.comparator());
+        GroupList<ProductObject> productsToAdd = new GroupList(_products.comparator());
         for (Group p : bundleGroup.getElement().getProducts().toList()) {
-            List<Product_Test> productList = _products.remove(p);
+            List<ProductObject> productList = _products.remove(p);
             productsToAdd.add(productList);
         }
         BundleWrapper bw = new BundleWrapper(bundleGroup.getElement(), productsToAdd);
@@ -376,7 +544,7 @@ public class Bundle extends database.BoffoDbObject implements TicketElement {
      * @param _products A GroupList of Products.
      * @return A GroupList of TicketElements containing Bundles and Products.
      */
-    private static GroupList<TicketElement> updateBundles(GroupList<Product_Test> _products) {
+    private static GroupList<TicketElement> updateBundles(GroupList<ProductObject> _products) {
         // Get list of applicable bundles and create new (empty) list of elements.
         GroupList<Bundle> bundles = getApplicable(_products);
         GroupList<TicketElement> elements = new GroupList(BYSKU);
@@ -389,6 +557,7 @@ public class Bundle extends database.BoffoDbObject implements TicketElement {
     // TODO replace following static methods with getBundles()
     // <editor-fold desc="Operations for the static List of Bundles named "allBundles." ">
     private static void add(Bundle _b) {
+        // _b.save(_b);
         if (!contains(_b)) {
             allBundles.add(_b);
         }
@@ -396,6 +565,7 @@ public class Bundle extends database.BoffoDbObject implements TicketElement {
 
 
     public static void remove(Bundle _b) {
+        // _b.delete(_b);
         if (contains(_b)) {
             allBundles.remove(indexOf(_b));
         }
@@ -417,6 +587,7 @@ public class Bundle extends database.BoffoDbObject implements TicketElement {
         }
         return -1;
     }
+
     //</editor-fold>
 
 }

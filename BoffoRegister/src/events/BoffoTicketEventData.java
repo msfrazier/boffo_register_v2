@@ -1,18 +1,17 @@
 package events;
 
-import database.BoffoDbObject;
-
 /**
- * Last Edited: 4/25 This class is for passing data between Ticket events.
+ * Last Edited: 5/4
+ * This class is for passing data between Ticket events.
  *
  * @author Ray
  */
+import database.BoffoDbObject;
+
 public class BoffoTicketEventData<T> extends BoffoEventData {
 
-    public enum EventType {
-        NEW_TICKET, CLOSED_TICKET, LOAD_TICKET
-    };
-    EventType eventType;
+    public enum EventType {NEW_TICKET, CLOSED_TICKET, LOAD_TICKET};
+    public EventType eventType;
 
     /**
      * Constructor to call when you do not need to pass any data.
@@ -23,7 +22,7 @@ public class BoffoTicketEventData<T> extends BoffoEventData {
         this.eventType = _newType;
     }
 
-    
+
     /**
      * Constructor for passing a basic data type.
      *
@@ -35,7 +34,7 @@ public class BoffoTicketEventData<T> extends BoffoEventData {
         this.eventData = _data;
     }
 
-    
+
     /**
      * Constructor for passing a BoffoDbObject.
      *
@@ -47,8 +46,8 @@ public class BoffoTicketEventData<T> extends BoffoEventData {
         this.eventObj = _obj;
     }
 
-    
-    public EventType getEventType() {
+
+    public EventType getTicketEventType() {
         return this.eventType;
     }
 

@@ -33,7 +33,7 @@ public class BoffoController extends BoffoFireObject implements BoffoListenerInt
     protected AdministrationObject admin = new AdministrationObject();
     protected BoffoRegisterGUI gui = null;
     protected Inventory inventory = new Inventory();
-    protected Printer printer = null;
+    protected Printer printer = new Printer();
     protected Transaction transaction = new Transaction();
 
 
@@ -60,31 +60,17 @@ public class BoffoController extends BoffoFireObject implements BoffoListenerInt
      */
     @Override
     public void messageReceived(BoffoEvent _event) {
-<<<<<<< HEAD
-<<<<<<< HEAD
-
-        /**
-         * We need a login event?
-
-         */	 
-        if(_event.getMessage().getCode() instanceof BoffoNavigateEventData) {
-=======
-        // Need a login event.
-        if (_event.getMessage().getCode() instanceof BoffoLogInEventData) {
-            userEvents(_event);
-=======
         System.out.println("Controller received some boffo event.");
-        if(_event.getMessage().getCode().getEventType() == BoffoEventData.EventType.PRINT) {
+        if(_event.getMessage().getCode().getEventType() == 
+                BoffoEventData.EventType.PRINT) {
             printReceipt();
             return;
         }
         if (_event.getMessage().getCode() instanceof BoffoUserEventData) {
             userEvent(_event);
->>>>>>> master
             return;
         }
         else if (_event.getMessage().getCode() instanceof BoffoNavigateEventData) {
->>>>>>> master
             changePanel(_event);
             return;
         }
@@ -99,19 +85,9 @@ public class BoffoController extends BoffoFireObject implements BoffoListenerInt
      * @param _event This represents a BoffoNavigateEventData object for panel changing.
      */
     private void changePanel(BoffoEvent _event) {
-        // Get the event data as a seperate object.
-<<<<<<< HEAD
-        BoffoNavigateEventData eventData = (BoffoNavigateEventData)_event.getMessage().getCode();    
-        // 
-=======
         BoffoNavigateEventData eventData = (BoffoNavigateEventData) _event.getMessage().getCode();
-<<<<<<< HEAD
->>>>>>> master
-        switch (eventData.getEventType()) {
-=======
         System.out.println("Controller received the change panel event.");
         switch (eventData.getNavigateEventType()) {
->>>>>>> master
             case LOGIN_PANEL:
                 CURRENT_USER = null;
                 this.removeAllExcept(gui);
@@ -152,24 +128,17 @@ public class BoffoController extends BoffoFireObject implements BoffoListenerInt
         this.removeAllExcept(gui);
         this.addListener(_listener);
     }
-<<<<<<< HEAD
+
     
-=======
-
-
-<<<<<<< HEAD
-    // Pass in all relevent objects into the printer and let it sort them out.
->>>>>>> master
-=======
     /**
      * This method prints a receipt by passing in a Transaction and
      * AdministrationObject.
      */
->>>>>>> master
     private void printReceipt() {
             this.printer.receiveData(transaction, admin);
     }
 
+    
     /**
      * Takes an event object to for logging the user into the system
      * @param _event This represents a UserEventData object.

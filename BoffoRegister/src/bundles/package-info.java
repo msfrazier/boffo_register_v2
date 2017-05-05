@@ -7,8 +7,8 @@ Transaction Package:
     TicketElement
 
 Ticket:
-    private Grouplist<TicketElement> elements
-    private Grouplist<Product> products
+    private List<TicketElement> elements
+    private List<Product> products
 
 Product:
     implement TicketElement

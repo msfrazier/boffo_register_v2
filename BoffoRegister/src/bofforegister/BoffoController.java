@@ -51,8 +51,15 @@ public class BoffoController extends BoffoFireObject implements BoffoListenerInt
     @Override
     public void messageReceived(BoffoEvent _event) {
         // Need a login event.
-        if (_event.getMessage().getCode() instanceof BoffoLogInEventData) {
-            userEvents(_event);
+        switch (_event.getMessage().getCode().getEventType()) {
+            case PRINT:
+                printReceipt();
+                return;
+            default:
+                break;
+        }
+        if (_event.getMessage().getCode() instanceof BoffoUserEventData) {
+            userEvent(_event);
             return;
         }
         // Need a logout event.
@@ -69,7 +76,7 @@ public class BoffoController extends BoffoFireObject implements BoffoListenerInt
     private void changePanel(BoffoEvent _event) {
         // Get the event data as a seperate object.
         BoffoNavigateEventData eventData = (BoffoNavigateEventData) _event.getMessage().getCode();
-        switch (eventData.getEventType()) {
+        switch (eventData.getNavEventType()) {
             case LOGIN_PANEL:
                 CURRENT_USER = null;
                 this.removeAllExcept(gui);
@@ -101,23 +108,28 @@ public class BoffoController extends BoffoFireObject implements BoffoListenerInt
     }
 
 
-    private void userEvent(BoffoEvent _event) {
-        BoffoLogInEventData loginEvent = (BoffoLogInEventData) _event.getMessage().getCode();
-        switch (loginEvent.getEventType()) {
-            case LOGIN_EVENT:
-
-        }
-    }
-
-
-    private void changeTo(BoffoListenerInterface _listener) {
+        private void changeTo(BoffoListenerInterface _listener) {
     this.removeAllExcept(gui);
     this.addListener(_listener);
     }
 
-
     // Pass in all relevent objects into the printer and let it sort them out.
     private void printReceipt() {
-        
+        //this.printer.receiveData(transaction, admin);
     }
+
+
+    private void userEvent(BoffoEvent _event) {
+        BoffoUserEventData loginEvent = (BoffoUserEventData) _event.getMessage().getCode();
+        switch (loginEvent.getUserEventType()) {
+            case NEW_USER:
+                CURRENT_USER.User(loginEvent.getUserName().toString(), loginEvent.getUserPass().toString());
+                break;
+            default:
+                break;
+        }
+    }
+
+
+
 }

@@ -13,11 +13,12 @@ package administration;
 import authorization.AuthorizationInterface;
 import events.BoffoFireObject;
 import events.BoffoEvent;
+import events.BoffoListenerInterface;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 
-public class AdministrationObject extends BoffoFireObject implements AuthorizationInterface {
+public class AdministrationObject extends BoffoFireObject implements AuthorizationInterface, BoffoListenerInterface {
 
 //Create variables required for Administration class.
     protected String currency = "";

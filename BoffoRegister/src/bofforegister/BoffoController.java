@@ -76,7 +76,7 @@ public class BoffoController extends BoffoFireObject implements BoffoListenerInt
     private void changePanel(BoffoEvent _event) {
         // Get the event data as a seperate object.
         BoffoNavigateEventData eventData = (BoffoNavigateEventData) _event.getMessage().getCode();
-        switch (eventData.getNavEventType()) {
+        switch (eventData.getNavigateEventType()) {
             case LOGIN_PANEL:
                 CURRENT_USER = null;
                 this.removeAllExcept(gui);

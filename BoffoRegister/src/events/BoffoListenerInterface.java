@@ -14,5 +14,5 @@ import java.util.List;
 
 
 public interface BoffoListenerInterface {
-    public void messageReceived(BoffoEvent event);
+    public void messageReceived(BoffoEvent _event);
 }

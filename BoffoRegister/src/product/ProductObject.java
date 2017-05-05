@@ -1,12 +1,12 @@
 package product;
 
 /*
-Last update: 5/1/2017
-
-Description: Class ProductObject constructs the product object and includes
-             find methods that search by attributes.
-
-Author: John Kaiserlik
+* Last update: 5/1/2017
+*
+* @Description: Class ProductObject constructs the product object and includes
+*             find methods that search by attributes.
+*
+* @Author: John Kaiserlik
 */
 
 import utility.Utility;
@@ -54,8 +54,8 @@ public class ProductObject extends BoffoDbObject implements TicketElement{
     }
 
 
-    public void setDescription(String _description) {
-        this.description = _description;
+    public ProductObject generator(String _name, int _quant, double _price, int _UPC, String _sku, Rating _rat, String _uuid, String _tableName, String _description) {
+        return new ProductObject(_name, _quant, _price, _UPC, _sku, _rat, _uuid, _tableName, _description);
     }
 
 
@@ -65,20 +65,11 @@ public class ProductObject extends BoffoDbObject implements TicketElement{
     }
 
 
-    public void setName(String _name) {
-        this.name = _name;
-    }
-
-
     @Override
     public String getName() {
         return this.name;
     }
 
-
-    public void setPrice(double _price) {
-        this.price = _price;
-    }
 
     @Override
     public double getPrice() {
@@ -91,8 +82,22 @@ public class ProductObject extends BoffoDbObject implements TicketElement{
     }
 
 
-    public void setQuantity(int _quant) {
-        this.quantity = _quant;
+    public HashMap getProductMap(){
+        this.map.clear();
+
+        if (this.map.isEmpty()){
+            this.map.put("name", this.name);
+            this.map.put("quantity", this.quantity);
+            this.map.put("price", Utility.formatPrice(this.getPrice()));
+            this.map.put("upc", this.UPC);
+            this.map.put("sku", this.SKU);
+            this.map.put("rating", this.rat);
+            this.map.put("uuid", this.uuid);
+            this.map.put("description", description);
+
+            return this.map;
+        }
+        return null;
     }
 
 
@@ -101,35 +106,20 @@ public class ProductObject extends BoffoDbObject implements TicketElement{
     }
 
 
-    public void setRating(Rating _rat) {
-        this.rat = _rat;
-    }
-
-
     public Rating getRating() {
         return this.rat;
     }
 
-
-    public void setUPC(int _upc) {
-        this.UPC = _upc;
-    }
-
-
-    public int getUPC() {
-        return this.UPC;
-    }
-
-
-    public void setSKU(String _sku) {
-        this.SKU = _sku;
-    }
 
     @Override
     public String getSku() {
         return this.SKU;
     }
 
+
+    public int getUPC() {
+        return this.UPC;
+    }
 
     public static ProductObject loadBySKU(String _sku) {
         return (ProductObject)ProductObject.load("sku", _sku, new ProductObject(tableName));
@@ -161,22 +151,38 @@ public class ProductObject extends BoffoDbObject implements TicketElement{
     }
 
 
-    public HashMap getProductMap(){
-        this.map.clear();
+    public void setDescription(String _description) {
+        this.description = _description;
+    }
 
-        if (this.map.isEmpty()){
-            this.map.put("name", this.name);
-            this.map.put("quantity", this.quantity);
-            this.map.put("price", Utility.formatPrice(this.getPrice()));
-            this.map.put("upc", this.UPC);
-            this.map.put("sku", this.SKU);
-            this.map.put("rating", this.rat);
-            this.map.put("uuid", this.uuid);
-            this.map.put("description", description);
 
-            return this.map;
-        }
-        return null;
+    public void setName(String _name) {
+        this.name = _name;
+    }
+
+
+    public void setPrice(double _price) {
+        this.price = _price;
+    }
+
+
+    public void setQuantity(int _quant) {
+        this.quantity = _quant;
+    }
+
+
+    public void setRating(Rating _rat) {
+        this.rat = _rat;
+    }
+
+
+    public void setSKU(String _sku) {
+        this.SKU = _sku;
+    }
+
+
+    public void setUPC(int _upc) {
+        this.UPC = _upc;
     }
 
 
@@ -191,10 +197,5 @@ public class ProductObject extends BoffoDbObject implements TicketElement{
                      "UUID: " + this.uuid + "\n" +
                      "Description: " + this.description + "\n";
         return str;
-    }
-
-
-    public ProductObject generator(String _name, int _quant, double _price, int _UPC, String _sku, Rating _rat, String _uuid, String _tableName, String _description) {
-        return new ProductObject(_name, _quant, _price, _UPC, _sku, _rat, _uuid, _tableName, _description);
     }
 }

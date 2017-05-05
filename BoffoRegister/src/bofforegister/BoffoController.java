@@ -135,11 +135,7 @@ public class BoffoController extends BoffoFireObject implements BoffoListenerInt
      * AdministrationObject.
      */
     private void printReceipt() {
-        try{
-            this.printer.printReceipt();
-        }
-        catch(Exception e) {
-        }
+            this.printer.receiveData(transaction, admin);
     }
 
     /**

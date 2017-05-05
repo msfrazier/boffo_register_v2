@@ -33,7 +33,7 @@ public class BoffoController extends BoffoFireObject implements BoffoListenerInt
     protected AdministrationObject admin = new AdministrationObject();
     protected BoffoRegisterGUI gui = null;
     protected Inventory inventory = new Inventory();
-    protected Printer printer = new Printer();
+    protected Printer printer = null;
     protected Transaction transaction = new Transaction();
 
 

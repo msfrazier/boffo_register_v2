@@ -22,6 +22,7 @@ import static user.User.PasswordHash.SALT_BYTE_SIZE;
 
 public class User extends BoffoFireObject{
 
+
     private String f_name;
     private int id;
     private String l_name;
@@ -34,6 +35,15 @@ public User(String _username, String _pass){
 
     this.username = _username;
     this.pass = _pass;
+}
+
+
+public static boolean login(String _uPass, String _Password){
+
+    if (_uPass.equals(_Password)){
+        return true;
+}
+    return false;
 }
 
 

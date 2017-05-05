@@ -60,7 +60,7 @@ public class BoffoController extends BoffoFireObject implements BoffoListenerInt
      */
     @Override
     public void messageReceived(BoffoEvent _event) {
-        // Need a logout event?
+        System.out.println("Controller received some boffo event.");
         if(_event.getMessage().getCode().getEventType() == BoffoEventData.EventType.PRINT) {
             printReceipt();
             return;
@@ -86,6 +86,7 @@ public class BoffoController extends BoffoFireObject implements BoffoListenerInt
     private void changePanel(BoffoEvent _event) {
         // Get the event data as a seperate object.
         BoffoNavigateEventData eventData = (BoffoNavigateEventData) _event.getMessage().getCode();
+        System.out.println("Controller received the change panel event.");
         switch (eventData.getNavigateEventType()) {
             case LOGIN_PANEL:
                 CURRENT_USER = null;
@@ -147,6 +148,7 @@ public class BoffoController extends BoffoFireObject implements BoffoListenerInt
      */
     private void userEvent(BoffoEvent _event) {
         BoffoUserEventData loginEvent = (BoffoUserEventData) _event.getMessage().getCode();
+        System.out.println("Controller received the user event.");
         CURRENT_USER = new User(loginEvent.getUserName().toString(), loginEvent.getUserPass().toString());
         this.gui.loadMainPanel();
     }

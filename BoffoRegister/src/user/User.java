@@ -20,40 +20,40 @@ import static user.User.PasswordHash.HASH_BYTE_SIZE;
 import static user.User.PasswordHash.PBKDF2_ITERATIONS;
 import static user.User.PasswordHash.SALT_BYTE_SIZE;
 
-public class User extends BoffoFireObject{   
-    
+public class User extends BoffoFireObject{
+
     private String f_name;
     private int id;
     private String l_name;
     private int minAuthLevel;
     private String pass = "";
     private String username = "";
-   
-    
+
+
 public void User(String _username, String _pass){
     this.username = _username;
     this.pass = _pass;
 }
-    
+
 
 public String getUsername(){
         return username;
-    }       
+}
 
 
 public void setUsername(String _userName){
         this.username = _userName;
-    }  
+}
 
 
 public String getPass(){
         return pass;
-    }
+}
 
 
 public void setPass(String _userPass){
         this.pass = _userPass;
-    }
+}
 
 
 public int getAuthlevel(){
@@ -63,12 +63,11 @@ public int getAuthlevel(){
 
 //set the variables in the passwordhash class.
 public class PasswordHash{
-    
+
     public static final String PBKDF2_ALGORITHM = "PBKDF2WithHmacSHA1";
     public static final int SALT_BYTE_SIZE = 24;
     public static final int HASH_BYTE_SIZE = 24;
     public static final int PBKDF2_ITERATIONS = 1000;
-
     public static final int ITERATION_INDEX = 0;
     public static final int SALT_INDEX = 1;
     public static final int PBKDF2_INDEX = 2;    
@@ -76,15 +75,13 @@ public class PasswordHash{
 
 
     public static String createHash(String password)
-        throws NoSuchAlgorithmException, InvalidKeySpecException
-    {
+        throws NoSuchAlgorithmException, InvalidKeySpecException{
         return createHash(password.toCharArray());
     }
-    
-    
+
+
     public static String createHash(char[] password)
-        throws NoSuchAlgorithmException, InvalidKeySpecException
-    {
+        throws NoSuchAlgorithmException, InvalidKeySpecException{
         SecureRandom random = new SecureRandom();
         byte[] salt = new byte[SALT_BYTE_SIZE];
         random.nextBytes(salt);
@@ -94,34 +91,32 @@ public class PasswordHash{
         // format iterations:salt:hash
         return PBKDF2_ITERATIONS + ":" + toHex(salt) + ":" +  toHex(hash);
     }
-    
-    
+
+
     public static byte[] PasswordHash( final char[] password, final byte[] salt,
-            final int iterations, final int keyLength ) {
- 
-       try {
+        final int iterations, final int keyLength ) {
+        try {
            SecretKeyFactory skf = SecretKeyFactory.getInstance( "PBKDF2WithHmacSHA1" );
            PBEKeySpec spec = new PBEKeySpec( password, salt, iterations, keyLength );
            SecretKey key = skf.generateSecret( spec );
            byte[] res = key.getEncoded( );
            return res;
- 
-       } catch( NoSuchAlgorithmException | InvalidKeySpecException e ) {
+        } catch( NoSuchAlgorithmException | InvalidKeySpecException e ) {
            throw new RuntimeException( e );
-       }
+        }
    }
-   
-    
+
+
     public void messageReceived(BoffoEvent event) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
-    
+
     private static String toHex(byte[] salt) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
-    
+
     private static byte[] pbkdf2(char[] password, byte[] salt, int PBKDF2_ITERATIONS, int HASH_BYTE_SIZE) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }

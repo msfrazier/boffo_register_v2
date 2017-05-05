@@ -1,18 +1,19 @@
-
 package events;
-import database.BoffoDbObject;
+
 /**
- * Last Edited: 4/25 
+ * Last Edited: 5/4
  * This class is for passing data within navigation events.
  * @author Ray
  */
+import database.BoffoDbObject;
+
 public class BoffoNavigateEventData<T> extends BoffoEventData {
 
-    public enum EventType {
+     public enum EventType {
         EXIT_PANEL, LOGIN_PANEL, MAIN_PANEL, TRANSACTION_PANEL,
         INVENTORY_PANEL, ADMIN_PANEL
     };
-    EventType eventType;
+    public EventType eventType;
 
     /**
      * Constructor to call when you do not need to pass any data.
@@ -21,8 +22,8 @@ public class BoffoNavigateEventData<T> extends BoffoEventData {
    public BoffoNavigateEventData(EventType _newType){
         this.eventType = _newType;
     }
-    
-   
+
+
     /**
      * Constructor to call when you need to pass a basic data type.
      * @param _newType The type of event you wish to create.
@@ -33,7 +34,7 @@ public class BoffoNavigateEventData<T> extends BoffoEventData {
         this.eventType = _newType;
     }
 
-    
+
     /**
      * Constructor to call when you need to pass a BoffoDbObject.
      * @param _newType The type of event you wish to create.
@@ -45,7 +46,7 @@ public class BoffoNavigateEventData<T> extends BoffoEventData {
     }
 
     
-    public EventType getEventType(){
+    public EventType getNavigateEventType() {
         return this.eventType;
     }
     
@@ -53,5 +54,5 @@ public class BoffoNavigateEventData<T> extends BoffoEventData {
     public void setEventType(EventType _newType){
         this.eventType = _newType;
     }
-    
+
 }

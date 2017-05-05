@@ -2,7 +2,7 @@
 package events;
 
 /**
- *Last updated: 4-24-17
+ *Last updated: 4-26-17
  *
  *This class will define events that pass UPC codes back and forth
  *
@@ -11,12 +11,7 @@ package events;
  */
 public class BoffoUPCEvent extends BoffoEvent {
 
-    public BoffoUPCEvent(Object source, BoffoEventData messageString) {
-        super(source, messageString);
+    public BoffoUPCEvent(Object _source, BoffoEventData _messageString) {
+        super(_source, _messageString);
     }
-
-    public BoffoUPCEvent(Object source, BoffoEventData messageString, String UPC){
-        super(source, messageString);
-    }
-
 }

@@ -29,7 +29,9 @@ public class User extends BoffoFireObject{
     private String pass = "";
     private String username = "";
 
-public void User(String _username, String _pass){
+
+public User(String _username, String _pass){
+
     this.username = _username;
     this.pass = _pass;
 }

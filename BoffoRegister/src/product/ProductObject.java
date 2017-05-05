@@ -1,13 +1,13 @@
 package product;
 
-/*
-* Last update: 5/1/2017
-*
-* @Description: Class ProductObject constructs the product object and includes
-*             find methods that search by attributes.
-*
-* @Author: John Kaiserlik
-*/
+/**
+ * Last update: 5/1/2017
+ *
+ * @Description: Class ProductObject constructs the product object and includes
+ *             find methods that search by attributes.
+ *
+ * @Author: John Kaiserlik
+ */
 
 import utility.Utility;
 import bundles.*;
@@ -81,7 +81,11 @@ public class ProductObject extends BoffoDbObject implements TicketElement{
         return new ProductObject(this.name, this.quantity, this.price, this.UPC, this.SKU, this.rat, this.uuid, tableName, this.description);
     }
 
-
+/**
+ * This method safely returns a hash map of the attributes of the ProductObject.
+ *
+ * @return this.map
+ */
     public HashMap getProductMap(){
         this.map.clear();
 
@@ -120,7 +124,11 @@ public class ProductObject extends BoffoDbObject implements TicketElement{
     public int getUPC() {
         return this.UPC;
     }
-
+/**
+ * Below are static load methods to find and return a ProductObject based on parameter received.
+ *
+ * @return ProductObject
+ */
     public static ProductObject loadBySKU(String _sku) {
         return (ProductObject)ProductObject.load("sku", _sku, new ProductObject(tableName));
     }

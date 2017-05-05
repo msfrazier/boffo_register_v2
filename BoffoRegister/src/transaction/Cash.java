@@ -1,7 +1,7 @@
 package transaction;
 
 
-publc class Cash{
+public class Cash extends Transaction{
     protected final double QUARTER = 0.25;
     protected final double DIME = 0.1;
     protected final double NICKEL = 0.05;

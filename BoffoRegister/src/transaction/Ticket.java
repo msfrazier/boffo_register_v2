@@ -68,13 +68,12 @@ public class Ticket extends Transaction {
     }
 
     public double getTotalPrice(String String_price) {
-        double totalPrice = 0;
         for (int i = 0; i < products.size(); i++) {
             Object obj = ProductObject.loadByPrice(String_price);
             ProductObject p = (ProductObject) obj;
-            totalPrice = totalPrice + p.getPrice();
+            this.total = this.total + p.getPrice();
         }
-        return totalPrice;
+        return this.total;
     }
 
     public static void buildMap() {

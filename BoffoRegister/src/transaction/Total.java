@@ -1,14 +1,14 @@
 package transaction;
 
-public class Payment extends Transaction {
+public class Total extends Transaction {
 
     protected double amount;
 
-    public Payment() {
+    public Total() {
         this.amount = 0.00;
     }
 
-    public Payment(double _amount) {
+    public Total(double _amount) {
         this.amount = _amount;
     }
 

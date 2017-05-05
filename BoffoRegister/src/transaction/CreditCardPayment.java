@@ -8,7 +8,10 @@ package transaction;
  * @author Mabelyn Espinoza
  * @author Fan Yang
  */
-public class CreditCardPayment extends Transaction {
+import a.net.BoffoPayment;
+
+public class CreditCardPayment extends Transaction 
+extends a.net.chargeCreditCard{
 //
 //    public static final String AMERICANEXPRESS = "American Express";
 //    public static final String DISCOVER = "Discover";
@@ -241,6 +244,11 @@ public class CreditCardPayment extends Transaction {
         this.currency = _currency;
     }
 
+    public BoffoPayment processCreditPayment(double _amount, String _creditCardNumber,
+            String ticketID){
+        BoffoPayment card = ()
+        return;
+    }
 }
 
 

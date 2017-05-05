@@ -37,7 +37,7 @@ public class Printer extends AdministrationObject {
                     int _page)
                     throws PrinterException {
 
-                if (page > 0) {
+                if (_page > 0) {
                     return NO_SUCH_PAGE;
                 }
                 _pageFormat.setOrientation(PageFormat.LANDSCAPE);

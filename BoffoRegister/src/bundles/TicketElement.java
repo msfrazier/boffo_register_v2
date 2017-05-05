@@ -6,10 +6,9 @@ package bundles;
  *
  * @author Michael Resnik
  * @author Travis Cox
- * @lastEdited 04/18/2017
+ * @lastEdited 05/05/2017
  */
 import java.util.Comparator;
-import java.util.List;
 
 public interface TicketElement {
 
@@ -68,6 +67,7 @@ public interface TicketElement {
      */
     public TicketElement clone();
 
+
     /**
      * Compares two TicketElements by their Name attribute in a non
      * case-sensitive, alphabetic manner.
@@ -78,6 +78,7 @@ public interface TicketElement {
         public int compare(TicketElement _te1, TicketElement _te2) {
             return _te1.getName().compareToIgnoreCase(_te2.getName());
         }
+
 
     }
 
@@ -92,6 +93,7 @@ public interface TicketElement {
             return _te1.getSku().compareToIgnoreCase(_te2.getSku());
         }
 
+
     }
 
     /**
@@ -103,6 +105,7 @@ public interface TicketElement {
         public int compare(TicketElement _te1, TicketElement _te2) {
             return Double.compare(_te1.getPrice(), _te2.getPrice());
         }
+
 
     }
 

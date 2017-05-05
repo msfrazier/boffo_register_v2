@@ -22,6 +22,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
+import transaction.Ticket;
 import transaction.Transaction;
 
 public class Printer extends AdministrationObject {
@@ -69,8 +70,8 @@ public class Printer extends AdministrationObject {
 
     // Takes int Transaction and Admin objects.
     // Formats the data receved from controller.
-    public void receiveData(Transaction _transaction,
-            AdministrationObject _admin) throws Exception {
+    public void receiveData(Transaction transaction,
+            AdministrationObject admin) throws Exception {
         // Format date and time.
         DefaultTableModel mod = (DefaultTableModel) jTable1.getModel();
         DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
@@ -92,7 +93,7 @@ public class Printer extends AdministrationObject {
 //        double total = 0.00;
 
         String amt
-                = "\n \n \nTotal Amount = " + _tranaction.Total + "\n"
+                = "\n \n \nTotal Amount = " + Total + "\n"
                 + "Tax =" + getTaxRate() + "\n"
                 + "*********************************\n"
                 + "Thank you. \n";
@@ -131,7 +132,7 @@ public class Printer extends AdministrationObject {
 
         } while (i <= mod.getRowCount() - 1);
 
-        bill = bill + _transaction.Total;
+        bill = bill + Total;
         System.out.println(bill);
         print(bill);
         dispose();

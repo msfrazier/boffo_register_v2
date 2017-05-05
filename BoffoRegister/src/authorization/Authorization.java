@@ -16,7 +16,7 @@ import java.util.Iterator;
 public class Authorization {
     
     
-    public static int failedAttempts = 0;
+    protected static int failedAttempts = 0;
     
     
     public static boolean isAuthorized (ArrayList<Integer> authorizedGroups) {

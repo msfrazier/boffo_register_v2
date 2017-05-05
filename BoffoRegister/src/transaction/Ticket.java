@@ -7,6 +7,7 @@ package transaction;
  * from the list
  *
  * @author Fan Yang
+ * @author Mabelyn Espinoza
  */
 import bundles.Bundle;
 import bundles.TicketElement;
@@ -24,7 +25,8 @@ public class Ticket extends Transaction {
     protected double total;
     protected int upc;
     protected String name, sku;
-    protected static HashMap<String, ArrayList<Integer>> ticket_hash = new HashMap<>();
+    protected static HashMap<String, ArrayList<Integer>> ticket_hash
+            = new HashMap<>();
 
     private List<ProductObject> products;
     private List<TicketElement> productbundles;
@@ -39,15 +41,14 @@ public class Ticket extends Transaction {
         this.upc = 0;
     }
 
-
     public ProductObject addProductbyUPC(String _UPC, List<ProductObject> _products) {
         ProductObject product = (ProductObject) ProductObject.loadByUpc(_UPC);
+
         this.products.add(product);
         this.productbundles = Bundle.updateBundles(_products);
         this.fireEvent(update);
         return product;
     }
-
 
     public ProductObject addProductbyName(String _name, List<ProductObject> _products) {
         ProductObject product = (ProductObject) ProductObject.loadByName(_name);
@@ -57,17 +58,17 @@ public class Ticket extends Transaction {
         return product;
     }
 
-
     public void removeProductbyUPC(String _UPC, List<ProductObject> _products) {
         ProductObject product = (ProductObject) ProductObject.loadByUpc(_UPC);
+
         this.products.remove(product);
         this.productbundles = Bundle.updateBundles(_products);
         this.fireEvent(update);
     }
 
-
     public void removeProductbyName(String _name, List<ProductObject> _products) {
         ProductObject product = (ProductObject) ProductObject.loadByName(_name);
+
         this.products.remove(product);
         this.productbundles = Bundle.updateBundles(_products);
         this.fireEvent(update);
@@ -76,14 +77,23 @@ public class Ticket extends Transaction {
 
     //Return total price.
     public double getTotalPrice(String String_price) {
-        double totalPrice = 0;
         for (int i = 0; i < productbundles.size(); i++) {
             Object object = ProductObject.loadByPrice(String_price);
             ProductObject price = (ProductObject) object;
-            totalPrice = totalPrice + price.getPrice();
+            this.total = this.total + price.getPrice();
+
         }
-        return totalPrice;
+        return this.total;
     }
+
+
+    public static void buildMap() {
+        ArrayList<Integer> addProductbyUPC = new ArrayList<>();
+        addProductbyUPC.addAll(Arrays.asList(2));
+
+        ArrayList<Integer> removeProductbyUPC = new ArrayList<>();
+        removeProductbyUPC.addAll(Arrays.asList(2));
+
 
 
     public static void buildMap() {
@@ -93,6 +103,7 @@ public class Ticket extends Transaction {
 
         ArrayList<Integer> removeProductbyUPC = new ArrayList<>();
         removeProductbyUPC.addAll(Arrays.asList(2));
+
 
         ArrayList<Integer> addProductbyName = new ArrayList<>();
         addProductbyName.addAll(Arrays.asList(2));
@@ -110,8 +121,25 @@ public class Ticket extends Transaction {
         ticket_hash.put("getTotalPrice", getTotalPrice);
     }
 
+    @Override
+    public void messageReceived(BoffoEvent _event) {
+        if (_event.getMessage().getCode() instanceof BoffoTicketEventData) {
+
+        ArrayList<Integer> getTotalPrice = new ArrayList<>();
+        getTotalPrice.addAll(Arrays.asList(2));
+
+        ticket_hash.put("addProductbyUPC", addProductbyUPC);
+        ticket_hash.put("removeProductbyUPC", removeProductbyUPC);
+        ticket_hash.put("addProductbyName", addProductbyName);
+        ticket_hash.put("removeProductbyName", removeProductbyName);
+        ticket_hash.put("getTotalPrice", getTotalPrice);
+    }
+
 
     public void messageReceived(BoffoEvent _event) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        if (_event.getMessage().getCode() instanceof BoffoTicketEventData) {
+            return;
+
+        }
     }
 }

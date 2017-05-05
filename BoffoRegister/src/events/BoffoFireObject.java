@@ -35,6 +35,13 @@ public class BoffoFireObject extends BoffoDbObject {
         listeners.clear();
     }
 
+
+    public synchronized void removeAllExcept(BoffoListenerInterface _listener) {
+        listeners.clear();
+        listeners.add(_listener);
+    }
+
+
     public synchronized boolean checkListener(BoffoListenerInterface _listener){
         if(this.listeners.contains(_listener)){
             return true;

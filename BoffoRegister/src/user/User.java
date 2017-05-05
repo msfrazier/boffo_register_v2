@@ -25,7 +25,7 @@ public class User extends BoffoDbObject{
     private String pass = "";
     private int minAuthLevel;        
     
-public void User(String _username, String _pass){
+public User(String _username, String _pass){
     this.username = _username;
     this.pass = _pass;
 }

@@ -10,16 +10,12 @@ import database.BoffoDbObject;
  * Bundle class for storing and using bundles and discounts, contains methods
  * for processing products into lists including discounts.
  *
- * @TODO loadBySKU, loadAll
- *
  * @author Michael Resnik
  * @author Travis Cox
  * @lastEdited: 05/05/2017
  */
 public class Bundle extends BoffoDbObject implements TicketElement {
 
-    // List of all bundles, will be removed and be replaced by database call.
-    private static List<Bundle> allBundles = new ArrayList();
     // List of the products that comprise a bundle or discount.
     private final GroupList<ProductObject> products;
     private final DiscountType discountType;
@@ -31,9 +27,19 @@ public class Bundle extends BoffoDbObject implements TicketElement {
     private final String description;
     private final String sku;
     private final Calendar startDate;
-    private final Calendar endDate;
+    private Calendar endDate;
 
     protected static String tableName = "bundle_tbl";
+
+
+    /**
+     * Adds Product objects to Bundle's personal products GroupList.
+     *
+     * @param _products Product objects to be added to the Bundle's GroupList.
+     */
+    private void addProducts(GroupList<ProductObject> _products) {
+        this.products.add(_products);
+    }
 
 
     /**
@@ -71,10 +77,14 @@ public class Bundle extends BoffoDbObject implements TicketElement {
      * @param _maxAllowed The maximum number of this bundle that can be on one
      * transaction. For no limit use 0.
      * @param _sku The bundle object's SKU.
+     * @param _active Whether or not the Bundle is active.
+     * @param _startDate The StartDate of the Bundle.
+     * @param _endDate The EndDate of the bundle.
      */
     public Bundle(String _name, String _description,
             GroupList<ProductObject> _products, DiscountType _discountType,
-            double _discountAmount, int _maxAllowed, String _sku, boolean _active, Calendar _startDate, Calendar _endDate) {
+            double _discountAmount, int _maxAllowed, String _sku,
+            boolean _active, Calendar _startDate, Calendar _endDate) {
         this.name = _name;
         this.description = _description;
         this.products = _products;
@@ -90,7 +100,8 @@ public class Bundle extends BoffoDbObject implements TicketElement {
          * If discountType is percentage or BOGO.
          */
         double tempDoubleAmount = Math.max(0, _discountAmount);
-        if (_discountType == DiscountType.BOGO || _discountType == DiscountType.PERCENT) {
+        if (_discountType == DiscountType.BOGO
+                || _discountType == DiscountType.PERCENT) {
             tempDoubleAmount = Math.min(tempDoubleAmount, 100);
         }
 
@@ -111,7 +122,27 @@ public class Bundle extends BoffoDbObject implements TicketElement {
     @Override
     public Bundle clone() {
         return new Bundle(this.name, this.description, this.products.clone(),
-                this.discountType, this.discountAmount, this.maxAllowed, this.sku, this.active, this.startDate, this.endDate);
+                this.discountType, this.discountAmount, this.maxAllowed,
+                this.sku, this.active, this.startDate, this.endDate);
+    }
+
+
+    /**
+     * Disables the current bundle and updates the endDate. Can only disable
+     * valid bundles.
+     *
+     * @return True if disabled succesfully, false if disable fails or bundle
+     * already disabled.
+     */
+    public boolean disable() {
+        if (this.active && (endDate == null
+                || this.endDate.compareTo(CalendarUtilities.currentDate()) > 0)) {
+            this.active = false;
+            this.endDate = CalendarUtilities.currentDate();
+            return this.save(this);
+        } else {
+            return false;
+        }
     }
 
 
@@ -137,17 +168,38 @@ public class Bundle extends BoffoDbObject implements TicketElement {
      * @return The generated Bundle.
      */
     public static Bundle generator(String _name, String _description,
-            GroupList<ProductObject> _products, DiscountType _discountType,
-            double _discountAmount, int _maxAllowed, String _sku, boolean _active,
-            String _startDate, String _endDate) {
-
+            ArrayList<ProductObject> _products, DiscountType _discountType,
+            double _discountAmount, int _maxAllowed, String _sku,
+            boolean _active, String _startDate, String _endDate) {
+        // Create calendars for the dates.
         Calendar startDate = CalendarUtilities.stringToCalendar(_startDate);
         Calendar endDate = CalendarUtilities.stringToCalendar(_endDate);
-
-        Bundle b = new Bundle(_name, _description, _products, _discountType,
+        // Take the ArrayList of products and put in a GroupList.
+        GroupList<ProductObject> products = new GroupList(BYSKU);
+        for (ProductObject prod : _products) {
+            products.add(prod);
+        }
+        // Create the bundle and save it.
+        Bundle bundle = new Bundle(_name, _description, products, _discountType,
                 _discountAmount, _maxAllowed, _sku, _active, startDate, endDate);
-        add(b);
-        return b.clone();
+
+        boolean saved = bundle.save(bundle);
+        // If save is succesful, save the products to the db using BundleItems
+        if (saved) {
+            for (Group<ProductObject> prodGroup : products.toList()) {
+                if (saved) {
+                    BundleItem item = new BundleItem(bundle.getUuid(),
+                            prodGroup.getElement().getUuid(), prodGroup.size());
+                    item.save(item);
+                }
+            }
+        }
+        // If saving was succesful, return the bundle, if not return false.
+        if (saved) {
+            return bundle;
+        } else {
+            return null;
+        }
     }
 
 
@@ -172,17 +224,15 @@ public class Bundle extends BoffoDbObject implements TicketElement {
      * @return The generated Bundle.
      */
     public static Bundle generator(String _name, String _description,
-            GroupList<ProductObject> _products, DiscountType _discountType,
+            ArrayList<ProductObject> _products, DiscountType _discountType,
             double _discountAmount, int _maxAllowed, String _sku, boolean _active,
             String _endDate) {
         Calendar current = CalendarUtilities.currentDate();
         Calendar startDate = current;
-        Calendar endDate = CalendarUtilities.stringToCalendar(_endDate);
-
-        Bundle b = new Bundle(_name, _description, _products, _discountType,
-                _discountAmount, _maxAllowed, _sku, _active, startDate, endDate);
-        add(b);
-        return b.clone();
+        // Call base generator with the generated startDate.
+        return generator(_name, _description, _products, _discountType,
+                _discountAmount, _maxAllowed, _sku, _active,
+                CalendarUtilities.calendarToString(startDate), _endDate);
     }
 
 
@@ -206,15 +256,16 @@ public class Bundle extends BoffoDbObject implements TicketElement {
      * @return The generated Bundle.
      */
     public static Bundle generator(String _name, String _description,
-            GroupList<ProductObject> _products, DiscountType _discountType,
+            ArrayList<ProductObject> _products, DiscountType _discountType,
             double _discountAmount, int _maxAllowed, String _sku, boolean _active) {
         Calendar current = CalendarUtilities.currentDate();
         Calendar startDate = current;
         Calendar endDate = null;
-        Bundle b = new Bundle(_name, _description, _products, _discountType,
-                _discountAmount, _maxAllowed, _sku, _active, startDate, endDate);
-        add(b);
-        return b.clone();
+        // Call base generator with generated start and end dates.
+        return generator(_name, _description, _products, _discountType,
+                _discountAmount, _maxAllowed, _sku, _active,
+                CalendarUtilities.calendarToString(startDate),
+                CalendarUtilities.calendarToString(endDate));
     }
 
 
@@ -236,8 +287,9 @@ public class Bundle extends BoffoDbObject implements TicketElement {
      */
     public static Bundle[] getActiveBundles() {
         ArrayList<Bundle> bundles = new ArrayList();
-        for (Bundle bundle : allBundles) {
-            if (bundle.active) {
+        for (Bundle bundle : loadAll()) {
+            Calendar current = CalendarUtilities.currentDate();
+            if (bundle.active && bundle.inDate()) {
                 bundles.add(bundle);
             }
         }
@@ -256,17 +308,19 @@ public class Bundle extends BoffoDbObject implements TicketElement {
      * @param _sku The database SKU of a Bundle.
      * @return
      */
-    public static Bundle[] getBundlesBy(Boolean _active, String _name, String _description, String _sku) {
+    public static Bundle[] getBundlesBy(Boolean _active, String _name,
+            String _description, String _sku) {
         ArrayList<Bundle> bundles = new ArrayList();
         boolean[] truthValues = new boolean[4];
-        for (Bundle bundle : allBundles) {
+        for (Bundle bundle : loadAll()) {
             if (_active != null && _active != bundle.active) {
                 continue;
             }
             if (_name != null && _name.equals(bundle.getName())) {
                 continue;
             }
-            if (_description != null && _description.equals(bundle.getDescription())) {
+            if (_description != null
+                    && _description.equals(bundle.getDescription())) {
                 continue;
             }
             if (_sku != null && _sku.equals(bundle.getSku())) {
@@ -341,6 +395,11 @@ public class Bundle extends BoffoDbObject implements TicketElement {
     }
 
 
+    /**
+     * Get the amount of SKU of the Bundle
+     *
+     * @return The SKU.
+     */
     @Override
     public String getSku() {
         return this.sku;
@@ -372,6 +431,86 @@ public class Bundle extends BoffoDbObject implements TicketElement {
     }
 
 
+    /**
+     * Method that returns all bundles in the database.
+     *
+     * @return Array of Bundles
+     */
+    public static Bundle[] loadAll() {
+        Bundle[] bundles = (Bundle[]) loadAll(new Bundle());
+        // Loop and load the products in each bundle.
+        for (Bundle bundle : bundles) {
+            loadProducts(bundle);
+        }
+        return bundles;
+    }
+
+
+    /**
+     * Load the Bundle with the given SKU.
+     *
+     * @param _sku The SKU to match on.
+     * @return The Bundle with matching SKU.
+     */
+    public static Bundle loadBySku(String _sku) {
+        Bundle bundle = (Bundle) Bundle.load("sku", _sku, new Bundle());
+        // Load the products for the Bundle.
+        loadProducts(bundle);
+        return bundle;
+    }
+
+
+    /**
+     * Load the Bundle with matching UUID.
+     *
+     * @param _uuid The UUID to match on.
+     * @return The matching Bundle.
+     */
+    public static Bundle loadByUUID(String _uuid) {
+        Bundle bundle = (Bundle) Bundle.load("uuid", _uuid, new Bundle());
+        // Load the products for the Bundle.
+        loadProducts(bundle);
+        return bundle;
+    }
+
+
+    /**
+     * Method for loading a Bundle's products.
+     *
+     * @param _bundle The Bundle to load the Product objects from.
+     */
+    private static void loadProducts(Bundle _bundle) {
+        // Verify that bundles aren't already loaded.
+        if (_bundle.getProducts().size() == 0) {
+            // Get all the BundleItems that represent the products and add each
+            // to the Bundle.
+            BundleItem[] items = BundleItem.loadByBundleID(_bundle.getUuid());
+            GroupList<ProductObject> prodList = new GroupList(BYSKU);
+            for (BundleItem item : items) {
+                ProductObject prod = (ProductObject) ProductObject.loadByUUID(item.getProductID(), new ProductObject());
+                prodList.add(prod, item.getQty());
+            }
+            _bundle.addProducts(prodList);
+        }
+    }
+
+
+    /**
+     * Bundles cannot be saved, only created or disabled
+     *
+     * @return Always returns false.
+     */
+    @Override
+    public boolean save(BoffoDbObject _obj) {
+        return false;
+    }
+
+
+    /**
+     * Returns a String representation of the Bundle.
+     *
+     * @return The String.
+     */
     @Override
     public String toString() {
         return "Bundle:" + "[" + this.name + this.description + "]" + " "
@@ -551,43 +690,7 @@ public class Bundle extends BoffoDbObject implements TicketElement {
         return Bundle.recursiveUpdateBundles(_products.clone(), bundles.clone(),
                 elements.clone());
     }
+
     // </editor-fold>
-
-
-    // TODO replace following static methods with getBundles()
-    // <editor-fold desc="Operations for the static List of Bundles named "allBundles." ">
-    private static void add(Bundle _b) {
-        // _b.save(_b);
-        if (!contains(_b)) {
-            allBundles.add(_b);
-        }
-    }
-
-
-    public static void remove(Bundle _b) {
-        // _b.delete(_b);
-        if (contains(_b)) {
-            allBundles.remove(indexOf(_b));
-        }
-    }
-
-
-    private static boolean contains(Bundle _b) {
-        return indexOf(_b) != -1;
-    }
-
-
-    private static int indexOf(Bundle _b) {
-        int index = 0;
-        for (Bundle bundle : allBundles) {
-            if (BYSKU.compare(bundle, _b) == 0) {
-                return index;
-            }
-            index++;
-        }
-        return -1;
-    }
-
-    //</editor-fold>
 
 }

@@ -1,48 +1,37 @@
 package transaction;
 
+/**
+ * Transaction class
+ * @author Fang Yang
+ * @author Mabelyn Espinoza
+ */
 import events.BoffoEvent;
 import events.BoffoFireObject;
 import events.BoffoListenerInterface;
 
-public class Transaction extends BoffoFireObject implements BoffoListenerInterface{
-    public Transaction(){
-           System.out.println("Transaction Module Loaded");
+public class Transaction extends BoffoFireObject implements BoffoListenerInterface {
+
+    public Transaction() {
+        System.out.println("Transaction Module Loaded");
     }
     
-    
     /**
-     * gets called when an item has been added to the ticket
-    */
-    public void addItem(){
-        //an item has been added to the ticket
-        System.out.println("Item has been added to ticket.");
-    }
-
-    /**
-     * gets called when an item is removed from the ticket
-     */
-    public void removeItem(){
-        System.out.println("Item has been removed from ticket.");
-    }
-
-    /**
-     * sends event to listener and awaits response
+     * Sends event to listener and awaits response.
      * @param event
      */
-    public void messageReceived(BoffoEvent event){
-       // switch(event.getMessage().getCode()){
-            /*
-            case RegisterMessage.addProduct:
-                this.addItem();
-                break;
-            case RegisterMessage.removeProduct:
-                this.removeItem();
-                break;
-            default:
-                System.out.println("Ignoring Message Event. "
-                  + "Irrelevant to Transaction" + event.getMessage().getCode());
-                break;
-            */
-        }
+    @Override
+    public void messageReceived(BoffoEvent event) {
+//        switch (event.getMessage().getCode()) {
+//            case RegisterMessage.addProduct:
+//                this.addItem();
+//                break;
+//            case RegisterMessage.removeProduct:
+//                this.removeItem();
+//                break;
+//            default:
+//                System.out.println("Ignoring Message Event. "
+//                        + "Irrelevant to Transaction" + event.getMessage().getCode());
+//                break;
+//        }
     }
-//}
+}

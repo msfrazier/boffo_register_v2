@@ -14,11 +14,7 @@ import java.util.Iterator;
  */
 
 public class Authorization {
-
-
     public static int failedAttempts = 0;
-
-
     public static boolean isAuthorized (ArrayList<Integer> authorizedGroups) {
         if(authorizedGroups.isEmpty()){
             return false;

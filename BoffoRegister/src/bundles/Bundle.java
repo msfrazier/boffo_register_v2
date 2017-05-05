@@ -16,8 +16,6 @@ import database.BoffoDbObject;
  */
 public class Bundle extends BoffoDbObject implements TicketElement {
 
-    // List of all bundles, will be removed and be replaced by database call.
-    //private static List<Bundle> allBundles = new ArrayList();
     // List of the products that comprise a bundle or discount.
     private final GroupList<ProductObject> products;
     private final DiscountType discountType;
@@ -32,6 +30,16 @@ public class Bundle extends BoffoDbObject implements TicketElement {
     private Calendar endDate;
 
     protected static String tableName = "bundle_tbl";
+
+
+    /**
+     * Adds Product objects to Bundle's personal products GroupList.
+     *
+     * @param _products Product objects to be added to the Bundle's GroupList.
+     */
+    private void addProducts(GroupList<ProductObject> _products) {
+        this.products.add(_products);
+    }
 
 
     /**
@@ -467,6 +475,27 @@ public class Bundle extends BoffoDbObject implements TicketElement {
 
 
     /**
+     * Method for loading a Bundle's products.
+     *
+     * @param _bundle The Bundle to load the Product objects from.
+     */
+    private static void loadProducts(Bundle _bundle) {
+        // Verify that bundles aren't already loaded.
+        if (_bundle.getProducts().size() == 0) {
+            // Get all the BundleItems that represent the products and add each
+            // to the Bundle.
+            BundleItem[] items = BundleItem.loadByBundleID(_bundle.getUuid());
+            GroupList<ProductObject> prodList = new GroupList(BYSKU);
+            for (BundleItem item : items) {
+                ProductObject prod = (ProductObject) ProductObject.loadByUUID(item.getProductID(), new ProductObject());
+                prodList.add(prod, item.getQty());
+            }
+            _bundle.addProducts(prodList);
+        }
+    }
+
+
+    /**
      * Bundles cannot be saved, only created or disabled
      *
      * @return Always returns false.
@@ -664,24 +693,4 @@ public class Bundle extends BoffoDbObject implements TicketElement {
 
     // </editor-fold>
 
-    private void addProducts(GroupList<ProductObject> _products) {
-        this.products.add(_products);
-    }
-
-
-    // Method for loading a Bundle's products.
-    private static void loadProducts(Bundle _bundle) {
-        // Verify that bundles aren't already loaded.
-        if (_bundle.getProducts().size() == 0) {
-            // Get all the BundleItems that represent the products and add each
-            // to the Bundle.
-            BundleItem[] items = BundleItem.loadByBundleID(_bundle.getUuid());
-            GroupList<ProductObject> prodList = new GroupList(BYSKU);
-            for (BundleItem item : items) {
-                ProductObject prod = (ProductObject) ProductObject.loadByUUID(item.getProductID(), new ProductObject());
-                prodList.add(prod, item.getQty());
-            }
-            _bundle.addProducts(prodList);
-        }
-    }
 }

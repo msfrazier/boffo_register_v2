@@ -5,7 +5,7 @@ import product.ProductObject;
 /**
  * A wrapper class for representing bundles along with the specific product
  * objects that it contains (rather than the general products that are used to
- * represent the bundle itself)
+ * represent the bundle itself).
  *
  * @author Michael Resnik
  * @author Travis Cox

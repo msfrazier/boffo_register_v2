@@ -18,6 +18,7 @@ class BundleItem extends BoffoDbObject {
     private int qty;
     private static final String tableName = "bundle_items_tbl";
 
+
     /**
      * Gets the bundleID.
      *
@@ -26,6 +27,7 @@ class BundleItem extends BoffoDbObject {
     public String getBundleID() {
         return this.bundleID;
     }
+
 
     /**
      * Get the productID.
@@ -36,6 +38,7 @@ class BundleItem extends BoffoDbObject {
         return this.productID;
     }
 
+
     /**
      * Get the qty on the BundleItem.
      *
@@ -44,6 +47,7 @@ class BundleItem extends BoffoDbObject {
     public int getQty() {
         return this.qty;
     }
+
 
     /**
      * Generic BundleItem Constructor.
@@ -55,6 +59,7 @@ class BundleItem extends BoffoDbObject {
         this.productID = null;
         this.qty = 0;
     }
+
 
     /**
      * BundleItem constructor that takes parameters.
@@ -68,6 +73,7 @@ class BundleItem extends BoffoDbObject {
         this.productID = _productID;
         this.qty = _qty;
     }
+
 
     /**
      * Get all the BundleItems that have a specific bundleID.
@@ -84,5 +90,6 @@ class BundleItem extends BoffoDbObject {
         }
         return (BundleItem[]) bundleItemsList.toArray();
     }
+
 
 }

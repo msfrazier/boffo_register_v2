@@ -1,5 +1,10 @@
 package transaction;
 
+/**
+ * Transaction class
+ * @author Fang Yang
+ * @author Mabelyn Espinoza
+ */
 import events.BoffoEvent;
 import events.BoffoFireObject;
 import events.BoffoListenerInterface;

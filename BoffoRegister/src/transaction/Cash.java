@@ -1,5 +1,11 @@
 package transaction;
 
+/**
+ * This class will handle cash payments
+ * 
+ * @author Mabelyn Espinoza
+ * @author Fan Yang
+ */
 
 public class Cash extends Transaction{
     protected final double QUARTER = 0.25;

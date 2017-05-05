@@ -10,7 +10,7 @@ package events;
  * @author Maclean Frazier
  */
 public class BoffoNavigatorEvent extends BoffoEvent{
-      public BoffoNavigatorEvent(Object source, BoffoEventData messageString){
-          super(source, messageString);
+      public BoffoNavigatorEvent(Object _source, BoffoEventData _messageString){
+          super(_source, _messageString);
       }
 }

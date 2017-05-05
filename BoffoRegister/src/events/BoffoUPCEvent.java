@@ -11,7 +11,7 @@ package events;
  */
 public class BoffoUPCEvent extends BoffoEvent {
 
-    public BoffoUPCEvent(Object source, BoffoEventData messageString) {
-        super(source, messageString);
+    public BoffoUPCEvent(Object _source, BoffoEventData _messageString) {
+        super(_source, _messageString);
     }
 }

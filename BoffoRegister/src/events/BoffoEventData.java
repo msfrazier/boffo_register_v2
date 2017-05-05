@@ -15,7 +15,7 @@ public class BoffoEventData<T> {
     public BoffoDbObject eventObj;
     public enum EventType{PRINT, SAVE, LOAD};
     public EventType eventType;
-    
+
 
    public BoffoEventData() {
 
@@ -48,13 +48,13 @@ public class BoffoEventData<T> {
     public BoffoDbObject getEventObj() {
         return this.eventObj;
     }
- 
-    
+
+
     public EventType getEventType(){
         return this.eventType;
     }
 
-    
+
     public void setEventData(T _data) {
         this.eventData = _data;
     }
@@ -63,8 +63,8 @@ public class BoffoEventData<T> {
     public void setEventObj(BoffoDbObject _obj) {
         this.eventObj = _obj;
     }
-   
-    
+
+
     public void setEventType( EventType _newType){
         this.eventType = _newType;
     }

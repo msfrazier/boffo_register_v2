@@ -1,17 +1,18 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package bundles;
 
 import database.BoffoDbObject;
 
 /**
+ * Used for linking the Bundle lookup table with the Bundle table.
  *
- * @author tcox5
+ * TODO : Implementation based on the database loadAll method.
+ *
+ * @author Michael Resnik
+ * @author Travis Cox
+ * @lastEdited: 05/05/2017
  */
-public class BundleItem extends BoffoDbObject {
+class BundleItem extends BoffoDbObject {
+
     private String bundleID;
     private String productID;
     private int qty;

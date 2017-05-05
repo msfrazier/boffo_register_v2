@@ -1,6 +1,4 @@
 BoffoRegister/nbproject/private/private.properties
-<<<<<<< HEAD
-<<<<<<< HEAD
 
 *.properties
 
@@ -9,16 +7,13 @@ BoffoRegister/nbproject/private/private.properties
 BoffoRegister/nbproject/private/private.properties
 
 *.properties
-=======
 /BoffoRegister/build/
->>>>>>> master
-=======
+
 /BoffoRegister/build/
+
 *.properties
-<<<<<<< HEAD
->>>>>>> master
-=======
+
 BoffoRegister/nbproject/private/configs/Run_in_Browser.properties
 BoffoRegister/nbproject/project.properties
 BoffoRegister/nbproject/project.properties
->>>>>>> master
+

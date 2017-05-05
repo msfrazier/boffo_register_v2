@@ -34,6 +34,11 @@ public class BoffoFireObject extends BoffoDbObject {
         listeners.clear();
     }
 
+    public void removeAllExcept(BoffoListenerInterface _listener) {
+        listeners.clear();
+        listeners.add(_listener);
+    }
+
     protected synchronized void fireEvent(BoffoEvent event) {
         // Clone the active listeners.
         Object[] tempList = this.listeners.toArray();

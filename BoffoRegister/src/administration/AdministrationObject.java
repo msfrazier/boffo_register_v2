@@ -179,50 +179,9 @@ public class AdministrationObject extends BoffoFireObject implements Authorizati
 
 
     public static AdministrationObject loadAdminObject() {
-        return (AdministrationObject) AdministrationObject.load(null, null, new AdministrationObject(tableName));
+        return (AdministrationObject) AdministrationObject.load("*", null, new AdministrationObject(tableName));
     }
 
-    /*
-     public static AdministrationObject loadByCurrency(String _c) {
-     return (AdministrationObject) AdministrationObject.load("currency", _c, AdministrationObject(tableName));
-     }
-
-     public static AdministrationObject loadByLoginID(String _lID) {
-     return (AdministrationObject) AdministrationObject.load("login ID", _lID, AdministrationObject(tableName));
-     }
-
-     public static AdministrationObject loadByPhoneNumber(String _pH) {
-     return (AdministrationObject) AdministrationObject.load("phone number", _pH, AdministrationObject(tableName));
-     }
-
-     public static AdministrationObject loadByReceiptMessage(String _rM) {
-     return (AdministrationObject) AdministrationObject.load("receipt message", _rM, AdministrationObject(tableName));
-     }
-
-     public static AdministrationObject loadBySecretKey(String _sK) {
-     return (AdministrationObject) AdministrationObject.load("secret key", _sK, AdministrationObject(tableName));
-     }
-
-     public static AdministrationObject loadByStoreHours(String _sH) {
-     return (AdministrationObject) AdministrationObject.load("store hours", _sH, AdministrationObject(tableName));
-     }
-
-     public static AdministrationObject loadByStoreID(String _sID) {
-     return (AdministrationObject) AdministrationObject.load("store ID", _sID, AdministrationObject(tableName));
-     }
-
-     public static AdministrationObject loadByStoreName(String _sN) {
-     return (AdministrationObject) AdministrationObject.load("store name", _sN, AdministrationObject(tableName));
-     }
-
-     public static AdministrationObject loadByTaxRate(String _tR) {
-     return (AdministrationObject) AdministrationObject.load("tax rate", _tR, AdministrationObject(tableName));
-     }
-
-     public static AdministrationObject loadByTransactionKey(String _tK) {
-     return (AdministrationObject) AdministrationObject.load("transaction key", _tK, AdministrationObject(tableName));
-     }
-     */
 
     public void messageReceived(BoffoEvent event) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.

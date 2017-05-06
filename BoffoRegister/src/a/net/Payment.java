@@ -7,7 +7,7 @@ package a.net;
  This is a payment object used as a container.
  */
 
-class Payment extends administration.Administration {
+public class Payment extends administration.Administration {
     /* This declares a payment object where a payment's information is stored
     in one data structure. By extending adminsitration, the variables for the
     secret key and transaction key are able to be accessed.
@@ -56,5 +56,55 @@ class Payment extends administration.Administration {
         in response.
         */
     }
+
+    public String getCardNumber() {
+        return _cardNumber;
+    }
+
+    public void setCardNumber(String _cardNumber) {
+        this._cardNumber = _cardNumber;
+    }
+
+    public double getChargeAmt() {
+        return _chargeAmt;
+    }
+
+    public void setChargeAmt(double _chargeAmt) {
+        this._chargeAmt = _chargeAmt;
+    }
+
+    public int getConfirmationNum() {
+        return _confirmationNum;
+    }
+
+    public void setConfirmationNum(int _confirmationNum) {
+        this._confirmationNum = _confirmationNum;
+    }
+
+    public int getConfirmationResNum() {
+        return _confirmationResNum;
+    }
+
+    public void setConfirmationResNum(int _confirmationResNum) {
+        this._confirmationResNum = _confirmationResNum;
+    }
+
+    public String getConfirmation() {
+        return _confirmation;
+    }
+
+    public void setConfirmation(String _confirmation) {
+        this._confirmation = _confirmation;
+    }
+
+    public String getChargeResponse() {
+        return _chargeResponse;
+    }
+
+    public void setChargeResponse(String _chargeResponse) {
+        this._chargeResponse = _chargeResponse;
+    }
+    
+    
 
 }

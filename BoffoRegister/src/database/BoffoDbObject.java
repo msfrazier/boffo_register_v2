@@ -104,11 +104,6 @@ public class BoffoDbObject {
         try {
             selectedItems = query.selectFromTable("*", tableName);
 
-            if (selectedItems.size() > 1) {
-                System.out.println("There is more than one entry for this item please loadAll");
-                return null;
-            }
-
             BoffoDbObject[] retArray = new BoffoDbObject[selectedItems.size()];
 
             for (int i = 0; i < selectedItems.size(); i++) {

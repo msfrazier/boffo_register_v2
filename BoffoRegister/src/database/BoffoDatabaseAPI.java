@@ -11,7 +11,7 @@ import java.sql.SQLException;
 
 public class BoffoDatabaseAPI {
 
-    private final String dbUrl = "jdbc://localhost:3306/SCHEMANAME";
+    private final String dbUrl = "jdbc:mysql://127.0.0.1:3306/boffo_register_schema";
     private ConnectionManager dbConnection;
     private Query dbQuery;
 
@@ -33,7 +33,7 @@ public class BoffoDatabaseAPI {
 
 
     public boolean dbLogin(String _uName, String _uPass) {
-        if (dbConnection.connectToDB(dbUrl, "admin", "password")) {
+        if (dbConnection.connectToDB(dbUrl, "root", "root")) {
             try {
                 dbQuery = new Query(dbConnection.getConnection());
             } catch (SQLException ex) {

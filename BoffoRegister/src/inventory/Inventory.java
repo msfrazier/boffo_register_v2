@@ -99,7 +99,7 @@ public class Inventory extends BoffoFireObject implements AuthorizationInterface
         }else
         if((this.list.iterator().next().getQuantity()-_quantity)<0){
                 this.list.remove(this.list.iterator().next());
-                delete(this.list.iterator().next().product);
+                this.delete(this.list.iterator().next().product);
                 fireEvent(update);
          }else
         if(this.list.iterator().next().product.getSku() != _sku){

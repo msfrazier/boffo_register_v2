@@ -31,7 +31,6 @@ public class Bundle extends BoffoDbObject implements TicketElement {
 
     protected static String tableName = "bundle_tbl";
 
-
     /**
      * Adds Product objects to Bundle's personal products GroupList.
      *
@@ -40,7 +39,6 @@ public class Bundle extends BoffoDbObject implements TicketElement {
     private void addProducts(GroupList<ProductObject> _products) {
         this.products.add(_products);
     }
-
 
     /**
      * Constructor for a Bundle object, needed to be a BoffoDbObject, syntax
@@ -62,7 +60,6 @@ public class Bundle extends BoffoDbObject implements TicketElement {
         this.maxAllowed = 0;
         this.active = false;
     }
-
 
     /**
      * Constructor for a Bundle object.
@@ -113,7 +110,6 @@ public class Bundle extends BoffoDbObject implements TicketElement {
         this.endDate = _endDate;
     }
 
-
     /**
      * Returns a clone of the Bundle object.
      *
@@ -125,7 +121,6 @@ public class Bundle extends BoffoDbObject implements TicketElement {
                 this.discountType, this.discountAmount, this.maxAllowed,
                 this.sku, this.active, this.startDate, this.endDate);
     }
-
 
     /**
      * Disables the current bundle and updates the endDate. Can only disable
@@ -144,7 +139,6 @@ public class Bundle extends BoffoDbObject implements TicketElement {
             return false;
         }
     }
-
 
     /**
      * Generator for a bundle, which adds the Bundle to the database and returns
@@ -202,7 +196,6 @@ public class Bundle extends BoffoDbObject implements TicketElement {
         }
     }
 
-
     /**
      * Generator for a bundle, which adds the Bundle to the database and returns
      * the new object. For when endDate is known. startDate is implied to be
@@ -234,7 +227,6 @@ public class Bundle extends BoffoDbObject implements TicketElement {
                 _discountAmount, _maxAllowed, _sku, _active,
                 CalendarUtilities.calendarToString(startDate), _endDate);
     }
-
 
     /**
      * Generator for a bundle, which adds the Bundle to the database and returns
@@ -268,7 +260,6 @@ public class Bundle extends BoffoDbObject implements TicketElement {
                 CalendarUtilities.calendarToString(endDate));
     }
 
-
     /**
      * Get the Bundle description.
      *
@@ -278,7 +269,6 @@ public class Bundle extends BoffoDbObject implements TicketElement {
     public String getDescription() {
         return this.description;
     }
-
 
     /**
      * Indexes the database and returns an array of Bundles which are active.
@@ -296,7 +286,6 @@ public class Bundle extends BoffoDbObject implements TicketElement {
         return bundles.toArray(new Bundle[bundles.size()]);
     }
 
-
     /**
      * Indexes the database, returning an array of Bundles which match the
      * variable list. Values that don't matter when indexing are specified to be
@@ -311,7 +300,6 @@ public class Bundle extends BoffoDbObject implements TicketElement {
     public static Bundle[] getBundlesBy(Boolean _active, String _name,
             String _description, String _sku) {
         ArrayList<Bundle> bundles = new ArrayList();
-        boolean[] truthValues = new boolean[4];
         for (Bundle bundle : loadAll()) {
             if (_active != null && _active != bundle.active) {
                 continue;
@@ -331,7 +319,6 @@ public class Bundle extends BoffoDbObject implements TicketElement {
         return bundles.toArray(new Bundle[bundles.size()]);
     }
 
-
     /**
      * Get the Bundle name.
      *
@@ -342,7 +329,6 @@ public class Bundle extends BoffoDbObject implements TicketElement {
         return this.name;
     }
 
-
     /**
      * Gets the max number of the bundle that can be on a single transaction.
      *
@@ -351,7 +337,6 @@ public class Bundle extends BoffoDbObject implements TicketElement {
     public int getMaxAllowed() {
         return this.maxAllowed;
     }
-
 
     /**
      * Get the price of the bundle which is the price of the items minus the
@@ -374,7 +359,6 @@ public class Bundle extends BoffoDbObject implements TicketElement {
         }
     }
 
-
     /**
      * Get a GroupList consisting of the products that comprise the bundle.
      *
@@ -383,7 +367,6 @@ public class Bundle extends BoffoDbObject implements TicketElement {
     public GroupList<ProductObject> getProducts() {
         return this.products.clone();
     }
-
 
     /**
      * Get the amount of money the bundle saves in dollars.
@@ -394,7 +377,6 @@ public class Bundle extends BoffoDbObject implements TicketElement {
         return this.products.getTotal() - this.getPrice();
     }
 
-
     /**
      * Get the amount of SKU of the Bundle
      *
@@ -404,7 +386,6 @@ public class Bundle extends BoffoDbObject implements TicketElement {
     public String getSku() {
         return this.sku;
     }
-
 
     /**
      * Returns whether today's date is within the Bundle object's startDate and
@@ -430,7 +411,6 @@ public class Bundle extends BoffoDbObject implements TicketElement {
         return false;
     }
 
-
     /**
      * Method that returns all bundles in the database.
      *
@@ -445,7 +425,6 @@ public class Bundle extends BoffoDbObject implements TicketElement {
         return bundles;
     }
 
-
     /**
      * Load the Bundle with the given SKU.
      *
@@ -459,7 +438,6 @@ public class Bundle extends BoffoDbObject implements TicketElement {
         return bundle;
     }
 
-
     /**
      * Load the Bundle with matching UUID.
      *
@@ -472,7 +450,6 @@ public class Bundle extends BoffoDbObject implements TicketElement {
         loadProducts(bundle);
         return bundle;
     }
-
 
     /**
      * Method for loading a Bundle's products.
@@ -494,7 +471,6 @@ public class Bundle extends BoffoDbObject implements TicketElement {
         }
     }
 
-
     /**
      * Bundles cannot be saved, only created or disabled
      *
@@ -505,6 +481,9 @@ public class Bundle extends BoffoDbObject implements TicketElement {
         return false;
     }
 
+    private boolean save() {
+        return super.save(this);
+    }
 
     /**
      * Returns a String representation of the Bundle.
@@ -516,7 +495,6 @@ public class Bundle extends BoffoDbObject implements TicketElement {
         return "Bundle:" + "[" + this.name + this.description + "]" + " "
                 + this.discountType.formatString(this.discountAmount);
     }
-
 
     /**
      * Returns a List of TicketElements (products and bundles). Takes a list of
@@ -535,7 +513,6 @@ public class Bundle extends BoffoDbObject implements TicketElement {
         }
         return updateBundles(products).toAbsoluteList();
     }
-
 
     // <editor-fold desc="Helper Methods of updateBundles().">
     /**
@@ -574,7 +551,6 @@ public class Bundle extends BoffoDbObject implements TicketElement {
         return applicable;
     }
 
-
     /**
      * Gets the list of bundles that apply to a list of products. The list of
      * bundles will have the maximum number of each bundle that could be
@@ -588,7 +564,6 @@ public class Bundle extends BoffoDbObject implements TicketElement {
         // loading all bundles.
         return getApplicable(_allProducts, getBundlesBy(true, null, null, null));
     }
-
 
     /**
      * Method for pruning the list of bundles based on the a list of products.
@@ -617,7 +592,6 @@ public class Bundle extends BoffoDbObject implements TicketElement {
         }
         return retList;
     }
-
 
     /**
      * Recursive method for finding optimal bundles and discounts. It
@@ -671,7 +645,6 @@ public class Bundle extends BoffoDbObject implements TicketElement {
         }
     }
 
-
     /**
      * Returns a GroupList of TicketElements (products and bundles). Takes a
      * group list of products that represent all the items on a transaction
@@ -692,5 +665,4 @@ public class Bundle extends BoffoDbObject implements TicketElement {
     }
 
     // </editor-fold>
-
 }

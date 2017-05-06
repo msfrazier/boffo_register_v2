@@ -93,7 +93,7 @@ public class Printer extends AdministrationObject {
 //        double total = 0.00;
 
         String amt
-                = "\n \n \nTotal Amount = " + Total + "\n"
+                = "\n \n \nTotal Amount = NO TOTAL \n"
                 + "Tax =" + getTaxRate() + "\n"
                 + "*********************************\n"
                 + "Thank you. \n";
@@ -132,7 +132,7 @@ public class Printer extends AdministrationObject {
 
         } while (i <= mod.getRowCount() - 1);
 
-        bill = bill + Total;
+        bill = bill + 0;
         System.out.println(bill);
         print(bill);
         dispose();

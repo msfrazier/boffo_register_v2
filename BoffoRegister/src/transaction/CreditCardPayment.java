@@ -10,8 +10,10 @@ package transaction;
  */
 
 import a.net.BoffoPayment;
+import a.net.Payment;
+import static a.net.BoffoPayment.processPayment;
 
-public class CreditCardPayment extends Transaction extends a.net.BoffoPayment{
+public class CreditCardPayment extends Transaction {
 //
 //    public static final String AMERICANEXPRESS = "American Express";
 //    public static final String DISCOVER = "Discover";
@@ -252,7 +254,7 @@ public class CreditCardPayment extends Transaction extends a.net.BoffoPayment{
     public boolean paymentAccepted(){
         Payment response  = processPayment(this.amount, this.number,
                 this.ticketID);
-        if(response._confirmationResNum == 1){
+        if(response.getConfirmationResNum() == 1){
             return true;
         }
         return false;

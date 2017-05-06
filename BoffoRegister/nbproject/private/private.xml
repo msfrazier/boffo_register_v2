@@ -3,6 +3,23 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
+            <file>file:/C:/Users/riquigle/Documents/GitHub/boffo_register_v2/BoffoRegister/src/bundles/BundleItem.java</file>
+            <file>file:/C:/Users/riquigle/Documents/GitHub/boffo_register_v2/BoffoRegister/src/transaction/Total.java</file>
+            <file>file:/C:/Users/riquigle/Documents/GitHub/boffo_register_v2/BoffoRegister/src/inventory/StateOfInvetory.java</file>
+            <file>file:/C:/Users/riquigle/Documents/GitHub/boffo_register_v2/BoffoRegister/src/printer/Printer.java</file>
+            <file>file:/C:/Users/riquigle/Documents/GitHub/boffo_register_v2/BoffoRegister/src/boffoIO/BoffoIO.java</file>
+            <file>file:/C:/Users/riquigle/Documents/GitHub/boffo_register_v2/BoffoRegister/src/inventory/Inventory.java</file>
+            <file>file:/C:/Users/riquigle/Documents/GitHub/boffo_register_v2/BoffoRegister/src/bundles/GroupList.java</file>
+            <file>file:/C:/Users/riquigle/Documents/GitHub/boffo_register_v2/BoffoRegister/src/authorization/AuthorizationInterface.java</file>
+            <file>file:/C:/Users/riquigle/Documents/GitHub/boffo_register_v2/BoffoRegister/src/user/User.java</file>
+            <file>file:/C:/Users/riquigle/Documents/GitHub/boffo_register_v2/BoffoRegister/src/a/net/BoffoPayment.java</file>
+            <file>file:/C:/Users/riquigle/Documents/GitHub/boffo_register_v2/BoffoRegister/src/bundles/CalendarUtilities.java</file>
+            <file>file:/C:/Users/riquigle/Documents/GitHub/boffo_register_v2/BoffoRegister/src/transaction/Cash.java</file>
+            <file>file:/C:/Users/riquigle/Documents/GitHub/boffo_register_v2/BoffoRegister/src/inventory/InventoryRecord.java</file>
+            <file>file:/C:/Users/riquigle/Documents/GitHub/boffo_register_v2/BoffoRegister/src/transaction/Ticket.java</file>
+            <file>file:/C:/Users/riquigle/Documents/GitHub/boffo_register_v2/BoffoRegister/src/bundles/Bundle.java</file>
+            <file>file:/C:/Users/riquigle/Documents/GitHub/boffo_register_v2/BoffoRegister/src/transaction/CreditCardPayment.java</file>
+            <file>file:/C:/Users/riquigle/Documents/GitHub/boffo_register_v2/BoffoRegister/src/a/net/Payment.java</file>
         </group>
     </open-files>
 </project-private>

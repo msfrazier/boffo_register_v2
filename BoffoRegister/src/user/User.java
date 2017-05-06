@@ -81,7 +81,7 @@ public class PasswordHash{
     public static final int PBKDF2_ITERATIONS = 1000;
     public static final int ITERATION_INDEX = 0;
     public static final int SALT_INDEX = 1;
-    public static final int PBKDF2_INDEX = 2;    
+    public static final int PBKDF2_INDEX = 2;
 }
 
 

@@ -30,17 +30,7 @@ public class BoffoPayment {
         // Returns payment object to item calling processPayment.
     }
     
-    public static void main(String[] args) {
-        Payment yes = processPayment(12.35, "4444444444444444","west");
-        if (yes._confirmationResNum == 1) {
-            System.out.println("hello");
-            System.out.println(yes._confirmationResNum);
-        }
-        else{
-            System.out.println("bye");
-            System.out.println(yes._confirmationResNum);
-        }
-    }
+
 }
 
 

@@ -15,6 +15,7 @@ package bofforegister;
  */
 
 import administration.AdministrationObject;
+import database.BoffoDatabaseAPI;
 import events.BoffoEvent;
 import events.*;
 import events.BoffoFireObject;
@@ -35,7 +36,7 @@ public class BoffoController extends BoffoFireObject implements BoffoListenerInt
     protected Inventory inventory = new Inventory();
     protected Printer printer = null;
     protected Transaction transaction = new Transaction();
-
+    protected BoffoDatabaseAPI api = BoffoDatabaseAPI.getInstance();
 
     BoffoController(Stage _primaryStage) {
         this.gui = new BoffoRegisterGUI(_primaryStage);
@@ -50,6 +51,7 @@ public class BoffoController extends BoffoFireObject implements BoffoListenerInt
     public void initilize() {
         this.gui.addListener(this);
         this.addListener(gui);
+        this.api.dbLogin("", "");
     }
 
 

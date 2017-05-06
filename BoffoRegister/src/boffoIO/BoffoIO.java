@@ -19,23 +19,25 @@ public class BoffoIO extends BoffoFireObject implements BoffoListenerInterface{
     /* Reads in a double and checks to see if there is a product with that double.
     *  If there is a product, it will then fire an event.
     */
-    public void scanDouble(){
+    public void scanDouble() {
         double tempDouble = this.input.nextDouble();
         if(product.ProductObject.loadByPrice(String.valueOf(tempDouble)) != null){
             fireEvent(new BoffoEvent(this,new BoffoEventData(tempDouble)));
         }
     }
 
+    
     /* Reads in a integer and checks to see if there is a product with that integer.
     *  If there is a product it will, then fire an event.
     */
-    public void scanInt(){
+    public void scanInt() {
         int tempInt = this.input.nextInt();
         if(product.ProductObject.loadByQuantity(String.valueOf(tempInt)) != null){
             fireEvent(new BoffoEvent(this,new BoffoEventData(tempInt)));
         }
     }
 
+    
     // Reads in two strings, puts them in an array, and fires an event with the array
     public void scanLogin(){
         String name = input.next();
@@ -45,6 +47,7 @@ public class BoffoIO extends BoffoFireObject implements BoffoListenerInterface{
         login[1] = pass;
         fireEvent(new BoffoEvent(this,new BoffoEventData(login)));
     }
+
 
     /* Reads in a string and checks to see if there is a product with that string.
     *  If there is a product it will, then fire an event.
@@ -63,6 +66,7 @@ public class BoffoIO extends BoffoFireObject implements BoffoListenerInterface{
         }
     }
 
+    
     // Checks to see what is the event is and calls the proper method.
     @Override
     public void messageReceived(BoffoEvent _event) {

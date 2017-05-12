@@ -15,6 +15,7 @@ USE boffo_register_schema ;
 -- Table boffo_register_schema.product_tbl
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS boffo_register_schema.product_tbl (
+  is_active bit NOT NULL DEFAULT (0),
   product_id INT UNSIGNED NOT NULL,
   uuid VARCHAR(45) NOT NULL,
   `name` VARCHAR(45) NULL,
@@ -33,6 +34,7 @@ ENGINE = InnoDB;
 -- Table boffo_register_schema.user_tbl
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS boffo_register_schema.user_tbl (
+  is_active bit NOT NULL DEFAULT (0),
   user_id INT UNSIGNED NOT NULL,
   uuid VARCHAR(45) NOT NULL,
   username VARCHAR(45) NULL,
